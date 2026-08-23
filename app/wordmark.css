@@ -69,10 +69,10 @@
 .wordmark .wordmark-clover {
   position: absolute;
   z-index: 1;
-  top: -0.44em;
-  left: -0.19em;
-  width: 0.76em;
-  height: 0.76em;
+  top: -0.4em;
+  left: -0.34em;
+  width: 0.96em;
+  height: 0.82em;
   overflow: visible;
   color: var(--wordmark-green);
   fill: currentColor;
@@ -100,11 +100,11 @@
 .wordmark .wordmark-omes {
   margin: 0;
   color: var(--wordmark-orange);
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 1.46rem;
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.045em;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.34rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.075em;
   line-height: 0.95;
 }
 

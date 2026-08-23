@@ -10,6 +10,14 @@ export interface AmenityGroup {
   amenities: string[];
 }
 
+export interface DesignerNote {
+  designer: string;
+  role: string;
+  headline: string;
+  paragraphs: string[];
+  status: "approved" | "pending";
+}
+
 export interface Property {
   id: string;
   name: string;
@@ -30,6 +38,7 @@ export interface Property {
   bathrooms?: number;
   amenities: AmenityGroup[];
   uniqueFeatures: string[];
+  designerNote: DesignerNote;
   petPolicy: string;
   parking: string;
   accessibility: string;

@@ -13,6 +13,14 @@
 .stay-notes dl > div { display: grid; grid-template-columns: minmax(120px, .3fr) 1fr; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
 .stay-notes dt { color: var(--clay); font-size: .66rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .stay-notes dd { margin: 0; line-height: 1.65; }
+.designer-note { display: grid; grid-template-columns: minmax(150px,.35fr) 1fr; gap: clamp(2rem,5vw,6rem); margin-top: clamp(6rem,10vw,10rem); padding: clamp(3rem,5vw,5rem); background: var(--cream); }
+.designer-note-heading { display: flex; flex-direction: column; justify-content: space-between; }
+.designer-credit { margin: 3rem 0 0; font-family: var(--font-display),Georgia,serif; font-size: 1.65rem; line-height: 1.1; }
+.designer-credit span { display: block; margin-top: .65rem; color: var(--sage); font-family: var(--font-sans),sans-serif; font-size: .6rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.designer-note-copy h2 { margin-bottom: 2.5rem; font-size: clamp(2.5rem,4.5vw,4.8rem); }
+.designer-note-copy p { max-width: 720px; }
+.designer-note-status { display: inline-block; margin-top: 1.5rem; padding-top: .75rem; border-top: 1px solid var(--line); color: var(--sage); font-size: .62rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.designer-note-pending { border: 1px dashed var(--line); background: transparent; }
 
 .interiors-intro { display: grid; grid-template-columns: .4fr 1.2fr .65fr; gap: clamp(2rem, 5vw, 6rem); align-items: start; padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 8vw, 9rem); }
 .interiors-intro h2 { margin: 0; }
@@ -43,6 +51,7 @@
   .property-grid .property-card:first-child { grid-column: 1 / -1; }
   .property-grid .property-card:first-child .card-image { aspect-ratio: 16 / 9; }
   .interiors-intro, .leadership-profile, .wildwood-season { grid-template-columns: 1fr; }
+  .designer-note { grid-template-columns: 1fr; }
   .profile-monogram { max-width: 420px; }
   .season-number { margin: 1rem 0; }
 }

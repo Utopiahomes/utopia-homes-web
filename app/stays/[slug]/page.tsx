@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AmenityGroups } from "@/components/AmenityGroups";
 import { AnalyticsView } from "@/components/AnalyticsView";
 import { BookingLink } from "@/components/BookingLink";
+import { DesignerNote } from "@/components/DesignerNote";
 import { PropertyFacts } from "@/components/PropertyFacts";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { cms } from "@/lib/cms";
@@ -36,6 +37,7 @@ export default async function PropertyPage({ params }: Props) {
       <div className="property-main">
         <p className="eyebrow">Come together</p><h2>Big energy.<br /><em>Room for everyone.</em></h2><p className="property-lede">{property.fullDescription}</p>
         <div className="special-section"><p className="eyebrow">Why you’ll love it</p><ul className="feature-list">{property.uniqueFeatures.map((feature, index) => <li key={feature}><span>{String(index + 1).padStart(2, "0")}</span>{feature}</li>)}</ul></div>
+        <DesignerNote note={property.designerNote} />
         <div className="amenities-section"><p className="eyebrow">At the house</p><h2>Everything your<br />crew needs.</h2><AmenityGroups groups={property.amenities} /></div>
         <div className="stay-notes"><p className="eyebrow">Good to know</p><dl><div><dt>Pets</dt><dd>{property.petPolicy}</dd></div><div><dt>Parking</dt><dd>{property.parking}</dd></div><div><dt>Accessibility</dt><dd>{property.accessibility}</dd></div></dl></div>
       </div>

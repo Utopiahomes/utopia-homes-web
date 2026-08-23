@@ -19,7 +19,7 @@ export function Wordmark({ className = "" }: WordmarkProps) {
               <path d="M11 10.7C9.4 8.8 7.7 6.3 8.4 4.1A3.1 3.1 0 0 1 14.3 4c.8 2.3-1.3 4.9-3.3 6.7Z" />
               <path d="M10.5 11.1C7.9 11.2 4.7 10.8 3.5 8.8a3.1 3.1 0 0 1 4.3-4.2c2 1.2 2.5 4.3 2.7 6.5Z" />
               <path d="M11.5 11.1c.2-2.2.7-5.3 2.7-6.5a3.1 3.1 0 0 1 4.3 4.2c-1.2 2-4.4 2.4-7 2.3Z" />
-              <path d="M11 10.5c.2 3.1 1.7 5.8 5.2 8.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path d="M11 10.5c.1 2.1 1.1 3.8 3.3 5.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
             <span className="wordmark-i-stem" />
           </span>
