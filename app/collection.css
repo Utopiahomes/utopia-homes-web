@@ -23,6 +23,15 @@
 .leadership-profile h2 { margin-bottom: .5rem; }
 .leadership-profile > div:last-child > p:last-child { max-width: 640px; font-size: 1.05rem; }
 .profile-role { color: var(--sage); font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.founder-statement h2 em { color: var(--clay); }
+.founder-profile { display: grid; gap: clamp(3rem, 6vw, 6rem); }
+.founder-aside { max-width: 760px; margin: 0 auto; padding-top: 2.5rem; border-top: 1px solid var(--line); font-family: var(--font-display), Georgia, serif; font-size: clamp(1.5rem, 2.5vw, 2.35rem); line-height: 1.35; }
+.wildwood-season { display: grid; grid-template-columns: .35fr .55fr 1.1fr; gap: clamp(2rem, 6vw, 8rem); align-items: center; padding: clamp(7rem, 11vw, 11rem) clamp(1.25rem, 8vw, 9rem); background: var(--deep); color: var(--white); }
+.wildwood-season > .eyebrow { align-self: start; }
+.season-number { color: #38d06f; font-family: var(--font-display), Georgia, serif; font-size: clamp(12rem, 24vw, 24rem); line-height: .75; }
+.wildwood-season h2 { margin-bottom: 2.5rem; }
+.wildwood-season h2 em { color: #e8c68e; }
+.wildwood-season > div:last-child > p { max-width: 660px; color: rgba(255,255,255,.72); }
 
 @media (max-width: 1200px) and (min-width: 901px) {
   .site-header nav { gap: 1rem; }
@@ -33,8 +42,9 @@
   .property-grid { grid-template-columns: 1fr 1fr; }
   .property-grid .property-card:first-child { grid-column: 1 / -1; }
   .property-grid .property-card:first-child .card-image { aspect-ratio: 16 / 9; }
-  .interiors-intro, .leadership-profile { grid-template-columns: 1fr; }
+  .interiors-intro, .leadership-profile, .wildwood-season { grid-template-columns: 1fr; }
   .profile-monogram { max-width: 420px; }
+  .season-number { margin: 1rem 0; }
 }
 
 @media (max-width: 620px) {
