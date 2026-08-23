@@ -22,7 +22,7 @@ export function ImmersiveScrollStory({
 }) {
   return <section className={`immersive-story ${className}`} aria-label={label}>
     <div className="immersive-story-visual" aria-hidden="true">
-      <Image src={image.src} alt="" fill sizes="100vw" />
+      <div className="immersive-story-canvas"><Image src={image.src} alt="" fill sizes="100vw" /></div>
       <div className="immersive-story-shade" />
     </div>
     <div className="immersive-story-beats">
