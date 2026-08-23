@@ -63,7 +63,7 @@
   width: 0.2em;
   height: 0.66em;
   margin: 0;
-  background: currentColor;
+  background: var(--wordmark-green);
 }
 
 .wordmark .wordmark-clover {
@@ -79,7 +79,26 @@
 }
 
 .wordmark .wordmark-homes {
+  display: inline-flex;
+  align-items: flex-end;
   margin: 0 0 0.01em 0.36em;
+  color: var(--wordmark-orange);
+  font-style: normal;
+}
+
+.wordmark-h {
+  width: 1.35rem;
+  height: 1.85rem;
+  margin-right: 0.04rem;
+  overflow: visible;
+}
+
+.wordmark-h-left { fill: var(--wordmark-orange); }
+.wordmark-h-light { fill: #f49a70; }
+.wordmark-h-shadow { fill: #b84223; }
+
+.wordmark .wordmark-omes {
+  margin: 0;
   color: var(--wordmark-orange);
   font-family: var(--font-display), Georgia, serif;
   font-size: 1.46rem;
