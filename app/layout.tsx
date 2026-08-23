@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 import "./v1.css";
 import "./collection.css";
+import "./wordmark.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 

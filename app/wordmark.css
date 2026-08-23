@@ -1,0 +1,101 @@
+.wordmark {
+  --wordmark-green: #25a95b;
+  --wordmark-green-light: #41d477;
+  --wordmark-green-dark: #11723d;
+  --wordmark-orange: #e66b3d;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans), sans-serif;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: normal;
+  line-height: 1;
+}
+
+.wordmark .wordmark-art {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0;
+  margin: 0;
+  color: var(--wordmark-green);
+  font-style: normal;
+}
+
+.wordmark-u {
+  width: 2.08rem;
+  height: 2.35rem;
+  margin-right: 0.13rem;
+  overflow: visible;
+}
+
+.wordmark-u-left,
+.wordmark-u-right { fill: var(--wordmark-green); }
+.wordmark-u-light { fill: var(--wordmark-green-light); }
+.wordmark-u-shadow { fill: var(--wordmark-green-dark); }
+
+.wordmark .wordmark-utopia {
+  display: inline-flex;
+  align-items: flex-end;
+  margin: 0;
+  color: var(--wordmark-green);
+  font-size: 1.55rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.085em;
+  line-height: 0.95;
+  text-transform: lowercase;
+}
+
+.wordmark .wordmark-i {
+  position: relative;
+  display: inline-block;
+  width: 0.28em;
+  height: 0.98em;
+  margin: 0 0.02em 0 0.04em;
+  color: inherit;
+  font-style: normal;
+}
+
+.wordmark .wordmark-i-stem {
+  position: absolute;
+  right: 0.02em;
+  bottom: 0;
+  width: 0.2em;
+  height: 0.66em;
+  margin: 0;
+  background: currentColor;
+}
+
+.wordmark .wordmark-clover {
+  position: absolute;
+  z-index: 1;
+  top: -0.44em;
+  left: -0.19em;
+  width: 0.76em;
+  height: 0.76em;
+  overflow: visible;
+  color: var(--wordmark-green);
+  fill: currentColor;
+}
+
+.wordmark .wordmark-homes {
+  margin: 0 0 0.01em 0.36em;
+  color: var(--wordmark-orange);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.46rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.wordmark-footer { font-size: 1.1rem; }
+
+@media (max-width: 620px) {
+  .site-header .wordmark {
+    transform: scale(0.9);
+    transform-origin: left center;
+  }
+
+  .site-header > a:first-child { max-width: 12rem; }
+}
