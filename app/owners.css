@@ -42,6 +42,9 @@
 .owner-journey h3 { margin: 5rem 0 1.25rem; }
 .owner-journey li p { color: rgba(255,255,255,.65); }
 .owner-form-section { background: var(--cream); }
+.page-hero-action { align-self: flex-start; gap: 2rem; margin-top: 1.5rem; }
+.owner-difference-story .immersive-story-shade { background: linear-gradient(90deg,rgba(4,14,12,.82),rgba(4,14,12,.2) 62%,rgba(4,14,12,.48)); }
+.owner-difference-story .immersive-story-beat h2 { max-width: 9ch; }
 
 @media(max-width:900px){
   .owner-proof > div { grid-template-columns: 1fr; margin-left: 0; }
