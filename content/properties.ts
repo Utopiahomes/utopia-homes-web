@@ -21,7 +21,7 @@ const records = [
       { name: "At home", amenities: ["Kitchen", "Wi-Fi", "In-unit washer and dryer", "Smart TVs", "Foosball table"] },
     ],
     uniqueFeatures: ["Approximately 3,200 square feet of interior space", "Heated private pool and eight-person hot tub", "Game room, covered dining area, and bakery directly across the street"],
-    designerNote: { designer: "Meghan", role: "Interior design", headline: "The Buttercup design story is coming soon.", paragraphs: ["Meghan’s notes for Buttercup Beauty are awaiting editorial review. This section will be updated when the property’s design story is approved."], status: "pending" },
+    designerNote: { designer: "Meghan", role: "Interior design", headline: "Three generations. One Wildwood experience.", paragraphs: ["Buttercup Beauty was designed around multigenerational hosting—a place where grandparents, parents, and children can come together in Wildwood and share one experience without giving up the comfort each generation needs.", "Livability guided the redesign. A large central living area gives the whole family room to gather, while multiple seating moments and thoughtful design elements create places to connect throughout the home. Every decision was made to help a large family settle in naturally, spend meaningful time together, and leave with a shared collection of Wildwood memories."], status: "approved" },
     petPolicy: "Dogs of any size are allowed, according to the source listing.",
     parking: "Parking for 4 cars.",
     accessibility: "The source description states that guests climb a few stairs at the entrance; no formal accessibility features are listed.",
