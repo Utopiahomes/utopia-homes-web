@@ -1,0 +1,27 @@
+.immersive-story { position: relative; background: var(--deep); color: var(--white); }
+.immersive-story-visual { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.immersive-story-visual img { object-fit: cover; transform: scale(1.07); }
+.immersive-story-shade { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(4,14,12,.7) 0%,rgba(4,14,12,.16) 58%,rgba(4,14,12,.34) 100%),linear-gradient(0deg,rgba(4,14,12,.52),transparent 45%); }
+.immersive-story-beats { position: relative; z-index: 1; width: min(100%,1540px); margin: -100svh auto 0; padding: 42svh clamp(1.25rem,8vw,9rem) 24svh; pointer-events: none; }
+.immersive-story-beat { width: min(620px,82vw); min-height: 76svh; display: flex; flex-direction: column; justify-content: center; margin-left: auto; text-shadow: 0 2px 28px rgba(0,0,0,.28); }
+.immersive-story-beat:nth-child(even) { margin-right: auto; margin-left: 0; }
+.immersive-story-beat > span { margin-bottom: clamp(2rem,6vh,5rem); color: #56db83; font-size: .62rem; font-weight: 800; letter-spacing: .15em; }
+.immersive-story-beat h2 { max-width: 11ch; margin: 0 0 1.5rem; color: var(--white); font-size: clamp(3.2rem,7vw,7.5rem); line-height: .9; }
+.immersive-story-beat > p:last-child { max-width: 480px; margin: 0; color: rgba(255,255,255,.86); font-size: clamp(1rem,1.4vw,1.25rem); }
+.immersive-story-inset { position: relative; width: min(36vw,520px); min-height: min(45vw,620px); margin: 0 0 clamp(2rem,5vh,4rem) auto; overflow: hidden; border: .5rem solid rgba(255,255,255,.9); box-shadow: 0 2rem 5rem rgba(0,0,0,.28); }
+.immersive-story-inset img { object-fit: cover; }
+
+@media(max-width:700px){
+  .immersive-story-beats { padding-top: 34svh; padding-bottom: 16svh; }
+  .immersive-story-beat { width: 100%; min-height: 72svh; justify-content: flex-end; padding-bottom: 12svh; }
+  .immersive-story-beat h2 { font-size: clamp(3rem,15vw,5rem); }
+  .immersive-story-inset { width: 76vw; min-height: 88vw; margin-left: auto; }
+  .immersive-story-shade { background: linear-gradient(0deg,rgba(4,14,12,.82) 0%,rgba(4,14,12,.16) 75%); }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .immersive-story-visual { position: relative; height: 78svh; }
+  .immersive-story-visual img { transform: none; }
+  .immersive-story-beats { margin: 0; padding-top: 4rem; padding-bottom: 4rem; }
+  .immersive-story-beat { min-height: auto; margin: 0 0 5rem; }
+}

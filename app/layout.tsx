@@ -10,6 +10,7 @@ import "./owners.css";
 import "./navigation.css";
 import "./photography.css";
 import "./home-v2.css";
+import "./scroll-story.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 

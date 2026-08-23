@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CTASection } from "@/components/CTASection";
 import { Hero } from "@/components/Hero";
-import { ParallaxMedia } from "@/components/ParallaxMedia";
+import { ImmersiveScrollStory } from "@/components/ImmersiveScrollStory";
 import { cms } from "@/lib/cms";
 
 export default async function Home() {
@@ -34,10 +34,16 @@ export default async function Home() {
       <p>Every Utopia home has its own energy. The common thread is room to gather—and details worth remembering.</p>
     </section>
 
-    <section className="home-parallax-v2">
-      <ParallaxMedia image={visualProperty.gallery[3] ?? visualProperty.heroImage} />
-      <div><span>U / 01</span><p>Spaces made for full houses, late nights, long tables, and the people who make a place matter.</p></div>
-    </section>
+    <ImmersiveScrollStory
+      className="home-scroll-story"
+      image={visualProperty.gallery[3] ?? visualProperty.heroImage}
+      label="The Utopia way of gathering"
+      beats={[
+        { eyebrow: "The house is part of the trip", heading: "Come with everyone.", body: "Spaces made for full houses, late nights, long tables, and the people who make a place matter." },
+        { eyebrow: "Designed to be lived in", heading: "Find your corner.", body: "Gather together when you want to. Spread out when you need to. Every room has a role in the stay." },
+        { eyebrow: "Stay distinctly", heading: "Leave with stories.", body: "The best homes do more than hold a group. They give the weekend its own unmistakable character." },
+      ]}
+    />
 
     {destination && <section className="home-destination-v2"><div><p className="eyebrow">One coast. More season.</p><h2>{destination.city}<br /><em>does it louder.</em></h2><Link className="text-link" href={`/destinations/${destination.slug}`}>Meet the Wildwoods <span>→</span></Link></div><div className="home-destination-v2-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="(max-width: 900px) 100vw, 58vw" /></div></section>}
 
