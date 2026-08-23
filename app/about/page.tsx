@@ -1,0 +1,8 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { PageHero } from "@/components/PageHero";
+import { ParallaxMedia } from "@/components/ParallaxMedia";
+import { LeadershipProfile } from "@/components/LeadershipProfile";
+import { leadershipProfiles } from "@/content";
+export const metadata: Metadata = { title: "About", description: "Why Utopia Homes brings distinctive properties and dependable hospitality together." };
+export default function AboutPage() { const image = { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of The Shamrock in Wildwood" }; const meghan = leadershipProfiles.find(({ id }) => id === "leadership-meghan")!; return <><PageHero eyebrow="Why Utopia" title={<>Character,<br /><em>professionally cared for.</em></>} intro="We believe memorable homes and dependable hospitality should strengthen each other—not compete." tone="light" /><ParallaxMedia image={image} /><section className="about-statement"><span>U / H</span><h2>Utopia owns the relationship.</h2><div><p>We create the public experience, introduce remarkable homes, build direct guest and owner relationships, and protect the long-term value of the Utopia brand.</p><p>Operations providers may change over time. The guest-facing product, structured content, and trust remain portable by design.</p><Link className="text-link" href="/stays">Explore the collection <span>→</span></Link></div></section><section className="profile-section"><LeadershipProfile profile={meghan} context="Leadership and design" /><Link className="text-link" href="/utopia-interiors">Explore Utopia Interiors <span>→</span></Link></section></>; }

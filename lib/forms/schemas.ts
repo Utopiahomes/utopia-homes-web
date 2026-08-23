@@ -1,0 +1,11 @@
+import { z } from "zod";
+const email = z.string().trim().email().max(160);
+const name = z.string().trim().min(2).max(100);
+const optionalText = z.string().trim().max(500).optional().or(z.literal(""));
+const attribution = { source: optionalText, referrer: z.string().trim().max(500).optional().or(z.literal("")), utmSource: optionalText, utmMedium: optionalText, utmCampaign: optionalText, utmContent: optionalText, utmTerm: optionalText, website: z.string().max(0).optional().or(z.literal("")) };
+export const ownerLeadSchema = z.object({ name, email, phone: z.string().trim().min(7).max(40), propertyAddress: z.string().trim().min(5).max(200), cityState: z.string().trim().min(2).max(120), propertyType: z.string().trim().min(2).max(80), bedrooms: z.coerce.number().int().min(0).max(100).optional(), currentRentalStatus: z.string().trim().min(2).max(80), listingUrl: z.string().url().max(500).optional().or(z.literal("")), notes: z.string().trim().max(2000).optional().or(z.literal("")), consent: z.literal(true), ...attribution });
+export const membershipSchema = z.object({ name, email, zip: z.string().trim().max(12).optional().or(z.literal("")), travelInterests: optionalText, consent: z.literal(true), ...attribution });
+export const contactSchema = z.object({ name, email, phone: z.string().trim().max(40).optional().or(z.literal("")), inquiryType: z.enum(["guest", "owner", "general", "design"]), message: z.string().trim().min(10).max(3000), consent: z.literal(true), ...attribution });
+export const designInquirySchema = z.object({ name, email, phone: z.string().trim().max(40).optional().or(z.literal("")), propertyAddress: z.string().trim().max(200).optional().or(z.literal("")), projectType: z.string().trim().min(2).max(100), message: z.string().trim().min(10).max(3000), consent: z.literal(true), ...attribution });
+export const schemas = { "owner-lead": ownerLeadSchema, membership: membershipSchema, contact: contactSchema, "design-inquiry": designInquirySchema } as const;
+export type FormKind = keyof typeof schemas;

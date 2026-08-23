@@ -1,0 +1,88 @@
+import type { Property } from "@/types/content";
+import { propertySchema, validateCollection } from "./schemas";
+
+const records = [
+  {
+    id: "airbnb-639163446287777223", name: "Buttercup Beauty", slug: "buttercup-beauty", status: "active", featured: true,
+    destinationId: "destination-wildwood", city: "Wildwood Crest", state: "New Jersey", propertyType: "Entire home",
+    shortDescription: "A spacious Wildwood Crest gathering place with a heated pool, hot tub, and room for the whole family.",
+    fullDescription: "Buttercup Beauty is a generous shore home designed around time together. Its open living spaces, game room, and fenced backyard make it especially well suited to multigenerational groups and friends traveling with dogs.",
+    heroImage: { src: "/images/buttercup-house/01.jpg", alt: "Exterior of the Buttercup Road vacation home in Wildwood Crest" },
+    gallery: [
+      { src: "/images/buttercup-house/01.jpg", alt: "Exterior of the Buttercup Road vacation home" },
+      { src: "/images/buttercup-house/02.jpg", alt: "Private outdoor pool at the Buttercup Road home" },
+      { src: "/images/buttercup-house/03.jpg", alt: "Fenced backyard gathering area" },
+      { src: "/images/buttercup-house/04.jpg", alt: "Interior living space for large groups" },
+      { src: "/images/buttercup-house/05.jpg", alt: "Kitchen and dining area" },
+    ],
+    maxGuests: 22, bedrooms: 7, beds: 13, bathrooms: 3.5,
+    amenities: [
+      { name: "Outside", amenities: ["Shared beach access", "Heated private pool", "Private hot tub", "Large fenced backyard"] },
+      { name: "At home", amenities: ["Kitchen", "Wi-Fi", "In-unit washer and dryer", "Smart TVs", "Foosball table"] },
+    ],
+    uniqueFeatures: ["Approximately 3,200 square feet of interior space", "Heated private pool and eight-person hot tub", "Game room, covered dining area, and bakery directly across the street"],
+    petPolicy: "Dogs of any size are allowed, according to the source listing.",
+    parking: "Parking for 4 cars.",
+    accessibility: "The source description states that guests climb a few stairs at the entrance; no formal accessibility features are listed.",
+    bookingUrl: "https://www.airbnb.com/rooms/639163446287777223", sourceUrls: ["https://www.airbnb.com/rooms/639163446287777223"],
+    sourceSnapshot: { listingTitle: "7 Bedroom Pet Friendly Gorgeous Home Pool+Hot Tub", locationLabel: "Entire home in Wildwood Crest, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 60, factualSummary: "Seven-bedroom, 3.5-bath entire home on Buttercup Road with a fenced backyard, seasonal heated in-ground pool, private hot tub, and shared beach access." },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 22-guest capacity, four-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Airbnb shows 13 beds, while its sleeping-area breakdown also lists couches and a sofa bed.", "Ray owns the photography and approves its use on Utopia Homes; review publication rights remain pending."] },
+    seoTitle: "Buttercup Beauty, Wildwood Crest | Utopia Homes", seoDescription: "Explore Buttercup Beauty, a seven-bedroom Wildwood Crest group home with a heated private pool, hot tub, and fenced backyard.",
+  },
+  {
+    id: "airbnb-1137760792304016998", name: "Central Ave Socialization", slug: "central-ave-socialization", status: "active", featured: true,
+    destinationId: "destination-wildwood", city: "North Wildwood", state: "New Jersey", propertyType: "Entire home",
+    shortDescription: "A relaxed North Wildwood shore house with a heated private pool, hot tub, and easy beach access.",
+    fullDescription: "Central Ave Socialization is a recently renovated group retreat built around easy time together. An open living area and fully fenced backyard create a welcoming home base for beach days, pool time, and evenings with the whole crew—including dogs.",
+    heroImage: { src: "/images/north-wildwood-house/01.jpg", alt: "Exterior of the North Wildwood vacation home" },
+    gallery: [
+      { src: "/images/north-wildwood-house/01.jpg", alt: "Exterior of the North Wildwood vacation home" },
+      { src: "/images/north-wildwood-house/02.jpg", alt: "Private pool and fenced backyard" },
+      { src: "/images/north-wildwood-house/03.jpg", alt: "Outdoor lounge area near the pool" },
+      { src: "/images/north-wildwood-house/04.jpg", alt: "Open living space inside the home" },
+      { src: "/images/north-wildwood-house/05.jpg", alt: "Kitchen and dining space" },
+    ],
+    maxGuests: 22, bedrooms: 7, beds: 18, bathrooms: 3.5,
+    amenities: [
+      { name: "Outside", amenities: ["Beach access", "Heated private pool", "Hot tub", "Fully fenced backyard", "Patio seating and fire pit"] },
+      { name: "At home", amenities: ["Kitchen", "Wi-Fi", "TV", "Washer", "In-unit dryer"] },
+    ],
+    uniqueFeatures: ["Approximately a five-minute walk to Albert I. Allen Memorial Park", "Heated private pool and hot tub in a fully fenced backyard", "Seven bedrooms and eighteen listed beds for large-group stays"],
+    petPolicy: "Dogs of all sizes are welcome, according to the source listing.",
+    parking: "Parking for 3 cars.",
+    accessibility: "No accessibility features or limitations are stated in the source listing.",
+    bookingUrl: "https://www.airbnb.com/rooms/1137760792304016998", sourceUrls: ["https://www.airbnb.com/rooms/1137760792304016998"],
+    sourceSnapshot: { listingTitle: "Private Pool & Hot Tub- sleeps 22 & pups welcome!", locationLabel: "Entire home in North Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 63, factualSummary: "Recently renovated seven-bedroom entire home with a large open living area, private pool, hot tub, fenced backyard, beach access, and private access to the property." },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 22-guest capacity, three-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary lists 3.5 baths while the description says four bathrooms; Utopia displays the approved current value of 3.5.", "The description calls the pool in-ground while a listing highlight calls it above-ground.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Ray owns the photography and approves its use on Utopia Homes; review publication rights remain pending."] },
+    seoTitle: "Central Ave Socialization | Utopia Homes", seoDescription: "Explore Central Ave Socialization, a seven-bedroom North Wildwood group home with a heated private pool, hot tub, and beach access.",
+  },
+  {
+    id: "airbnb-1629070581710289311", name: "The Shamrock", slug: "the-shamrock", status: "active", featured: true,
+    destinationId: "destination-wildwood", city: "Wildwood", state: "New Jersey", propertyType: "Entire home",
+    shortDescription: "A colorful Wildwood original, made for milestone weekends and the whole crew.",
+    fullDescription: "Big groups deserve a home with just as much personality. The Shamrock brings everyone together in a restored piece of Wildwood history, with generous shared spaces and a location close to the beach, boardwalk, and downtown.",
+    heroImage: { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of The Shamrock in Wildwood" },
+    gallery: [
+      { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior and street corner of The Shamrock" },
+      { src: "/images/shamrock/exterior-green.avif", alt: "Green facade and upper decks of The Shamrock" },
+      { src: "/images/shamrock/interior-open.avif", alt: "Large open interior gathering space" },
+      { src: "/images/shamrock/exterior-detail.avif", alt: "Street-level exterior detail of The Shamrock" },
+      { src: "/images/shamrock/bathroom.avif", alt: "Bright blue and white bathroom interior" },
+    ],
+    maxGuests: 32, bedrooms: 10, beds: 19, bathrooms: 5,
+    amenities: [
+      { name: "Location", amenities: ["Shared beach access", "About two blocks from the boardwalk", "Walkable to downtown Wildwood"] },
+      { name: "At home", amenities: ["Kitchen", "Wi-Fi", "Dedicated workspace", "HDTV", "Washer and in-unit dryer", "Central air conditioning"] },
+    ],
+    uniqueFeatures: ["A restored piece of the historic Shamrock property", "Ten bedrooms, four living rooms, and two decks", "Garage and driveway parking for six cars"],
+    petPolicy: "Dogs of all shapes and sizes are allowed, according to the source listing.",
+    parking: "Parking for 6 cars.",
+    accessibility: "No accessibility features or limitations are stated in the source listing.",
+    bookingUrl: "https://www.airbnb.com/rooms/1629070581710289311", sourceUrls: ["https://www.airbnb.com/rooms/1629070581710289311"],
+    sourceSnapshot: { listingTitle: "Shamrock Shindigs for 30+ people!", locationLabel: "Entire home in Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 30, disclosedAmenityCount: 64, factualSummary: "Restored ten-bedroom Wildwood home with four living rooms, five baths, two decks, a large garage, shared beach access, and a location close to the beach and boardwalk." },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 32-guest capacity, six-car parking, and no-pool facts approved by Ray on 2026-08-23.", "Airbnb displays 16+ guests; the source title says 30+ while Utopia's approved advertised capacity is 32.", "The summary states ten bedrooms and nineteen beds, but the visible sleeping-area list shows only nine named bedrooms plus a living room.", "Source parking counts vary; Utopia displays Ray's approved six-car capacity.", "Ray owns the photography and approves its use on Utopia Homes; review publication rights remain pending."] },
+    seoTitle: "The Shamrock, Wildwood | Utopia Homes", seoDescription: "Explore The Shamrock, a restored ten-bedroom Wildwood landmark for up to 32 guests near the beach and boardwalk.",
+  },
+];
+
+export const properties: Property[] = validateCollection(propertySchema, records, "properties");

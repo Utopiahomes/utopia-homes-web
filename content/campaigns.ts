@@ -1,0 +1,4 @@
+import type { Campaign } from "@/types/content";
+import { campaignSchema, validateCollection } from "./schemas";
+const records = [{ id: "campaign-summer", slug: "summer-together", name: "Summer Together — Concept Preview", partner: "Utopia Homes", eyebrow: "Concept preview · not a live offer", headline: "Bring everyone. Make it count.", description: "A clearly labeled local-only campaign concept used to validate the reusable campaign route. No promotion, discount, or contest is currently active.", heroImage: { src: "/images/shamrock/exterior-main.avif", alt: "The colorful Shamrock House in Wildwood" }, ctaLabel: "Explore the collection", ctaUrl: "/stays", active: true, seoTitle: "Campaign Concept Preview | Utopia Homes", seoDescription: "A non-live Utopia Homes campaign-route concept preview." }];
+export const campaigns: Campaign[] = validateCollection(campaignSchema, records, "campaigns");

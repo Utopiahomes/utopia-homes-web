@@ -1,0 +1,46 @@
+.property-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.property-grid .card-image { aspect-ratio: 4 / 5; }
+.property-grid .card-copy { grid-template-columns: 1fr; gap: 1rem; padding-top: 1.5rem; }
+.property-grid .card-copy h3 { font-size: clamp(2rem, 3vw, 3.5rem); }
+.property-grid .card-copy .text-link { grid-column: 1; }
+
+.stay-notes { margin-top: clamp(5rem, 8vw, 8rem); }
+.stay-notes dl { margin: 0; border-top: 1px solid var(--line); }
+.stay-notes dl > div { display: grid; grid-template-columns: minmax(120px, .3fr) 1fr; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+.stay-notes dt { color: var(--clay); font-size: .66rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.stay-notes dd { margin: 0; line-height: 1.65; }
+
+.interiors-intro { display: grid; grid-template-columns: .4fr 1.2fr .65fr; gap: clamp(2rem, 5vw, 6rem); align-items: start; padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 8vw, 9rem); }
+.interiors-intro h2 { margin: 0; }
+.interiors-intro h2 em { color: var(--clay); }
+.profile-section { padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 9vw, 10rem); background: var(--cream); }
+.leadership-profile { display: grid; grid-template-columns: minmax(240px, .65fr) 1.35fr; gap: clamp(3rem, 8vw, 9rem); align-items: center; max-width: 1200px; margin: auto; }
+.profile-monogram { display: grid; aspect-ratio: 1; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--clay); font-family: var(--font-display), serif; font-size: clamp(8rem, 18vw, 16rem); }
+.leadership-profile h2 { margin-bottom: .5rem; }
+.leadership-profile > div:last-child > p:last-child { max-width: 640px; font-size: 1.05rem; }
+.profile-role { color: var(--sage); font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .site-header nav { gap: 1rem; }
+  .site-header nav a { font-size: .57rem; }
+}
+
+@media (max-width: 900px) {
+  .property-grid { grid-template-columns: 1fr 1fr; }
+  .property-grid .property-card:first-child { grid-column: 1 / -1; }
+  .property-grid .property-card:first-child .card-image { aspect-ratio: 16 / 9; }
+  .interiors-intro, .leadership-profile { grid-template-columns: 1fr; }
+  .profile-monogram { max-width: 420px; }
+}
+
+@media (max-width: 620px) {
+  .property-grid { grid-template-columns: 1fr; }
+  .property-grid .property-card:first-child { grid-column: auto; }
+  .property-grid .property-card:first-child .card-image,
+  .property-grid .card-image { aspect-ratio: 4 / 5; }
+  .stay-notes dl > div { grid-template-columns: 1fr; gap: .5rem; }
+}

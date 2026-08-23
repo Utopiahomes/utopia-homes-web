@@ -1,0 +1,6 @@
+import { describe, expect, it } from "vitest";
+import { fixtureCms } from "@/lib/cms/fixtures";
+describe("CMS adapter contract", () => {
+  it("serves typed V1 content collections", async () => { const [properties, destinations, faqs, campaign] = await Promise.all([fixtureCms.getProperties(), fixtureCms.getDestinations(), fixtureCms.getFAQs(), fixtureCms.getCampaignBySlug("summer-together")]); expect(properties).toHaveLength(3); expect(properties.every((property) => property.bookingUrl.startsWith("https://www.airbnb.com/rooms/"))).toBe(true); expect(properties.every((property) => property.sourceSnapshot.listingTitle.length > 0)).toBe(true); expect(destinations[0].heroImage.alt).toBeTruthy(); expect(faqs.length).toBeGreaterThan(0); expect(campaign?.active).toBe(true); });
+  it("returns null for missing dynamic content", async () => { expect(await fixtureCms.getPropertyBySlug("missing")).toBeNull(); expect(await fixtureCms.getDestinationBySlug("missing")).toBeNull(); expect(await fixtureCms.getCampaignBySlug("missing")).toBeNull(); });
+});

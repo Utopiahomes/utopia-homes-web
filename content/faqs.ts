@@ -1,0 +1,4 @@
+import type { FAQ } from "@/types/content";
+import { faqSchema, validateCollection } from "./schemas";
+const records = [{ id: "faq-booking", category: "stays", question: "Where do I complete my booking?", answer: "Utopia property pages introduce each home, then send you to the property’s configured external booking page to check availability and book.", sortOrder: 1 }, { id: "faq-owner", category: "owners", question: "What happens after I submit my property?", answer: "A Utopia team member reviews your details and contacts you directly. Nothing is automatically handed to an outside operator.", sortOrder: 2 }, { id: "faq-membership", category: "membership", question: "Is Utopia membership live today?", answer: "Not yet. V1 is an interest list for future rewards, benefits, and member-only opportunities.", sortOrder: 3 }];
+export const faqs: FAQ[] = validateCollection(faqSchema, records, "FAQs");
