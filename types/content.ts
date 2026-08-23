@@ -3,7 +3,7 @@ export type PropertyStatus = "draft" | "active" | "hidden" | "archived";
 export interface ContentImage {
   src: string;
   alt: string;
-  category?: "arrival" | "outdoors" | "kitchen-dining" | "gathering" | "entertainment" | "bedrooms" | "details";
+  category?: "arrival" | "outdoors" | "kitchen-dining" | "gathering" | "entertainment" | "bedrooms" | "bathrooms" | "details";
 }
 
 export interface AmenityGroup {

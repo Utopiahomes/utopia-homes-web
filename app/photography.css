@@ -15,13 +15,14 @@
 .photo-story-frame { position: relative; min-height: min(62vw,820px); margin: 0; overflow: hidden; background: var(--deep); }
 .photo-story-frame-2 { min-height: min(44vw,600px); margin: 0 clamp(1.25rem,5vw,5rem) clamp(3rem,6vw,7rem) 0; }
 .photo-story-frame figcaption { position: absolute; right: 1rem; bottom: 1rem; max-width: 280px; padding: .7rem .9rem; background: var(--white); color: var(--ink); font-size: .58rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.photo-chapter { padding: clamp(8rem,12vw,13rem) clamp(1.25rem,5vw,5rem) 0; }
-.photo-chapter > header { display: grid; grid-template-columns: .45fr 1fr; gap: 2rem; align-items: end; margin: 0 auto clamp(3rem,6vw,6rem); max-width: 1500px; }
+.photo-chapter { padding: clamp(6rem,9vw,9rem) clamp(1.25rem,7vw,8rem) 0; }
+.photo-chapter > header { display: grid; grid-template-columns: 1.1fr .55fr; gap: clamp(2rem,7vw,8rem); align-items: end; margin: 0 auto clamp(2.5rem,5vw,5rem); max-width: 1280px; }
+.photo-chapter > header > p { max-width: 420px; margin: 0 0 .5rem; }
 .photo-chapter h3 { margin: 0; font-family: var(--font-display),Georgia,serif; font-size: clamp(3.5rem,8vw,8rem); font-weight: 500; line-height: .9; }
-.photo-chapter-mosaic { display: grid; grid-template-columns: repeat(12,1fr); grid-auto-flow: dense; gap: clamp(.5rem,1.2vw,1.25rem); max-width: 1700px; margin: 0 auto; }
-.photo-chapter-frame { position: relative; grid-column: span 4; min-height: min(36vw,560px); margin: 0; overflow: hidden; background: var(--deep); }
-.photo-chapter-frame-1,.photo-chapter-frame-6 { grid-column: span 7; min-height: min(48vw,720px); }
-.photo-chapter-frame-2,.photo-chapter-frame-5 { grid-column: span 5; min-height: min(38vw,600px); }
+.photo-chapter-mosaic { display: grid; grid-template-columns: repeat(12,1fr); grid-auto-flow: dense; gap: clamp(.5rem,1vw,1rem); max-width: 1280px; margin: 0 auto; }
+.photo-chapter-frame { position: relative; grid-column: span 4; min-height: min(25vw,360px); margin: 0; overflow: hidden; background: var(--deep); }
+.photo-chapter-frame-1,.photo-chapter-frame-6 { grid-column: span 7; min-height: min(32vw,460px); }
+.photo-chapter-frame-2,.photo-chapter-frame-5 { grid-column: span 5; min-height: min(27vw,390px); }
 .photo-chapter-frame-3 { grid-column: 2/span 4; }
 .photo-chapter-frame-4 { grid-column: span 7; }
 
@@ -35,7 +36,7 @@
   .photo-story-frame,.photo-story-frame-2 { min-height: 78vw; margin: 0; }
   .photo-story-frame-2 { width: 82%; margin-left: auto; }
   .photo-chapter > header { grid-template-columns: 1fr; }
-  .photo-chapter-frame,.photo-chapter-frame-1,.photo-chapter-frame-2,.photo-chapter-frame-3,.photo-chapter-frame-4,.photo-chapter-frame-5,.photo-chapter-frame-6 { grid-column: span 6; min-height: 64vw; }
+  .photo-chapter-frame,.photo-chapter-frame-1,.photo-chapter-frame-2,.photo-chapter-frame-3,.photo-chapter-frame-4,.photo-chapter-frame-5,.photo-chapter-frame-6 { grid-column: span 6; min-height: 46vw; }
 }
 
 @media(max-width:620px){
@@ -46,6 +47,6 @@
   .photo-chapter { padding-right: 0; padding-left: 0; }
   .photo-chapter > header { padding: 0 1.25rem; }
   .photo-chapter-mosaic { grid-template-columns: 1fr; gap: .6rem; }
-  .photo-chapter-frame,.photo-chapter-frame-1,.photo-chapter-frame-2,.photo-chapter-frame-3,.photo-chapter-frame-4,.photo-chapter-frame-5,.photo-chapter-frame-6 { grid-column: 1; min-height: 112vw; }
-  .photo-chapter-frame:nth-child(3n) { width: 82%; min-height: 96vw; margin-left: auto; }
+  .photo-chapter-frame,.photo-chapter-frame-1,.photo-chapter-frame-2,.photo-chapter-frame-3,.photo-chapter-frame-4,.photo-chapter-frame-5,.photo-chapter-frame-6 { grid-column: 1; min-height: 72vw; }
+  .photo-chapter-frame:nth-child(3n) { width: 82%; min-height: 64vw; margin-left: auto; }
 }
