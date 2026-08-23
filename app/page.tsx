@@ -1,13 +1,46 @@
-import { CTASection } from "@/components/CTASection";
-import { Hero } from "@/components/Hero";
-import { PropertyCard } from "@/components/PropertyCard";
-import { cms } from "@/lib/cms";
 import Image from "next/image";
 import Link from "next/link";
-import { LeadForm } from "@/components/forms/LeadForm";
+import { CTASection } from "@/components/CTASection";
+import { Hero } from "@/components/Hero";
+import { ParallaxMedia } from "@/components/ParallaxMedia";
+import { cms } from "@/lib/cms";
 
 export default async function Home() {
   const [properties, destinations] = await Promise.all([cms.getProperties(), cms.getDestinations()]);
-  const featured = properties[0];
-  return <><Hero image={featured.heroImage} /><section className="section intro"><p className="eyebrow">The Utopia standard</p><h2>Remarkable homes.<br /><em>Effortless stays.</em></h2><div className="intro-copy"><p>We believe the best getaways begin with a home that has a point of view—and hospitality that makes everything else feel easy.</p><a className="text-link" href="#collection">Discover Utopia <span aria-hidden="true">→</span></a></div></section><section className="section featured" id="collection"><div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Meet the places<br />you’ll talk about later.</h2></div><p>Homes with character, space to gather, and the details that turn a weekend away into a story worth keeping.</p></div><div className="property-grid">{properties.map((property, index) => <PropertyCard key={property.id} property={property} index={index + 1} />)}</div></section><section className="editorial"><div className="editorial-number">U / 01</div><div><p className="eyebrow eyebrow-light">Stay distinctly</p><h2>Not just a place<br />to sleep. A reason<br /><em>to go.</em></h2></div><p>From colorful coastal landmarks to quiet mountain hideaways, every Utopia home brings its own spirit to the trip.</p></section><section className="principles"><article><span>01</span><h3>Character,<br /><em>curated</em></h3><p>Homes selected for the details that make a destination feel singular.</p></article><article><span>02</span><h3>Care,<br /><em>consistent</em></h3><p>Professional standards behind every warm, welcoming moment.</p></article><article><span>03</span><h3>Belonging,<br /><em>rewarded</em></h3><p>A future membership created to make every return more meaningful.</p></article></section>{destinations.map((destination) => <section className="home-destination" key={destination.id}><div className="home-destination-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="60vw" /></div><div><p className="eyebrow">Destination 01</p><h2>{destination.city}<br /><em>does it louder.</em></h2><p>{destination.longDescription}</p><Link className="text-link" href={`/destinations/${destination.slug}`}>Explore {destination.city} <span>→</span></Link></div></section>)}<section className="home-membership" id="membership"><div><p className="eyebrow eyebrow-light">Utopia membership</p><h2>Come back<br /><em>to more.</em></h2><p>Join the interest list for future rewards, benefits, and member-only opportunities.</p></div><LeadForm kind="membership" title="Stay close to what’s next." submitLabel="Join the list" /></section><CTASection /></>;
+  const heroProperty = properties.find(({ slug }) => slug === "the-shamrock") ?? properties[0];
+  const visualProperty = properties.find(({ slug }) => slug === "central-ave-socialization") ?? properties[1] ?? heroProperty;
+  const destination = destinations[0];
+
+  return <>
+    <Hero image={heroProperty.heroImage} />
+
+    <section className="home-intro-v2">
+      <p className="eyebrow">The Utopia point of view</p>
+      <h2>Remarkable homes<br />for <em>everyone you bring.</em></h2>
+      <p>Large-group stays with personality, space, and a reason to keep talking about the trip.</p>
+    </section>
+
+    <section className="home-collection-v2" id="collection" aria-labelledby="home-collection-title">
+      <header><p className="eyebrow">Three homes · The Wildwoods</p><h2 id="home-collection-title">Pick your<br /><em>kind of together.</em></h2></header>
+      {properties.map((property, index) => <article className={`home-property-feature home-property-feature-${index + 1}`} key={property.id}>
+        <Link className="home-property-main-image" href={`/stays/${property.slug}`} aria-label={`Explore ${property.name}`}><Image src={property.gallery[0].src} alt={property.gallery[0].alt} fill sizes="(max-width: 900px) 100vw, 62vw" /></Link>
+        {property.gallery[1] && <div className="home-property-detail-image"><Image src={property.gallery[1].src} alt={property.gallery[1].alt} fill sizes="(max-width: 900px) 48vw, 28vw" /></div>}
+        <div className="home-property-copy"><span>0{index + 1}</span><p className="eyebrow">{property.city}, {property.state}</p><h3>{property.name}</h3><p>{property.shortDescription}</p><div className="home-property-facts"><b>{property.maxGuests ?? "—"}<small>Guests</small></b><b>{property.bedrooms ?? "—"}<small>Bedrooms</small></b></div><Link className="text-link" href={`/stays/${property.slug}`}>Enter the house <span aria-hidden="true">→</span></Link></div>
+      </article>)}
+    </section>
+
+    <section className="home-statement-v2">
+      <div><p className="eyebrow eyebrow-light">Stay distinctly</p><h2>Not a backdrop.<br /><em>Part of the story.</em></h2></div>
+      <p>Every Utopia home has its own energy. The common thread is room to gather—and details worth remembering.</p>
+    </section>
+
+    <section className="home-parallax-v2">
+      <ParallaxMedia image={visualProperty.gallery[3] ?? visualProperty.heroImage} />
+      <div><span>U / 01</span><p>Spaces made for full houses, late nights, long tables, and the people who make a place matter.</p></div>
+    </section>
+
+    {destination && <section className="home-destination-v2"><div><p className="eyebrow">One coast. More season.</p><h2>{destination.city}<br /><em>does it louder.</em></h2><Link className="text-link" href={`/destinations/${destination.slug}`}>Meet the Wildwoods <span>→</span></Link></div><div className="home-destination-v2-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="(max-width: 900px) 100vw, 58vw" /></div></section>}
+
+    <CTASection />
+  </>;
 }

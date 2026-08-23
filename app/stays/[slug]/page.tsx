@@ -6,6 +6,7 @@ import { BookingLink } from "@/components/BookingLink";
 import { DesignerNote } from "@/components/DesignerNote";
 import { PropertyFacts } from "@/components/PropertyFacts";
 import { PropertyGallery } from "@/components/PropertyGallery";
+import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
 import { cms } from "@/lib/cms";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -43,5 +44,6 @@ export default async function PropertyPage({ params }: Props) {
       </div>
       <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} /><div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to the current external listing to review availability and complete details.</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div></aside>
     </section>
+    <PropertyPhotoStory property={property} />
   </article>;
 }

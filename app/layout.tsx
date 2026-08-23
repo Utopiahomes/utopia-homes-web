@@ -7,6 +7,9 @@ import "./v1.css";
 import "./collection.css";
 import "./wordmark.css";
 import "./owners.css";
+import "./navigation.css";
+import "./photography.css";
+import "./home-v2.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 
