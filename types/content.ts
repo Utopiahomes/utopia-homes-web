@@ -19,6 +19,16 @@ export interface DesignerNote {
   status: "approved" | "pending";
 }
 
+export interface PropertyReviewSummary {
+  rating: number;
+  count: number;
+  sourceLabel: string;
+  sourceUrl: string;
+  lastVerifiedAt: string;
+  editorialNote: string;
+  highlights: string[];
+}
+
 export interface Property {
   id: string;
   name: string;
@@ -40,6 +50,7 @@ export interface Property {
   amenities: AmenityGroup[];
   uniqueFeatures: string[];
   designerNote: DesignerNote;
+  reviewSummary?: PropertyReviewSummary;
   petPolicy: string;
   parking: string;
   accessibility: string;

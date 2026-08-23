@@ -9,6 +9,7 @@ import "./wordmark.css";
 import "./owners.css";
 import "./navigation.css";
 import "./photography.css";
+import "./reviews.css";
 import "./home-v2.css";
 import "./scroll-story.css";
 import { siteContent } from "@/content";
