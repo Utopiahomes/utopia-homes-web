@@ -6,6 +6,7 @@ import "./globals.css";
 import "./v1.css";
 import "./collection.css";
 import "./wordmark.css";
+import "./owners.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 

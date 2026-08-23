@@ -78,7 +78,7 @@ export interface LeadershipProfile { id: string; name: string; role: string; sum
 
 export interface Attribution { source?: string; referrer?: string; utmSource?: string; utmMedium?: string; utmCampaign?: string; utmContent?: string; utmTerm?: string; }
 export interface SubmissionBase extends Attribution { id: string; submittedAt: string; consent: boolean; }
-export interface OwnerLead extends SubmissionBase { kind: "owner-lead"; name: string; email: string; phone: string; propertyAddress: string; cityState: string; propertyType: string; bedrooms?: number; currentRentalStatus: string; listingUrl?: string; notes?: string; }
+export interface OwnerLead extends SubmissionBase { kind: "owner-lead"; name: string; email: string; phone?: string; propertyAddress?: string; cityState?: string; propertyType?: string; bedrooms?: number; currentRentalStatus?: string; listingUrl?: string; notes?: string; }
 export interface MembershipSignup extends SubmissionBase { kind: "membership"; name: string; email: string; zip?: string; travelInterests?: string; }
 export interface ContactRequest extends SubmissionBase { kind: "contact"; name: string; email: string; phone?: string; inquiryType: "guest" | "owner" | "general" | "design"; message: string; }
 export interface PropertyEnhancementInquiry extends SubmissionBase { kind: "design-inquiry"; name: string; email: string; phone?: string; propertyAddress?: string; projectType: string; message: string; }
