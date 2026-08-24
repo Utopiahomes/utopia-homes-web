@@ -42,6 +42,9 @@ Set these for the **Preview** environment only:
 - `SUBMISSION_STORE=supabase`
 - `SUPABASE_URL` — the intended preview Supabase project URL
 - `SUPABASE_SECRET_KEY` — the server-only `sb_secret_...` key for that project
+- `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `UTOPIA_NOTIFICATION_EMAIL`, and `UTOPIA_OWNERS_EMAIL`
+- `NOTIFICATION_EMAIL_ENABLED=true`
+- `CRON_SECRET` — generate a random value of at least 16 characters; never expose it to client code
 
 Never prefix the Supabase secret with `NEXT_PUBLIC_`. The application does not use a browser-side Supabase client and does not require a publishable/anonymous key.
 
@@ -49,14 +52,14 @@ Never prefix the Supabase secret with `NEXT_PUBLIC_`. The application does not u
 
 1. Create the Supabase project with the Data API enabled, automatic exposure of new tables disabled, and automatic RLS enabled.
 2. Open **SQL Editor → New query** in that project.
-3. Copy the complete contents of `supabase/migrations/20260823213000_create_submissions.sql`, run it once, and confirm `public.submissions` appears in the Table Editor.
+3. Apply the migration files in filename order. For an existing project that already has `public.submissions`, run only the new `supabase/migrations/20260824123000_create_notification_outbox.sql`. Confirm `public.notification_outbox` appears and the `submissions_enqueue_notification` trigger exists.
 4. In **Project Settings → API Keys**, create or copy a secret key beginning with `sb_secret_`.
 5. Store the URL and secret key in `.env.local` for local integration testing and in Vercel's encrypted environment settings for the intended environment.
-6. Submit one controlled test of each form and verify the rows before enabling real traffic.
+6. Submit one controlled test of each form and verify matching rows in both `public.submissions` and `public.notification_outbox` before enabling real traffic.
 
 The schema can alternatively be applied with the Supabase CLI after a user authenticates locally and links project reference `tudciphdjrbwxhrrfobi`. Do not commit the database password, access token, `.env.local`, or secret key. GitHub-to-Supabase automatic production migration deployment remains intentionally disabled until the manual workflow is verified.
 
-Forms require configured Supabase storage in preview. To test real preview email delivery, additionally configure server-only `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `UTOPIA_NOTIFICATION_EMAIL`, `UTOPIA_OWNERS_EMAIL`, and optionally `SEND_CONFIRMATION_EMAILS`. Never expose these as `NEXT_PUBLIC_*` values.
+Forms require configured Supabase storage in preview. Notification delivery additionally requires the server-only Resend/recipient values, `NOTIFICATION_EMAIL_ENABLED`, and `CRON_SECRET`; `SEND_CONFIRMATION_EMAILS` remains optional. Never expose these as `NEXT_PUBLIC_*` values. `vercel.json` schedules `/api/cron/notifications` every five minutes in UTC. After deployment, verify the job under **Vercel project → Settings → Cron Jobs** and inspect invocation logs. The worker is installed only on production deployments; preview form submissions still receive the immediate attempt, and their pending jobs can be exercised manually with the protected endpoint if needed.
 
 ## 5. Preview privacy and acceptance
 

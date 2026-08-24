@@ -3,8 +3,9 @@ import type { Submission } from "@/types/content";
 import { submissionStore } from "@/lib/submissions";
 import type { SubmissionStore } from "@/lib/submissions/types";
 import { schemas, type FormKind } from "./schemas";
-import { sendSubmissionEmails } from "@/lib/email/submissions";
-export async function submitForm(kind: FormKind, body: unknown, store: SubmissionStore = submissionStore) {
+import { notificationService } from "@/lib/notifications";
+type SubmissionNotifications = Pick<typeof notificationService, "enqueueAndAttempt">;
+export async function submitForm(kind: FormKind, body: unknown, store: SubmissionStore = submissionStore, notifications: SubmissionNotifications = notificationService) {
   const result = schemas[kind].safeParse(body);
   if (!result.success) return { ok: false as const, status: 400, message: "Please review the highlighted information.", errors: result.error.flatten().fieldErrors };
   const data = result.data as Record<string, unknown>;
@@ -22,7 +23,7 @@ export async function submitForm(kind: FormKind, body: unknown, store: Submissio
   } catch (error) {
     return storageFailureResponse(error);
   }
-  await sendSubmissionEmails(submission);
+  await notifications.enqueueAndAttempt(submission);
   return { ok: true as const, status: 201, duplicate: false, message: kind === "membership" ? "Welcome to Utopia. We’ll keep you close to what’s next." : "Thank you. A Utopia team member will be in touch." };
 }
 
