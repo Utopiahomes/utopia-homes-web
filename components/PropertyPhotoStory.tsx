@@ -7,11 +7,14 @@ export function PropertyPhotoStory({ property }: { property: Property }) {
   if (images.length === 0) return null;
   const leadImages = images.slice(0, 2);
   const chapterImages = images.slice(2);
+  const outsideStory = property.slug === "the-shamrock"
+    ? "From the front porch to two decks, the outdoor spaces offer fresh air, a change of pace, and more room for the group to stay connected."
+    : "The fenced backyard becomes its own destination—pool days, hot-tub evenings, open-air meals, and room to linger together.";
   const chapters = [
     { id: "living", eyebrow: "The heart of the house", title: "Inside living spaces", story: "Cook, eat, watch, and play across connected rooms that let a full house stay together without asking everyone to do the same thing.", categories: ["gathering", "kitchen-dining", "entertainment", "details"] },
     { id: "bedrooms", eyebrow: "Room for every generation", title: "Bedrooms", story: `${property.bedrooms ?? "Multiple"} bedrooms give families and friends space to settle in, recharge, and find a sleeping arrangement that works for the group.`, categories: ["bedrooms"] },
     { id: "bathrooms", eyebrow: "Built for a full house", title: "Bathrooms", story: "Bright, practical bathrooms keep mornings moving and make sharing the home feel easier when every bedroom is full.", categories: ["bathrooms"] },
-    { id: "outside", eyebrow: "The stay continues outdoors", title: "Outside", story: "The fenced backyard becomes its own destination—pool days, hot-tub evenings, open-air meals, and room to linger together.", categories: ["arrival", "outdoors"] },
+    { id: "outside", eyebrow: "The stay continues outdoors", title: "Outside", story: outsideStory, categories: ["arrival", "outdoors"] },
   ].map((chapter) => ({ ...chapter, images: chapterImages.filter((image) => chapter.categories.includes(image.category ?? "details")) })).filter((chapter) => chapter.images.length > 0);
 
   return <>
