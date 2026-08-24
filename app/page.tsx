@@ -1,52 +1,55 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CTASection } from "@/components/CTASection";
-import { Hero } from "@/components/Hero";
-import { ImmersiveScrollStory } from "@/components/ImmersiveScrollStory";
+import { HomeBeachOpening } from "@/components/HomeBeachOpening";
 import { cms } from "@/lib/cms";
 
 export default async function Home() {
-  const [properties, destinations] = await Promise.all([cms.getProperties(), cms.getDestinations()]);
-  const heroProperty = properties.find(({ slug }) => slug === "the-shamrock") ?? properties[0];
-  const visualProperty = properties.find(({ slug }) => slug === "central-ave-socialization") ?? properties[1] ?? heroProperty;
-  const destination = destinations[0];
+  const properties = await cms.getProperties();
+  const gatheringProperty = properties.find(({ slug }) => slug === "central-ave-socialization") ?? properties[0];
+  const gatheringImage = gatheringProperty.gallery.find(({ category }) => category === "gathering") ?? gatheringProperty.heroImage;
+  const interiorsProperty = properties.find(({ slug }) => slug === "the-shamrock") ?? properties[2] ?? properties[0];
+  const interiorsImage = interiorsProperty.gallery.find(({ category }) => category === "details") ?? interiorsProperty.gallery[1] ?? interiorsProperty.heroImage;
+  const ownersProperty = properties.find(({ slug }) => slug === "buttercup-beauty") ?? properties[0];
 
   return <>
-    <Hero image={heroProperty.heroImage} />
+    <HomeBeachOpening />
 
-    <section className="home-intro-v2">
-      <p className="eyebrow">The Utopia point of view</p>
-      <h2>Remarkable homes<br />for <em>everyone you bring.</em></h2>
-      <p>Large-group stays with personality, space, and a reason to keep talking about the trip.</p>
+    <section className="home-featured" id="collection" aria-labelledby="home-collection-title">
+      <header className="home-featured-heading">
+        <div><p className="eyebrow">Featured stays · The Wildwoods</p><h2 id="home-collection-title">Three homes.<br /><em>Three personalities.</em></h2></div>
+        <Link className="text-link" href="/stays">See every stay <span aria-hidden="true">→</span></Link>
+      </header>
+      <div className="home-featured-grid">
+        {properties.map((property, index) => <article className="home-featured-card" key={property.id}>
+          <Link className="home-featured-image" href={`/stays/${property.slug}`} aria-label={`View ${property.name}`}>
+            <Image src={property.heroImage.src} alt={property.heroImage.alt} fill sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" />
+            <span aria-hidden="true">0{index + 1}</span>
+          </Link>
+          <div className="home-featured-copy">
+            <p>{property.city}, {property.state} · Up to {property.maxGuests ?? "—"} guests</p>
+            <h3>{property.name}</h3>
+            <p>{property.shortDescription}</p>
+            <Link className="text-link" href={`/stays/${property.slug}`}>View home <span aria-hidden="true">→</span></Link>
+          </div>
+        </article>)}
+      </div>
     </section>
 
-    <section className="home-collection-v2" id="collection" aria-labelledby="home-collection-title">
-      <header><p className="eyebrow">Three homes · The Wildwoods</p><h2 id="home-collection-title">Pick your<br /><em>kind of together.</em></h2></header>
-      {properties.map((property, index) => <article className={`home-property-feature home-property-feature-${index + 1}`} key={property.id}>
-        <Link className="home-property-main-image" href={`/stays/${property.slug}`} aria-label={`Explore ${property.name}`}><Image src={property.gallery[0].src} alt={property.gallery[0].alt} fill sizes="(max-width: 900px) 100vw, 62vw" /></Link>
-        {property.gallery[1] && <div className="home-property-detail-image"><Image src={property.gallery[1].src} alt={property.gallery[1].alt} fill sizes="(max-width: 900px) 48vw, 28vw" /></div>}
-        <div className="home-property-copy"><span>0{index + 1}</span><p className="eyebrow">{property.city}, {property.state}</p><h3>{property.name}</h3><p>{property.shortDescription}</p><div className="home-property-facts"><b>{property.maxGuests ?? "—"}<small>Guests</small></b><b>{property.bedrooms ?? "—"}<small>Bedrooms</small></b></div><Link className="text-link" href={`/stays/${property.slug}`}>Enter the house <span aria-hidden="true">→</span></Link></div>
-      </article>)}
+    <section className="home-gathering" aria-labelledby="home-gathering-title">
+      <Image src={gatheringImage.src} alt={gatheringImage.alt} fill sizes="100vw" />
+      <div className="home-gathering-wash" />
+      <div><p className="eyebrow eyebrow-light">The house is part of the trip</p><h2 id="home-gathering-title">Built for getting<br /><em>people together.</em></h2></div>
     </section>
 
-    <section className="home-statement-v2">
-      <div><p className="eyebrow eyebrow-light">Stay distinctly</p><h2>Not a backdrop.<br /><em>Part of the story.</em></h2></div>
-      <p>Every Utopia home has its own energy. The common thread is room to gather—and details worth remembering.</p>
+    <section className="home-pathways" aria-label="Work with Utopia">
+      <article>
+        <div className="home-pathway-image"><Image src={ownersProperty.heroImage.src} alt={ownersProperty.heroImage.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
+        <div className="home-pathway-copy"><p className="eyebrow">For owners</p><h2>Own a vacation home?</h2><p>We can make it work harder without making it another job.</p><Link className="text-link" href="/list-your-home">Learn about Utopia management <span aria-hidden="true">→</span></Link></div>
+      </article>
+      <article>
+        <div className="home-pathway-copy"><p className="eyebrow">Utopia Interiors</p><h2>Homes with character perform differently.</h2><Link className="text-link" href="/utopia-interiors">Explore Utopia Interiors <span aria-hidden="true">→</span></Link></div>
+        <div className="home-pathway-image"><Image src={interiorsImage.src} alt={interiorsImage.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
+      </article>
     </section>
-
-    <ImmersiveScrollStory
-      className="home-scroll-story"
-      image={visualProperty.gallery[3] ?? visualProperty.heroImage}
-      label="The Utopia way of gathering"
-      beats={[
-        { eyebrow: "The house is part of the trip", heading: "Come with everyone.", body: "Spaces made for full houses, late nights, long tables, and the people who make a place matter." },
-        { eyebrow: "Designed to be lived in", heading: "Find your corner.", body: "Gather together when you want to. Spread out when you need to. Every room has a role in the stay." },
-        { eyebrow: "Stay distinctly", heading: "Leave with stories.", body: "The best homes do more than hold a group. They give the weekend its own unmistakable character." },
-      ]}
-    />
-
-    {destination && <section className="home-destination-v2"><div><p className="eyebrow">One coast. More season.</p><h2>Wildwood energy.<br /><em>Cape May rhythm.</em></h2><Link className="text-link" href={`/destinations/${destination.slug}`}>Explore WW / Cape May <span>→</span></Link></div><div className="home-destination-v2-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="(max-width: 900px) 100vw, 58vw" /></div></section>}
-
-    <CTASection />
   </>;
 }
