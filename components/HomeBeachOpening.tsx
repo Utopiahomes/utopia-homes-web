@@ -5,7 +5,7 @@ export function HomeBeachOpening() {
     <div className="home-beach-sticky" aria-hidden="true">
       <Image
         className="home-beach-image"
-        src="/images/home/wildwoods-beach-dawn.png"
+        src="/images/home/wildwoods-beach-summer.jpg"
         alt=""
         fill
         priority
