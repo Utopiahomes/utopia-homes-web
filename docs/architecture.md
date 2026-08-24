@@ -9,7 +9,7 @@ The V1 website is code-first and has no Wix application dependency.
 - **Hosting:** Vercel preview and production projects
 - **Content:** validated, version-controlled modules in `/content`
 - **Forms:** Vercel-compatible route handlers, provider-neutral submission and email interfaces, and durable Supabase storage
-- **Transactional email:** Resend-compatible HTTPS provider; server-only credentials
+- **Transactional email:** Resend-compatible HTTPS provider; authenticated server-only sender and centralized `LEAD_NOTIFICATION_EMAIL` recipient
 - **Booking:** configured external links to the approved StayNue/Uplisting environment
 - **Domain:** Wix or GoDaddy may remain registrar/DNS provider only
 

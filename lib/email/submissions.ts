@@ -3,11 +3,11 @@ import { createResendProvider } from "./resend";
 
 const provider = createResendProvider();
 const labels = { "owner-lead": "New owner lead", membership: "New membership signup", contact: "New contact request", "design-inquiry": "New property enhancement inquiry" } as const;
-export function notificationRecipient(submission: Submission, env: NodeJS.ProcessEnv = process.env) { if (submission.kind === "owner-lead" || submission.kind === "design-inquiry") return env.UTOPIA_OWNERS_EMAIL ?? env.UTOPIA_NOTIFICATION_EMAIL; return env.UTOPIA_NOTIFICATION_EMAIL; }
+export function notificationRecipient(env: NodeJS.ProcessEnv = process.env) { return env.LEAD_NOTIFICATION_EMAIL; }
 export function notificationText(submission: Submission) { const safe = Object.entries(submission).filter(([key]) => !["kind", "id"].includes(key)).map(([key, value]) => `${key}: ${String(value ?? "")}`).join("\n"); return `${labels[submission.kind]}\n\n${safe}\n\nRecord ID: ${submission.id}`; }
 export function submissionNotificationMessage(submission: Submission, env: NodeJS.ProcessEnv = process.env) {
   const from = env.RESEND_FROM_EMAIL;
-  const recipient = notificationRecipient(submission, env);
+  const recipient = notificationRecipient(env);
   if (!from?.trim() || !recipient?.trim()) return null;
   return { from, to: recipient, replyTo: submission.email, subject: `${labels[submission.kind]} — ${submission.name}`, text: notificationText(submission) };
 }

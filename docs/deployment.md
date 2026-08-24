@@ -42,7 +42,8 @@ Set these for the **Preview** environment only:
 - `SUBMISSION_STORE=supabase`
 - `SUPABASE_URL` — the intended preview Supabase project URL
 - `SUPABASE_SECRET_KEY` — the server-only `sb_secret_...` key for that project
-- `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `UTOPIA_NOTIFICATION_EMAIL`, and `UTOPIA_OWNERS_EMAIL`
+- `RESEND_API_KEY` and the authenticated `RESEND_FROM_EMAIL`
+- `LEAD_NOTIFICATION_EMAIL=ray@utopiahomes.com`
 - `NOTIFICATION_EMAIL_ENABLED=true`
 - `CRON_SECRET` — generate a random value of at least 16 characters; never expose it to client code
 
@@ -59,7 +60,7 @@ Never prefix the Supabase secret with `NEXT_PUBLIC_`. The application does not u
 
 The schema can alternatively be applied with the Supabase CLI after a user authenticates locally and links project reference `tudciphdjrbwxhrrfobi`. Do not commit the database password, access token, `.env.local`, or secret key. GitHub-to-Supabase automatic production migration deployment remains intentionally disabled until the manual workflow is verified.
 
-Forms require configured Supabase storage in preview. Notification delivery additionally requires the server-only Resend/recipient values, `NOTIFICATION_EMAIL_ENABLED`, and `CRON_SECRET`; `SEND_CONFIRMATION_EMAILS` remains optional. Never expose these as `NEXT_PUBLIC_*` values. `vercel.json` schedules `/api/cron/notifications` once daily at 12:00 UTC, within Vercel Hobby limits. After deployment, verify the job under **Vercel project → Settings → Cron Jobs** and inspect invocation logs. The worker is installed only on production deployments; preview form submissions still receive the immediate attempt, and their pending jobs can be exercised manually with the protected endpoint if needed.
+Forms require configured Supabase storage in preview. Notification delivery additionally requires the server-only Resend values, `LEAD_NOTIFICATION_EMAIL`, `NOTIFICATION_EMAIL_ENABLED`, and `CRON_SECRET`; `SEND_CONFIRMATION_EMAILS` remains optional. Never expose these as `NEXT_PUBLIC_*` values. `vercel.json` schedules `/api/cron/notifications` once daily at 12:00 UTC, within Vercel Hobby limits. After deployment, verify the job under **Vercel project → Settings → Cron Jobs** and inspect invocation logs. The worker is installed only on production deployments; preview form submissions still receive the immediate attempt, and their pending jobs can be exercised manually with the protected endpoint if needed.
 
 ## 5. Preview privacy and acceptance
 

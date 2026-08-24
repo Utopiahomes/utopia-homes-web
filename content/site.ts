@@ -1,1 +1,1 @@
-export const siteContent = { name: "Utopia Homes", defaultTitle: "Utopia Homes", description: "Distinctive destination homes, thoughtfully managed.", contactEmail: "info@utopiahomes.com", ownerEmail: "owners@utopiahomes.com" } as const;
+export const siteContent = { name: "Utopia Homes", defaultTitle: "Utopia Homes", description: "Distinctive destination homes, thoughtfully managed.", contactEmail: "ray@utopiahomes.com", ownerEmail: "ray@utopiahomes.com" } as const;

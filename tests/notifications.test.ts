@@ -5,13 +5,13 @@ import { fixtureSubmissionStore, clearFixtureSubmissions, getFixtureSubmissions 
 import { clearFixtureNotifications, fixtureNotificationStore, getFixtureNotifications, makeFixtureNotificationDue } from "@/lib/notifications/fixture";
 import { createNotificationService, notificationIdempotencyKey } from "@/lib/notifications/service";
 import type { EmailProvider } from "@/lib/email/types";
+import type { FormKind } from "@/lib/forms/schemas";
 
 const enabledEnv = {
   ...process.env,
   RESEND_API_KEY: "re_test",
   RESEND_FROM_EMAIL: "Utopia Homes <notifications@example.com>",
-  UTOPIA_NOTIFICATION_EMAIL: "info@example.com",
-  UTOPIA_OWNERS_EMAIL: "owners@example.com",
+  LEAD_NOTIFICATION_EMAIL: "ray@utopiahomes.com",
   SEND_CONFIRMATION_EMAILS: "false",
 };
 
@@ -31,7 +31,7 @@ describe("durable notification outbox", () => {
     const submission = owner("10000000-0000-4000-8000-000000000001");
     const result = await serviceWith({ send }).enqueueAndAttempt(submission);
     expect(result.status).toBe("sent");
-    expect(send).toHaveBeenCalledWith(expect.objectContaining({ to: "owners@example.com" }), { idempotencyKey: notificationIdempotencyKey(submission.id) });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ to: "ray@utopiahomes.com", replyTo: "ray@example.com" }), { idempotencyKey: notificationIdempotencyKey(submission.id) });
     expect(getFixtureNotifications()[0]).toMatchObject({ status: "sent", attemptCount: 1, providerMessageId: "email-1" });
   });
 
@@ -92,5 +92,22 @@ describe("durable notification outbox", () => {
     const result = await serviceWith({ send }).retryDue();
     expect(result).toMatchObject({ claimed: 2, sent: 1, failed: 1 });
     expect(getFixtureNotifications().map((record) => record.status)).toEqual(["failed", "sent"]);
+  });
+
+  it("routes every active form to Ray while preserving the visitor Reply-To and form details", async () => {
+    const send = vi.fn().mockResolvedValue({ id: "email-routed" });
+    const service = serviceWith({ send });
+    const forms: Array<[FormKind, Record<string, unknown>]> = [
+      ["owner-lead" as const, { name: "Ray DeLuca", email: "ray@example.com", listingUrl: "https://example.com/home", notes: "Owner route marker", consent: true, website: "" }],
+      ["contact" as const, { name: "Guest One", email: "guest@example.com", inquiryType: "general", message: "Contact route marker question", consent: true, website: "" }],
+      ["membership" as const, { name: "Member One", email: "member@example.com", travelInterests: "Membership route marker", consent: true, website: "" }],
+      ["design-inquiry" as const, { name: "Owner One", email: "interiors@example.com", projectType: "interior-design", message: "Interiors route marker question", consent: true, website: "" }],
+    ];
+    for (const [kind, body] of forms) await expect(submitForm(kind, body, fixtureSubmissionStore, service)).resolves.toMatchObject({ ok: true });
+    expect(getFixtureSubmissions()).toHaveLength(4);
+    expect(send).toHaveBeenCalledTimes(4);
+    for (const submission of getFixtureSubmissions()) {
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ to: "ray@utopiahomes.com", replyTo: submission.email, subject: expect.stringContaining(submission.name), text: expect.stringContaining(submission.id) }), expect.objectContaining({ idempotencyKey: notificationIdempotencyKey(submission.id) }));
+    }
   });
 });

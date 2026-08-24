@@ -80,7 +80,7 @@ export function createNotificationService(options: NotificationServiceOptions) {
 export function notificationIdempotencyKey(notificationId: string) { return `submission-notification/${notificationId}`; }
 
 export function notificationSendingEnabled(env: NodeJS.ProcessEnv = process.env) {
-  return env.NOTIFICATION_EMAIL_ENABLED !== "false" && Boolean(env.RESEND_API_KEY?.trim() && env.RESEND_FROM_EMAIL?.trim() && (env.UTOPIA_NOTIFICATION_EMAIL?.trim() || env.UTOPIA_OWNERS_EMAIL?.trim()));
+  return env.NOTIFICATION_EMAIL_ENABLED !== "false" && Boolean(env.RESEND_API_KEY?.trim() && env.RESEND_FROM_EMAIL?.trim() && env.LEAD_NOTIFICATION_EMAIL?.trim());
 }
 
 async function sendConfirmationBestEffort(submission: Submission, provider: EmailProvider, env: NodeJS.ProcessEnv) {
