@@ -35,15 +35,5 @@ export default function AboutPage() {
       <LeadershipProfile profile={ray} context="The story behind Utopia" />
       <p className="founder-aside">Ray’s Wildwood story began on the beach as a lifeguard—back when, as he puts it, he was skinny. Years later, it continues as the owner of the former Shamrock Hotel and a host who still believes the smallest details can define an entire trip.</p>
     </section>
-    <section className="wildwood-season">
-      <p className="eyebrow eyebrow-light">A longer way to see the shore</p>
-      <div className="season-number" aria-hidden="true">6</div>
-      <div>
-        <h2>Six months of Wildwood.<br /><em>Not ten weeks.</em></h2>
-        <p>We love the Wildwoods because the season does not end with summer. Festival weekends, fall escapes, spring gatherings, and the shore’s year-round personality create more reasons to visit—and more opportunities for owners.</p>
-        <p>Utopia specializes in building demand beyond the traditional peak. To us, Wildwood is not a ten-week summer market. It is a six-month hospitality season with something worth returning for every weekend.</p>
-        <Link className="text-link" href="/destinations/wildwood-new-jersey">Discover WW / Cape May <span>→</span></Link>
-      </div>
-    </section>
   </>;
 }
