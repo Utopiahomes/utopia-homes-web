@@ -1,5 +1,5 @@
 import type { Submission } from "@/types/content";
-import { createResendProvider } from "@/lib/email/resend";
+import { createEmailProvider, emailFromAddress, emailProviderConfigured } from "@/lib/email/provider";
 import { submissionNotificationMessage } from "@/lib/email/submissions";
 import type { EmailProvider } from "@/lib/email/types";
 import type { ClaimedNotification, NotificationStatus, NotificationStore } from "./types";
@@ -17,8 +17,8 @@ type NotificationServiceOptions = {
 };
 
 export function createNotificationService(options: NotificationServiceOptions) {
-  const provider = options.provider ?? createResendProvider();
   const env = options.env ?? process.env;
+  const provider = options.provider ?? createEmailProvider(env);
   const leaseSeconds = options.leaseSeconds ?? DEFAULT_LEASE_SECONDS;
   const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
 
@@ -80,13 +80,14 @@ export function createNotificationService(options: NotificationServiceOptions) {
 export function notificationIdempotencyKey(notificationId: string) { return `submission-notification/${notificationId}`; }
 
 export function notificationSendingEnabled(env: NodeJS.ProcessEnv = process.env) {
-  return env.NOTIFICATION_EMAIL_ENABLED !== "false" && Boolean(env.RESEND_API_KEY?.trim() && env.RESEND_FROM_EMAIL?.trim() && env.LEAD_NOTIFICATION_EMAIL?.trim());
+  return env.NOTIFICATION_EMAIL_ENABLED !== "false" && emailProviderConfigured(env) && Boolean(env.LEAD_NOTIFICATION_EMAIL?.trim());
 }
 
 async function sendConfirmationBestEffort(submission: Submission, provider: EmailProvider, env: NodeJS.ProcessEnv) {
-  if (env.SEND_CONFIRMATION_EMAILS !== "true" || !env.RESEND_FROM_EMAIL?.trim()) return;
+  const from = emailFromAddress(env);
+  if (env.SEND_CONFIRMATION_EMAILS !== "true" || !from) return;
   try {
-    await provider.send({ from: env.RESEND_FROM_EMAIL, to: submission.email, subject: "We received your Utopia Homes request", text: `Hi ${submission.name},\n\nThank you for getting in touch with Utopia Homes. We received your ${submission.kind === "membership" ? "membership interest" : "request"} and will follow up as appropriate.\n\nUtopia Homes` }, { idempotencyKey: `submission-confirmation/${submission.id}` });
+    await provider.send({ from, to: submission.email, subject: "We received your Utopia Homes request", text: `Hi ${submission.name},\n\nThank you for getting in touch with Utopia Homes. We received your ${submission.kind === "membership" ? "membership interest" : "request"} and will follow up as appropriate.\n\nUtopia Homes` }, { idempotencyKey: `submission-confirmation/${submission.id}` });
   } catch (error) {
     console.error("Submission confirmation email failed", safeError(error));
   }

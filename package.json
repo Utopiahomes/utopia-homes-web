@@ -18,6 +18,7 @@
     "@next/env": "latest",
     "@supabase/supabase-js": "^2.112.3",
     "next": "latest",
+    "nodemailer": "^9.0.5",
     "react": "latest",
     "react-dom": "latest",
     "zod": "latest"
@@ -29,6 +30,7 @@
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
     "@types/node": "latest",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "^9.39.1",

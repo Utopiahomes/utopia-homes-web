@@ -12,7 +12,8 @@ describe("notification retry cron", () => {
 
   it("accepts Vercel's bearer secret and can safely report disabled delivery", async () => {
     vi.stubEnv("CRON_SECRET", "a-long-random-test-secret");
-    vi.stubEnv("RESEND_API_KEY", "");
+    vi.stubEnv("EMAIL_PROVIDER", "proton");
+    vi.stubEnv("PROTON_SMTP_TOKEN", "");
     const response = await GET(new Request("http://localhost/api/cron/notifications", { headers: { Authorization: "Bearer a-long-random-test-secret" } }));
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({ ok: true, disabled: true, claimed: 0 });

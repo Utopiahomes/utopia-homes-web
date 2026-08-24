@@ -9,8 +9,10 @@ import type { FormKind } from "@/lib/forms/schemas";
 
 const enabledEnv = {
   ...process.env,
-  RESEND_API_KEY: "re_test",
-  RESEND_FROM_EMAIL: "Utopia Homes <notifications@example.com>",
+  EMAIL_PROVIDER: "proton",
+  PROTON_SMTP_USER: "ray@utopiahomes.com",
+  PROTON_SMTP_TOKEN: "test-token",
+  PROTON_SMTP_FROM: "Utopia Homes <ray@utopiahomes.com>",
   LEAD_NOTIFICATION_EMAIL: "ray@utopiahomes.com",
   SEND_CONFIRMATION_EMAILS: "false",
 };

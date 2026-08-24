@@ -9,7 +9,7 @@ The V1 website is code-first and has no Wix application dependency.
 - **Hosting:** Vercel preview and production projects
 - **Content:** validated, version-controlled modules in `/content`
 - **Forms:** Vercel-compatible route handlers, provider-neutral submission and email interfaces, and durable Supabase storage
-- **Transactional email:** Resend-compatible HTTPS provider; authenticated server-only sender and centralized `LEAD_NOTIFICATION_EMAIL` recipient
+- **Transactional email:** provider-neutral `EmailProvider` with Proton SMTP active for V1 and the Resend HTTPS adapter retained but inactive; authenticated server-only sender and centralized `LEAD_NOTIFICATION_EMAIL` recipient
 - **Booking:** configured external links to the approved StayNue/Uplisting environment
 - **Domain:** Wix or GoDaddy may remain registrar/DNS provider only
 
@@ -17,7 +17,7 @@ Pages depend on `CmsAdapter`, not file paths. V1 binds that contract to `reposit
 
 Forms validate untrusted input on the server, rate-limit requests, retain attribution, and write through `SubmissionStore`. Deployed environments select the Supabase adapter. Its secret credential remains server-only, while fixture stores are limited to local/test fallback. The database uses a partial unique index to deduplicate membership emails safely under concurrent requests.
 
-An `AFTER INSERT` database trigger creates one `notification_outbox` row in the same transaction as every new submission. The application attempts that notification immediately after persistence. A protected Vercel Cron route claims due work in atomic, leased batches once daily at 12:00 UTC, which is compatible with Vercel Hobby; a future Pro deployment can increase that frequency without changing the worker. Resend receives the stable key `submission-notification/<notification-id>`; successful sends record provider ID and `sent_at`, while failures retain a sanitized error and use bounded exponential backoff. Six failed attempts move the item to `dead`. A failed notification never rolls back or deletes its submission, and one item cannot stop the rest of a batch.
+An `AFTER INSERT` database trigger creates one `notification_outbox` row in the same transaction as every new submission. The application attempts that notification immediately after persistence. A protected Vercel Cron route claims due work in atomic, leased batches once daily at 12:00 UTC, which is compatible with Vercel Hobby; a future Pro deployment can increase that frequency without changing the worker. The provider is selected centrally with `EMAIL_PROVIDER`; Proton SMTP is active for V1, while Resend remains substitutable. Successful sends record the provider message ID and `sent_at`, while failures retain a sanitized error and use bounded exponential backoff. Six failed attempts move the item to `dead`. A failed notification never rolls back or deletes its submission, and one item cannot stop the rest of a batch.
 
 ## Environment separation
 
