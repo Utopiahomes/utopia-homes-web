@@ -22,7 +22,7 @@ Checks: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and (after bro
 
 Production V1 content lives in `/content` and is validated during tests/builds. Pages consume it through `CmsAdapter`, leaving room for a future database or CMS without creating a V1 dependency.
 
-Forms use Vercel-compatible route handlers, attribution capture, rate limiting, and `SubmissionStore`. Deployed environments bind that abstraction to Supabase for durable owner leads, contact requests, membership signups, and Utopia Interiors inquiries. A transactional outbox in the same database records notification work atomically with each new lead; immediate delivery and a protected five-minute Vercel Cron worker use leases, bounded exponential backoff, and provider idempotency keys. The in-memory stores remain available for local development and deterministic tests only.
+Forms use Vercel-compatible route handlers, attribution capture, rate limiting, and `SubmissionStore`. Deployed environments bind that abstraction to Supabase for durable owner leads, contact requests, membership signups, and Utopia Interiors inquiries. A transactional outbox in the same database records notification work atomically with each new lead; immediate delivery and a protected daily Vercel Cron safety-net use leases, bounded exponential backoff, and provider idempotency keys. The in-memory stores remain available for local development and deterministic tests only.
 
 Database structure is version-controlled in `supabase/migrations`. Apply migrations in filename order and configure the server-only storage, email, and cron values described in `.env.example` and `docs/deployment.md`.
 
