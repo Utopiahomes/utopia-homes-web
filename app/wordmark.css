@@ -3,6 +3,8 @@
   --wordmark-green-light: #41d477;
   --wordmark-green-dark: #11723d;
   --wordmark-orange: #e66b3d;
+  --wordmark-cap-height: 2.35rem;
+  --wordmark-x-height: 1.55rem;
   display: inline-flex;
   align-items: center;
   font-family: var(--font-sans), sans-serif;
@@ -12,8 +14,15 @@
   line-height: 1;
 }
 
+.wordmark-logo-image {
+  display: block;
+  width: 15rem;
+  height: auto;
+}
+
 .wordmark .wordmark-art {
   display: inline-flex;
+  height: var(--wordmark-cap-height);
   align-items: flex-end;
   gap: 0;
   margin: 0;
@@ -22,9 +31,10 @@
 }
 
 .wordmark-u {
-  width: 2.08rem;
-  height: 2.35rem;
-  margin-right: 0.13rem;
+  width: calc(var(--wordmark-cap-height) * .885);
+  height: var(--wordmark-cap-height);
+  flex: 0 0 auto;
+  margin-right: .13rem;
   overflow: visible;
 }
 
@@ -35,86 +45,98 @@
 
 .wordmark .wordmark-utopia {
   display: inline-flex;
+  height: var(--wordmark-x-height);
   align-items: flex-end;
   margin: 0;
   color: var(--wordmark-green);
-  font-size: 1.55rem;
+  font-size: var(--wordmark-x-height);
   font-style: normal;
   font-weight: 800;
-  letter-spacing: -0.085em;
-  line-height: 0.95;
+  letter-spacing: -.085em;
+  line-height: .95;
   text-transform: lowercase;
 }
 
 .wordmark .wordmark-i {
   position: relative;
   display: inline-block;
-  width: 0.28em;
-  height: 0.98em;
-  margin: 0 0.02em 0 0.04em;
-  color: inherit;
+  width: calc(var(--wordmark-x-height) * .34);
+  height: var(--wordmark-cap-height);
+  flex: 0 0 auto;
+  align-self: flex-end;
+  margin: 0 .025em 0 .04em;
+  color: var(--wordmark-green);
   font-style: normal;
-}
-
-.wordmark .wordmark-i-stem {
-  position: absolute;
-  right: 0.02em;
-  bottom: 0;
-  width: 0.2em;
-  height: 0.66em;
-  margin: 0;
-  background: var(--wordmark-green);
 }
 
 .wordmark .wordmark-clover {
   position: absolute;
-  z-index: 1;
-  top: -0.4em;
-  left: -0.34em;
-  width: 0.96em;
-  height: 0.82em;
+  top: calc(var(--wordmark-cap-height) * .055);
+  left: 50%;
+  width: calc(var(--wordmark-x-height) * .82);
+  height: calc(var(--wordmark-x-height) * .78);
   overflow: visible;
-  color: var(--wordmark-green);
   fill: currentColor;
+  transform: translateX(-50%);
 }
 
-.wordmark .wordmark-homes {
+.wordmark .wordmark-i-stem {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--wordmark-x-height) * .22);
+  height: calc(var(--wordmark-x-height) * .92);
+  margin: 0;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+.wordmark .wordmark-division {
   display: inline-flex;
+  height: var(--wordmark-cap-height);
   align-items: flex-end;
-  margin: 0 0 0.01em 0.36em;
+  margin: 0 0 0 .36em;
   color: var(--wordmark-orange);
   font-style: normal;
 }
 
-.wordmark-h {
-  width: 1.35rem;
-  height: 1.85rem;
-  margin-right: 0.04rem;
+.wordmark-division-initial {
+  height: var(--wordmark-cap-height);
+  flex: 0 0 auto;
+  margin-right: .04rem;
   overflow: visible;
 }
 
-.wordmark-h-left { fill: var(--wordmark-orange); }
-.wordmark-h-light { fill: #f49a70; }
-.wordmark-h-shadow { fill: #b84223; }
+.wordmark-h { width: calc(var(--wordmark-cap-height) * .73); }
+.wordmark-interiors-i { width: calc(var(--wordmark-cap-height) * .46); }
+.wordmark-division-main { fill: var(--wordmark-orange); }
+.wordmark-division-light { fill: #f49a70; }
+.wordmark-division-shadow { fill: #b84223; }
 
-.wordmark .wordmark-omes {
+.wordmark .wordmark-division-remainder {
   margin: 0;
   color: var(--wordmark-orange);
   font-family: var(--font-sans), sans-serif;
-  font-size: 1.34rem;
+  font-size: var(--wordmark-x-height);
   font-style: normal;
   font-weight: 800;
-  letter-spacing: -0.075em;
-  line-height: 0.95;
+  letter-spacing: -.075em;
+  line-height: .95;
 }
 
-.wordmark-footer { font-size: 1.1rem; }
+.wordmark-footer {
+  --wordmark-cap-height: 2.59rem;
+  --wordmark-x-height: 1.71rem;
+}
+
+.wordmark-footer .wordmark-logo-image { width: 16.5rem; }
 
 @media (max-width: 620px) {
   .site-header .wordmark {
-    transform: scale(0.9);
-    transform-origin: left center;
+    transform: none;
   }
+
+  .site-header .wordmark-logo-image { width: 11.875rem; }
 
   .site-header > a:first-child { max-width: 12rem; }
 }
