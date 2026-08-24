@@ -39,8 +39,24 @@ Set these for the **Preview** environment only:
 
 - `NEXT_PUBLIC_SITE_URL` — the assigned `https://<project>.vercel.app` URL after the first deployment; redeploy once set.
 - `NEXT_PUBLIC_ANALYTICS_PROVIDER=console`
+- `SUBMISSION_STORE=supabase`
+- `SUPABASE_URL` — the intended preview Supabase project URL
+- `SUPABASE_SECRET_KEY` — the server-only `sb_secret_...` key for that project
 
-Forms can be UI-tested without email credentials. To test real preview email delivery, additionally configure server-only `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `UTOPIA_NOTIFICATION_EMAIL`, `UTOPIA_OWNERS_EMAIL`, and optionally `SEND_CONFIRMATION_EMAILS`. Never expose these as `NEXT_PUBLIC_*` values.
+Never prefix the Supabase secret with `NEXT_PUBLIC_`. The application does not use a browser-side Supabase client and does not require a publishable/anonymous key.
+
+### Supabase schema setup
+
+1. Create the Supabase project with the Data API enabled, automatic exposure of new tables disabled, and automatic RLS enabled.
+2. Open **SQL Editor → New query** in that project.
+3. Copy the complete contents of `supabase/migrations/20260823213000_create_submissions.sql`, run it once, and confirm `public.submissions` appears in the Table Editor.
+4. In **Project Settings → API Keys**, create or copy a secret key beginning with `sb_secret_`.
+5. Store the URL and secret key in `.env.local` for local integration testing and in Vercel's encrypted environment settings for the intended environment.
+6. Submit one controlled test of each form and verify the rows before enabling real traffic.
+
+The schema can alternatively be applied with the Supabase CLI after a user authenticates locally and links project reference `tudciphdjrbwxhrrfobi`. Do not commit the database password, access token, `.env.local`, or secret key. GitHub-to-Supabase automatic production migration deployment remains intentionally disabled until the manual workflow is verified.
+
+Forms require configured Supabase storage in preview. To test real preview email delivery, additionally configure server-only `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `UTOPIA_NOTIFICATION_EMAIL`, `UTOPIA_OWNERS_EMAIL`, and optionally `SEND_CONFIRMATION_EMAILS`. Never expose these as `NEXT_PUBLIC_*` values.
 
 ## 5. Preview privacy and acceptance
 
