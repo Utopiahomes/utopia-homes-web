@@ -7,6 +7,7 @@ import "./v1.css";
 import "./collection.css";
 import "./wordmark.css";
 import "./owners.css";
+import "./destination-region.css";
 import "./navigation.css";
 import "./photography.css";
 import "./reviews.css";

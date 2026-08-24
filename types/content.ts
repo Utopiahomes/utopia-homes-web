@@ -79,6 +79,8 @@ export interface Destination {
   longDescription: string;
   heroImage: ContentImage;
   featured: boolean;
+  seasonStory: { eyebrow: string; headline: string; description: string };
+  highlights: Array<{ eyebrow: string; title: string; description: string; image: ContentImage }>;
   seoTitle: string;
   seoDescription: string;
 }

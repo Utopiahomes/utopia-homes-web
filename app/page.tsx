@@ -45,7 +45,7 @@ export default async function Home() {
       ]}
     />
 
-    {destination && <section className="home-destination-v2"><div><p className="eyebrow">One coast. More season.</p><h2>{destination.city}<br /><em>does it louder.</em></h2><Link className="text-link" href={`/destinations/${destination.slug}`}>Meet the Wildwoods <span>→</span></Link></div><div className="home-destination-v2-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="(max-width: 900px) 100vw, 58vw" /></div></section>}
+    {destination && <section className="home-destination-v2"><div><p className="eyebrow">One coast. More season.</p><h2>Wildwood energy.<br /><em>Cape May rhythm.</em></h2><Link className="text-link" href={`/destinations/${destination.slug}`}>Explore WW / Cape May <span>→</span></Link></div><div className="home-destination-v2-image"><Image src={destination.heroImage.src} alt={destination.heroImage.alt} fill sizes="(max-width: 900px) 100vw, 58vw" /></div></section>}
 
     <CTASection />
   </>;

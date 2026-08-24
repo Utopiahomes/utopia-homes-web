@@ -42,7 +42,7 @@ export default function AboutPage() {
         <h2>Six months of Wildwood.<br /><em>Not ten weeks.</em></h2>
         <p>We love the Wildwoods because the season does not end with summer. Festival weekends, fall escapes, spring gatherings, and the shore’s year-round personality create more reasons to visit—and more opportunities for owners.</p>
         <p>Utopia specializes in building demand beyond the traditional peak. To us, Wildwood is not a ten-week summer market. It is a six-month hospitality season with something worth returning for every weekend.</p>
-        <Link className="text-link" href="/destinations/wildwood-new-jersey">Discover the Wildwoods <span>→</span></Link>
+        <Link className="text-link" href="/destinations/wildwood-new-jersey">Discover WW / Cape May <span>→</span></Link>
       </div>
     </section>
   </>;
