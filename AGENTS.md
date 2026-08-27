@@ -2,7 +2,7 @@
 
 ## Purpose and V1 boundaries
 
-Build a premium public hospitality site that supports property discovery, owner acquisition, membership interest, and external booking handoff. Do not build or embed booking, payments, owner operational onboarding, guest support, maintenance, pricing, PMS, points, token, DAO, or blockchain functionality. Utopia owns the customer experience and data; avoid direct coupling to StayNue implementation details.
+Build a premium public hospitality site that supports property discovery, owner acquisition, membership interest, external booking handoff, and Utopia Design lead qualification. Utopia Design V1 includes a versioned preliminary-estimate engine and a gated consultation journey; estimates are nonbinding and are not payments or booking transactions. Do not build or embed booking, payments, owner operational onboarding, guest support, maintenance, PMS, points, token, DAO, or blockchain functionality. Utopia owns the customer experience and data; avoid direct coupling to StayNue implementation details.
 
 Never modify production data, production Wix, production StayNue/Uplisting, UtopiaHomes.com, DNS, or deployment configuration without explicit approval.
 
@@ -21,6 +21,7 @@ Never modify production data, production Wix, production StayNue/Uplisting, Utop
 
 - App Router routes live in `app/`; reusable UI in `components/`.
 - Pages consume typed objects from `CmsAdapter`. V1 binds it to validated, version-controlled modules in `/content`; do not import records directly into pages.
+- `/design` is the canonical Utopia Design route. `/utopia-interiors` and `/property-enhancement` permanently redirect to it. Marketing content remains version-controlled behind `CmsAdapter` for V1; pricing rules are separately authorized, versioned configuration and must never be coupled to presentation components.
 - Wix is not a website application dependency. Wix/GoDaddy may be registrar or DNS providers only. Do not add Wix SDKs, credentials, or runtime data paths for V1.
 - Airbnb/Vrbo are source material only. Never scrape them at runtime or silently overwrite curated Utopia copy. Keep source URLs and flag unverified facts and rights.
 - External booking URLs are content/config values. Route them through `BookingLink` and emit `outbound_booking_click` with snake_case event names and no sensitive data.

@@ -47,7 +47,7 @@ export default async function Home() {
         <div className="home-pathway-copy"><p className="eyebrow">For owners</p><h2>Own a vacation home?</h2><p>We can make it work harder without making it another job.</p><Link className="text-link" href="/list-your-home">Learn about Utopia management <span aria-hidden="true">→</span></Link></div>
       </article>
       <article>
-        <div className="home-pathway-copy"><p className="eyebrow">Utopia Interiors</p><h2>Homes with character perform differently.</h2><Link className="text-link" href="/utopia-interiors">Explore Utopia Interiors <span aria-hidden="true">→</span></Link></div>
+        <div className="home-pathway-copy"><p className="eyebrow">Utopia Design</p><h2>Homes with character perform differently.</h2><Link className="text-link" href="/design">Explore Utopia Design <span aria-hidden="true">→</span></Link></div>
         <div className="home-pathway-image"><Image src={interiorsImage.src} alt={interiorsImage.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
       </article>
     </section>

@@ -5,3 +5,4 @@ export { faqs } from "./faqs";
 export { campaigns } from "./campaigns";
 export { siteContent } from "./site";
 export { leadershipProfiles } from "./people";
+export { designPageContent } from "./design";

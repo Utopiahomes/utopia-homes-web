@@ -13,6 +13,7 @@ import "./photography.css";
 import "./reviews.css";
 import "./home-v2.css";
 import "./scroll-story.css";
+import "./design.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 

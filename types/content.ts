@@ -90,6 +90,24 @@ export interface FAQ { id: string; category: "stays" | "owners" | "membership" |
 export interface Campaign { id: string; slug: string; name: string; partner: string; eyebrow: string; headline: string; description: string; heroImage: ContentImage; ctaLabel: string; ctaUrl: string; rulesUrl?: string; active: boolean; seoTitle: string; seoDescription: string; }
 export interface LeadershipProfile { id: string; name: string; role: string; summary: string; initials: string; approvalStatus: "approved" | "placeholder"; editorialNotes: string[]; }
 
+export type DesignAudience = "rental" | "personal";
+export type DesignServiceId = "rental_readiness_audit" | "room_design_plan" | "whole_home_design_plan" | "renovation_design_plan" | "turnkey_furnishing";
+export interface DesignAudienceContent {
+  eyebrow: string;
+  headline: string;
+  supportingCopy: string;
+  primaryCta: string;
+  heroImage: ContentImage;
+  values: Array<{ title: string; description: string }>;
+  outcomes: Array<{ title: string; description: string; serviceId: DesignServiceId }>;
+  caseStudy: { eyebrow: string; headline: string; body: string; facts: string[]; image: ContentImage };
+  quoteCta: string;
+}
+export interface DesignPageContent {
+  audiences: Record<DesignAudience, DesignAudienceContent>;
+  meghan: { heading: string; statement: string; supportingCopy: string; principles: string[] };
+}
+
 export interface Attribution { source?: string; referrer?: string; utmSource?: string; utmMedium?: string; utmCampaign?: string; utmContent?: string; utmTerm?: string; }
 export interface SubmissionBase extends Attribution { id: string; submittedAt: string; consent: boolean; }
 export interface OwnerLead extends SubmissionBase { kind: "owner-lead"; name: string; email: string; phone?: string; propertyAddress?: string; cityState?: string; propertyType?: string; bedrooms?: number; currentRentalStatus?: string; listingUrl?: string; notes?: string; }

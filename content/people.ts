@@ -14,7 +14,7 @@ export const leadershipProfiles: LeadershipProfile[] = [
     id: "leadership-meghan",
     name: "Meghan",
     role: "Utopia leadership · Design perspective",
-    summary: "Meghan helps shape the design perspective behind Utopia Interiors—looking at how a home can feel more distinctive, function more naturally for guests, and present itself with clarity and character.",
+    summary: "Meghan leads the design perspective behind Utopia Design—looking at how a home can feel more distinctive, function more naturally, and present itself with clarity and character.",
     initials: "M",
     approvalStatus: "placeholder",
     editorialNotes: ["Conservative placeholder biography for Ray's review.", "Add approved background, responsibilities, and personal design perspective when supplied; do not infer credentials."],
