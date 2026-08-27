@@ -54,7 +54,10 @@ export function UtopiaDesignPage({ content, initialAudience, explicitAudience }:
 
   const caseStudySection = (
     <section className="design-case-study" id="our-work" aria-labelledby="case-study-heading">
-      <div className="design-case-image"><Image src={active.caseStudy.image.src} alt={active.caseStudy.image.alt} fill sizes="(max-width: 900px) 100vw, 55vw" /></div>
+      <div className="design-case-images">
+        <figure className="design-case-image design-case-image-primary"><Image src={active.caseStudy.primaryImage.src} alt={active.caseStudy.primaryImage.alt} fill sizes="(max-width: 900px) 100vw, 55vw" /><figcaption>{active.caseStudy.primaryLabel}</figcaption></figure>
+        <figure className="design-case-image design-case-image-secondary"><Image src={active.caseStudy.secondaryImage.src} alt={active.caseStudy.secondaryImage.alt} fill sizes="(max-width: 900px) 48vw, 20vw" /><figcaption>{active.caseStudy.secondaryLabel}</figcaption></figure>
+      </div>
       <div className="design-case-copy">
         <p className="eyebrow">{active.caseStudy.eyebrow}</p>
         <h2 id="case-study-heading">{active.caseStudy.headline}</h2>
@@ -80,7 +83,7 @@ export function UtopiaDesignPage({ content, initialAudience, explicitAudience }:
           </article>
         ))}
       </div>
-      <p className="design-help"><strong>Not sure where your project fits?</strong> Answer three quick questions and we’ll recommend the right starting point.</p>
+      <Link className="design-help" href={`/design/quote?audience=${audience}`}><strong>Not sure where your project fits?</strong><span> Answer three quick questions and we’ll recommend the right starting point.</span><b aria-hidden="true">↗</b></Link>
     </section>
   );
 
@@ -116,7 +119,7 @@ export function UtopiaDesignPage({ content, initialAudience, explicitAudience }:
     <section className="design-quote-intro" id="quote-studio" aria-labelledby="quote-heading">
       <p className="eyebrow eyebrow-light">Quote Studio</p>
       <h2 id="quote-heading">Your project takes shape before the call.</h2>
-      <p>Tell us about the property, confirm what we find, and show us the spaces. Once the scope is clear, you’ll receive an exact preliminary estimate to review before scheduling with Meghan.</p>
+      <p>Tell us about the property, its spaces, and what you want to change. Once the scope is clear, you’ll receive a personalized preliminary estimate to review before scheduling with Meghan.</p>
       <ol><li><span>01</span><strong>Goal</strong>What should change?</li><li><span>02</span><strong>Property</strong>Confirm the home</li><li><span>03</span><strong>Vision</strong>Rooms, photographs, and style</li><li><span>04</span><strong>Estimate</strong>Review and acknowledge</li></ol>
       <Link className="button button-quote" href={`/design/quote?audience=${audience}`}>{active.quoteCta}</Link>
       <p id="quote-status" className="design-quote-status">The complimentary consultation becomes available after the preliminary estimate is reviewed and acknowledged.</p>

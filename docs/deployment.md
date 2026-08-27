@@ -56,7 +56,7 @@ Never prefix the Supabase secret with `NEXT_PUBLIC_`. The application does not u
 
 1. Create the Supabase project with the Data API enabled, automatic exposure of new tables disabled, and automatic RLS enabled.
 2. Open **SQL Editor → New query** in that project.
-3. Apply the migration files in filename order. For an existing project, apply each migration not already recorded, including `supabase/migrations/20260827010000_create_design_quotes.sql` before enabling Quote Studio persistence. Confirm `public.notification_outbox` and `public.design_quotes` appear and the `submissions_enqueue_notification` trigger exists.
+3. Apply the migration files in filename order. For an existing project, apply each migration not already recorded, including `supabase/migrations/20260827010000_create_design_quotes.sql` and `supabase/migrations/20260828010000_layer_design_quote_retention.sql` before enabling Quote Studio persistence. Confirm `public.notification_outbox` and `public.design_quotes` appear and the `submissions_enqueue_notification` trigger exists.
 4. In **Project Settings → API Keys**, create or copy a secret key beginning with `sb_secret_`.
 5. Store the URL and secret key in `.env.local` for local integration testing and in Vercel's encrypted environment settings for the intended environment.
 6. Submit one controlled test of each form and verify matching rows in both `public.submissions` and `public.notification_outbox` before enabling real traffic.

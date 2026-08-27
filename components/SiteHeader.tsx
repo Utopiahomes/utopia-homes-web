@@ -1,11 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Wordmark } from "@/components/Wordmark";
 
 export function SiteHeader() {
+  const designPage = usePathname().startsWith("/design");
   return <header className="site-header">
     <Link href="/" aria-label="Utopia Homes home"><Wordmark /></Link>
     <nav className="desktop-primary" aria-label="Primary navigation"><Link href="/stays">Stays</Link><Link href="/destinations/wildwood-new-jersey">WW / Cape May</Link><Link href="/list-your-home">Owners</Link><Link href="/design">Design</Link><Link href="/about">About</Link></nav>
-    <Link className="header-cta" href="/stays">View stays <span aria-hidden="true">↗</span></Link>
+    <Link className="header-cta" href={designPage ? "/design/quote" : "/stays"}>{designPage ? "Start My Design Profile" : "View stays"} <span aria-hidden="true">↗</span></Link>
     <details className="mobile-menu">
       <summary><span>Menu</span><i aria-hidden="true" /></summary>
       <div className="mobile-menu-panel">

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { acknowledgeDesignQuote, generateDesignQuote } from "@/lib/design/service";
 import { clearMemoryDesignQuotes, memoryDesignQuoteStore } from "@/lib/design/store";
 
-const input = { audience: "personal", serviceId: "room_design_plan", property: { address: "123 Ocean Avenue", listingUrl: "", propertyType: "House", livingArea: 1500, bedrooms: 3, bathrooms: 2, guestCapacity: 5 }, scope: { roomCount: 1, affectedArea: 400, kitchenIncluded: false, structuralChanges: false, outdoorIncluded: false, complexity: "standard" }, grade: "elegant", options: [], informationCount: 10, retentionAcknowledged: true };
+const input = { audience: "personal", serviceId: "room_design_plan", property: { address: "123 Ocean Avenue", listingUrl: "", propertyType: "House", livingArea: 1500, bedrooms: 3, bathrooms: 2, guestCapacity: 5 }, scope: { roomCount: 1, affectedArea: 400, kitchenIncluded: false, structuralChanges: false, outdoorIncluded: false, complexity: "standard" }, grade: "elegant", options: [], informationCount: 10, retentionNoticeVersion: "2026-08-27.v2" };
 
 describe("design quote service", () => {
   beforeEach(() => clearMemoryDesignQuotes());

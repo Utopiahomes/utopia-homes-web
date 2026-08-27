@@ -16,8 +16,8 @@ The shared eight-step Quote Studio, server-side pricing engine, generated quote 
 
 ## Retention and model-improvement consent
 
-- Generated, acknowledged, abandoned, expired, declined, converted, and completed quote records are retained indefinitely. The migration grants browser roles no table access and grants no delete privilege.
-- Before generation, the customer must affirm the indefinite project-history and business-analysis retention notice.
+- Unconverted quotes retain identifiable information for a configurable 12-month period after recent activity. Converted and completed project records use a configurable seven-year category, with legal-hold and deletion/de-identification metadata.
+- Quote generation presents a processing notice rather than requiring consent. Optional de-identified service-improvement consent remains separate and unchecked.
 - Model-improvement use is a separate, optional choice after the estimate. Store the choice and timestamp. Only records with affirmative consent may enter a future de-identification and model-development pipeline.
 - Raw private uploads are not implemented. Before enabling them, approve private storage, access controls, deletion-request handling, de-identification, and counsel-reviewed disclosures.
 

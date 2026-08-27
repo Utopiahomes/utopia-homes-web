@@ -25,11 +25,12 @@ export function createSupabaseDesignQuoteStore(options: { url?: string; secretKe
   const client = options.client ?? createServerClient(options.url, options.secretKey);
   return {
     async create(quote, tokenHash) {
+      const retentionExpiresAt = new Date(quote.generatedAt); retentionExpiresAt.setUTCMonth(retentionExpiresAt.getUTCMonth() + retentionMonths());
       const { error } = await client.from("design_quotes").insert({
         id: quote.id, quote_number: quote.quoteNumber, status: quote.status, audience: quote.audience, service_id: quote.serviceId,
         rule_set_version: quote.ruleSetVersion, input_snapshot: quote.inputSnapshot, line_items: quote.lineItems, raw_total: quote.rawTotal, subtotal: quote.subtotal,
         total: quote.total, assumptions: quote.assumptions, exclusions: quote.exclusions, manual_review_reasons: quote.manualReviewReasons, internal_pricing_review: quote.internalPricingReview ?? null, completeness_score: quote.completenessScore,
-        generated_at: quote.generatedAt, expires_at: quote.expiresAt, reopen_token_hash: tokenHash,
+        generated_at: quote.generatedAt, expires_at: quote.expiresAt, reopen_token_hash: tokenHash, retention_policy_version: "2026-08-27.v2", retention_category: "unconverted_quote", retention_expires_at: retentionExpiresAt.toISOString(), legal_hold: false,
       });
       if (error) throw new Error(`Supabase design quote insert failed (${error.code ?? "unknown"}).`);
     },
@@ -58,6 +59,7 @@ function createServerClient(url?: string, secretKey?: string) {
   if (!url?.trim() || !secretKey?.trim()) throw new Error("SUPABASE_URL and SUPABASE_SECRET_KEY are required for Supabase quote storage.");
   return createClient(url, secretKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
 }
+function retentionMonths(env: NodeJS.ProcessEnv = process.env) { const value = Number(env.DESIGN_UNCONVERTED_RETENTION_MONTHS ?? "12"); return Number.isInteger(value) && value > 0 && value <= 120 ? value : 12; }
 function fromDatabaseRow(row: Record<string, unknown>): AcknowledgedQuote {
   return {
     id: String(row.id), quoteNumber: String(row.quote_number), status: "acknowledged", audience: row.audience as AcknowledgedQuote["audience"], serviceId: row.service_id as AcknowledgedQuote["serviceId"], ruleSetVersion: String(row.rule_set_version),

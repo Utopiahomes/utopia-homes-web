@@ -100,7 +100,16 @@ export interface DesignAudienceContent {
   heroImage: ContentImage;
   values: Array<{ title: string; description: string }>;
   outcomes: Array<{ title: string; description: string; serviceId: DesignServiceId }>;
-  caseStudy: { eyebrow: string; headline: string; body: string; facts: string[]; image: ContentImage };
+  caseStudy: {
+    eyebrow: string;
+    headline: string;
+    body: string;
+    facts: string[];
+    primaryImage: ContentImage;
+    primaryLabel: string;
+    secondaryImage: ContentImage;
+    secondaryLabel: string;
+  };
   quoteCta: string;
 }
 export interface DesignPageContent {

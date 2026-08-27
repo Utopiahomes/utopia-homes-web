@@ -17,7 +17,7 @@ export interface QuoteInput {
   scope: {
     roomCount: number; roomQuantities?: Partial<Record<RoomType, number>>; affectedArea: number; declaredConstructionBudget?: number;
     kitchenIncluded: boolean; kitchens?: number; fullBathrooms?: number; halfBathrooms?: number;
-    structuralChanges: boolean; structuralChangeConcepts?: number; specialtySpaces?: number;
+    structuralChanges: boolean; structuralChangeConcepts?: number; specialtySpaces?: number; specialtySpaceSelections?: string[];
     outdoorIncluded: boolean; outdoorAffectedArea?: number; outdoorFurnishingZones?: number; structureCount?: number;
     complexity: DesignComplexity; designLevel?: DesignLevel; renovationSeverity?: RenovationSeverity; threeDRooms?: number;
     walkthrough?: WalkthroughType; merchandiseToProcure?: number; appliancePackage?: AppliancePackage; completeMedia?: boolean;
@@ -25,7 +25,7 @@ export interface QuoteInput {
   grade: DesignGrade;
   options: DesignOption[];
   informationCount: number;
-  retentionAcknowledged: boolean;
+  retentionNoticeVersion: string;
 }
 
 export interface QuoteLineItem { code: string; label: string; amount: number; }

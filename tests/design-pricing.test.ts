@@ -5,7 +5,7 @@ import type { QuoteInput } from "@/lib/design/types";
 const base: QuoteInput = {
   audience: "rental", serviceId: "rental_readiness_audit", property: { propertyType: "House", livingArea: 2_200, bedrooms: 5, bathrooms: 3, guestCapacity: 14 },
   scope: { roomCount: 1, affectedArea: 1_000, kitchenIncluded: false, structuralChanges: false, outdoorIncluded: false, complexity: "standard", specialtySpaces: 2, completeMedia: true },
-  grade: "rental", options: [], informationCount: 12, retentionAcknowledged: true,
+  grade: "rental", options: [], informationCount: 12, retentionNoticeVersion: "2026-08-27.v2",
 };
 
 describe("Utopia Design pricing model UD-2026.2", () => {

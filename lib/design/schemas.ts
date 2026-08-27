@@ -14,7 +14,7 @@ export const quoteInputSchema = z.object({
   scope: z.object({
     roomCount: boundedNumber(100), roomQuantities: roomQuantity, affectedArea: boundedNumber(50_000), declaredConstructionBudget: optionalBounded(100_000_000),
     kitchenIncluded: z.boolean(), kitchens: optionalBounded(20), fullBathrooms: optionalBounded(50), halfBathrooms: optionalBounded(50),
-    structuralChanges: z.boolean(), structuralChangeConcepts: optionalBounded(20), specialtySpaces: optionalBounded(50),
+    structuralChanges: z.boolean(), structuralChangeConcepts: optionalBounded(20), specialtySpaces: optionalBounded(50), specialtySpaceSelections: z.array(z.string().trim().min(2).max(80)).max(8).optional(),
     outdoorIncluded: z.boolean(), outdoorAffectedArea: optionalBounded(50_000), outdoorFurnishingZones: optionalBounded(50), structureCount: optionalBounded(25),
     complexity: z.enum(["standard", "elevated", "custom"]), designLevel: z.enum(["rental_focused", "elegant", "utopian"]).optional(), renovationSeverity: z.enum(["cosmetic", "moderate", "major"]).optional(),
     threeDRooms: optionalBounded(100), walkthrough: z.enum(["none", "local", "regional"]).optional(), merchandiseToProcure: optionalBounded(10_000_000),
@@ -22,7 +22,7 @@ export const quoteInputSchema = z.object({
   }),
   grade: z.enum(["rental", "elegant", "utopian"]),
   options: z.array(z.enum(["visualization", "additional_direction", "onsite_walkthrough", "rush", "outdoor_design", "additional_revision"])).max(6),
-  informationCount: z.coerce.number().int().min(0).max(100), retentionAcknowledged: z.literal(true),
+  informationCount: z.coerce.number().int().min(0).max(100), retentionNoticeVersion: z.literal("2026-08-27.v2"),
 });
 
 export const acknowledgeQuoteSchema = z.object({
