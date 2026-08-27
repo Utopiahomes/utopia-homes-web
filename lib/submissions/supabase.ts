@@ -59,6 +59,7 @@ function toDatabaseRow(submission: Submission) {
     inquiry_type: submission.kind === "contact" ? submission.inquiryType : null,
     message: submission.kind === "contact" || submission.kind === "design-inquiry" ? submission.message : null,
     project_type: submission.kind === "design-inquiry" ? submission.projectType : null,
+    source_quote_id: submission.kind === "design-inquiry" ? submission.sourceQuoteId || null : null,
     source: submission.source || null,
     referrer: submission.referrer || null,
     utm_source: submission.utmSource || null,

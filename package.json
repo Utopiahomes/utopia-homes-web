@@ -11,6 +11,13 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "retention:dry-run": "node scripts/retention.mjs dry-run",
+    "retention:run": "node scripts/retention.mjs run",
+    "retention:status": "node scripts/retention.mjs status",
+    "retention:retry-failures": "node scripts/retention.mjs run",
+    "retention:delete-record": "node scripts/retention.mjs delete-record",
+    "retention:place-legal-hold": "node scripts/retention.mjs place-legal-hold",
+    "retention:release-legal-hold": "node scripts/retention.mjs release-legal-hold",
     "e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
   },

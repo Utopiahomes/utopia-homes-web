@@ -122,5 +122,5 @@ export interface SubmissionBase extends Attribution { id: string; submittedAt: s
 export interface OwnerLead extends SubmissionBase { kind: "owner-lead"; name: string; email: string; phone?: string; propertyAddress?: string; cityState?: string; propertyType?: string; bedrooms?: number; currentRentalStatus?: string; listingUrl?: string; notes?: string; }
 export interface MembershipSignup extends SubmissionBase { kind: "membership"; name: string; email: string; zip?: string; travelInterests?: string; }
 export interface ContactRequest extends SubmissionBase { kind: "contact"; name: string; email: string; phone?: string; inquiryType: "guest" | "owner" | "general" | "design"; message: string; }
-export interface PropertyEnhancementInquiry extends SubmissionBase { kind: "design-inquiry"; name: string; email: string; phone?: string; propertyAddress?: string; projectType: string; message: string; }
+export interface PropertyEnhancementInquiry extends SubmissionBase { kind: "design-inquiry"; name: string; email: string; phone?: string; propertyAddress?: string; projectType: string; message: string; sourceQuoteId?: string; }
 export type Submission = OwnerLead | MembershipSignup | ContactRequest | PropertyEnhancementInquiry;

@@ -5,7 +5,7 @@ import type { SubmissionStore } from "@/lib/submissions/types";
 import { schemas, type FormKind } from "./schemas";
 import { notificationService } from "@/lib/notifications";
 type SubmissionNotifications = Pick<typeof notificationService, "enqueueAndAttempt">;
-export async function submitForm(kind: FormKind, body: unknown, store: SubmissionStore = submissionStore, notifications: SubmissionNotifications = notificationService) {
+export async function submitForm(kind: FormKind, body: unknown, store: SubmissionStore = submissionStore, notifications: SubmissionNotifications = notificationService, internal: { sourceQuoteId?: string } = {}) {
   const result = schemas[kind].safeParse(body);
   if (!result.success) return { ok: false as const, status: 400, message: "Please review the highlighted information.", errors: result.error.flatten().fieldErrors };
   const data = result.data as Record<string, unknown>;
@@ -16,7 +16,7 @@ export async function submitForm(kind: FormKind, body: unknown, store: Submissio
   } catch (error) {
     return storageFailureResponse(error);
   }
-  const submission = { ...data, kind, id: randomUUID(), submittedAt: new Date().toISOString() } as Submission;
+  const submission = { ...data, kind, id: randomUUID(), submittedAt: new Date().toISOString(), ...(kind === "design-inquiry" && internal.sourceQuoteId ? { sourceQuoteId: internal.sourceQuoteId } : {}) } as Submission;
   try {
     const stored = await store.create(submission);
     if (stored.duplicate && kind === "membership") return duplicateMembershipResponse();
