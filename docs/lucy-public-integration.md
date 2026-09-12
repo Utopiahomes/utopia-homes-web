@@ -30,7 +30,7 @@ published, activated, or wired into the deployed widget.
 
 - Schema: `lucy-public-knowledge-v1`
 - Entries: 25
-- Canonical SHA-256: `5bfe35150606ad39e91eb82a9f73eabb41e8a4333257a0a76192834c3088c668`
+- Canonical SHA-256: `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422`
 - Effective-from value: `2026-09-12T00:00:00Z`
 - Included: committed public property facts, owner services, design services and estimate
   explanation, membership status, destination context, contact, and external booking handoff
@@ -42,6 +42,9 @@ pet facets. Website tests bind those values back to the canonical property modul
 Lucy's independent validator reproduces the same digest, and retrieval uses the facets to
 evaluate multi-requirement questions before lexical ranking. The text and digest still
 require Ray/Lucy review; `candidate` in the filename is a release boundary, not decoration.
+Cloud Lucy's evidence-exact acceptance suite currently passes ten conversations against
+this candidate, including the five product-review conversations, ordinary paraphrases,
+restricted reservation access, and an unknown-amenity fallback.
 
 ## Owner decision recorded
 
@@ -181,6 +184,6 @@ was changed by this website implementation.
 | Browser and responsive flow | Passed 2026-09-12; all 22 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, context continuity across client navigation, external booking handoff, forms, redirects, and CMS 404s | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
 | Mobile visual inspection | Passed 2026-09-11 | `lucy-mobile.png` in the task visualization directory; local fallback font was used because the dev sandbox could not reach Google Fonts | Widget, CSS, layout, viewport, or font changes |
 | Candidate snapshot cross-runtime digest | Passed 2026-09-11 | Website canonicalizer and Cloud Lucy `faq_snapshot`/`snapshot_digest` both produced `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` for 8 FAQs | Candidate content or either canonicalizer changes |
-| R1 knowledge candidate digest | Passed 2026-09-12 | Website and Cloud validators both produced `5bfe35150606ad39e91eb82a9f73eabb41e8a4333257a0a76192834c3088c668` for 25 effective-dated entries | Candidate content, schema, or either canonicalizer changes |
+| R1 knowledge candidate digest | Passed 2026-09-12 | Website and Cloud validators both produced `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` for 25 effective-dated entries | Candidate content, schema, or either canonicalizer changes |
 | Authenticated site-host binding | Passed 2026-09-11 | Full TypeScript, focused ESLint, 8 focused Vitest checks, and a 27-route production build after adding `X-Lucy-Public-Host` | Website proxy, Cloud ingress contract, or environment changes |
 | Deployed same-origin success and negative controls | Not yet executed | Requires exact pinned Cloud Lucy endpoint and deployment approval | Any ingress, credential, manifest, release, or environment change |

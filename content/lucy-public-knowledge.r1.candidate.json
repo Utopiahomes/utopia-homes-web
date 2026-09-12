@@ -299,7 +299,7 @@
       "source": { "id": "owners-page", "label": "List your home", "href": "https://www.utopiahomes.com/list-your-home" },
       "links": [{ "id": "owners-page-link", "label": "Explore owner services", "href": "https://www.utopiahomes.com/list-your-home" }],
       "effective_from": "2026-09-12T00:00:00Z",
-      "direct_answer": false
+      "direct_answer": true
     },
     {
       "id": "shamrock-capacity",

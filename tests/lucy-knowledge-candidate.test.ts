@@ -6,7 +6,7 @@ import {
   digestPublicLucyKnowledgeSnapshot,
 } from "@/lib/lucy/knowledge";
 
-const EXPECTED_CANDIDATE_DIGEST = "5bfe35150606ad39e91eb82a9f73eabb41e8a4333257a0a76192834c3088c668";
+const EXPECTED_CANDIDATE_DIGEST = "95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422";
 
 describe("Public Lucy R1 knowledge candidate", () => {
   it("is review-only, bounded, effective-dated, and Utopia-linked", () => {
