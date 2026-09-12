@@ -90,6 +90,19 @@ export interface FAQ { id: string; category: "stays" | "owners" | "membership" |
 export interface Campaign { id: string; slug: string; name: string; partner: string; eyebrow: string; headline: string; description: string; heroImage: ContentImage; ctaLabel: string; ctaUrl: string; rulesUrl?: string; active: boolean; seoTitle: string; seoDescription: string; }
 export interface LeadershipProfile { id: string; name: string; role: string; summary: string; initials: string; approvalStatus: "approved" | "placeholder"; editorialNotes: string[]; }
 
+export interface PublicLucyFaqEntry {
+  question: string;
+  answer: string;
+  source: string;
+}
+
+export interface PublicLucyContent {
+  publicationStatus: "candidate" | "approved";
+  intro: string;
+  suggestions: string[];
+  faqs: PublicLucyFaqEntry[];
+}
+
 export type DesignAudience = "rental" | "personal";
 export type DesignServiceId = "rental_readiness_audit" | "room_design_plan" | "whole_home_design_plan" | "renovation_design_plan" | "turnkey_furnishing";
 export interface DesignAudienceContent {

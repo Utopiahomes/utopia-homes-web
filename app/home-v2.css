@@ -1,5 +1,6 @@
 .home-beach-opening { position: relative; height: 190svh; background: var(--deep); color: var(--white); }
 .home-beach-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.home-beach-media { position: relative; height: 100%; }
 .home-beach-image { object-position: center center; transform: scale(1.04); }
 .home-beach-wash { position: absolute; inset: 0; background: linear-gradient(180deg,rgba(5,25,21,.16),rgba(5,25,21,.12) 45%,rgba(5,25,21,.7)),linear-gradient(90deg,rgba(5,25,21,.5),transparent 65%); }
 .home-beach-scenes { position: relative; z-index: 2; margin-top: -100svh; }

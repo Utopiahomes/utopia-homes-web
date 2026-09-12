@@ -1,0 +1,52 @@
+{
+  "publicationStatus": "approved",
+  "intro": "Hello—I’m Lucy. I can help you explore Utopia Homes, our stays, owner services, and Utopia Design.",
+  "suggestions": [
+    "Where are Utopia Homes located?",
+    "What makes a Utopia stay different?",
+    "How can Utopia help manage my home?",
+    "What is Utopia Design?"
+  ],
+  "faqs": [
+    {
+      "question": "Where are Utopia Homes located?",
+      "answer": "Utopia Homes currently features three distinctive large-group stays across Wildwood, North Wildwood, and Wildwood Crest, New Jersey.",
+      "source": "https://www.utopiahomes.com/stays"
+    },
+    {
+      "question": "What makes a Utopia stay different?",
+      "answer": "Utopia’s approach is owner-led: it begins with the home, carries through every interaction, and focuses on the details that turn an ordinary stay into one people remember.",
+      "source": "https://www.utopiahomes.com/about"
+    },
+    {
+      "question": "How can Utopia help manage my home?",
+      "answer": "Utopia combines local ownership, vacation-rental management, distinctive marketing, and hands-on property stewardship. Its owner model focuses on earning potential, operations, local oversight, and thoughtful improvements.",
+      "source": "https://www.utopiahomes.com/list-your-home"
+    },
+    {
+      "question": "What is Utopia Design?",
+      "answer": "Utopia Design serves both vacation rentals and personal homes. It offers a structured path from project vision to a nonbinding preliminary estimate, with final design judgment and consultation handled by the Utopia team.",
+      "source": "https://www.utopiahomes.com/design"
+    },
+    {
+      "question": "Which homes can I explore?",
+      "answer": "The current collection includes Buttercup Beauty in Wildwood Crest, Central Ave Socialization in North Wildwood, and The Shamrock in Wildwood.",
+      "source": "https://www.utopiahomes.com/stays"
+    },
+    {
+      "question": "Where do I complete my booking?",
+      "answer": "Utopia property pages introduce each home, then send you to the property’s configured external booking page to check availability and book.",
+      "source": "https://www.utopiahomes.com/stays"
+    },
+    {
+      "question": "Is Utopia membership live today?",
+      "answer": "Membership is coming soon. Join the launch list to hear when it opens and what early members can expect.",
+      "source": "https://www.utopiahomes.com/membership"
+    },
+    {
+      "question": "How do I contact Utopia Homes?",
+      "answer": "Use the contact form to reach Utopia Homes about stays, property management, design, or general questions.",
+      "source": "https://www.utopiahomes.com/contact"
+    }
+  ]
+}

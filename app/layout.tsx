@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { LucyWidgetMount } from "@/components/lucy/LucyWidgetMount";
 import "./globals.css";
 import "./v1.css";
 import "./collection.css";
@@ -15,6 +16,7 @@ import "./home-v2.css";
 import "./scroll-story.css";
 import "./design.css";
 import "./design-adjustments.css";
+import "./lucy.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -29,5 +31,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${display.variable} ${sans.variable}`}><SiteHeader /><main>{children}</main><SiteFooter /></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth"><body className={`${display.variable} ${sans.variable}`}><SiteHeader /><main>{children}</main><SiteFooter /><LucyWidgetMount /></body></html>;
 }
