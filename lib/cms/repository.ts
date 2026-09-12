@@ -1,4 +1,4 @@
-import { campaigns, designPageContent, destinations, faqs, properties, reviews } from "@/content";
+import { campaigns, designPageContent, destinations, faqs, properties, publicLucyContent, reviews } from "@/content";
 import type { CmsAdapter } from "./types";
 export const repositoryCms: CmsAdapter = {
   async getProperties() { return properties.filter((property) => property.status === "active"); },
@@ -9,4 +9,5 @@ export const repositoryCms: CmsAdapter = {
   async getFAQs(category) { return faqs.filter((faq) => !category || faq.category === category).sort((a, b) => a.sortOrder - b.sortOrder); },
   async getCampaignBySlug(slug) { return campaigns.find((campaign) => campaign.slug === slug && campaign.active) ?? null; },
   async getDesignPage() { return designPageContent; },
+  async getPublicLucyContent() { return publicLucyContent; },
 };

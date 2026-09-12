@@ -5,7 +5,7 @@ export default defineConfig({
     command: "pnpm dev --hostname 127.0.0.1",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: true,
-    env: { DESIGN_QUOTE_STORE: "memory", SUBMISSION_STORE: "memory", NOTIFICATION_EMAIL_ENABLED: "false" },
+    env: { DESIGN_QUOTE_STORE: "memory", SUBMISSION_STORE: "memory", NOTIFICATION_EMAIL_ENABLED: "false", LUCY_PUBLIC_ENABLED: "true" },
   },
   use: { baseURL: "http://127.0.0.1:3000" },
 });

@@ -9,5 +9,33 @@ export const propertySchema = z.object({
 export const destinationSchema = z.object({ id: z.string().min(1), name: z.string().min(1), slug: z.string().regex(/^[a-z0-9-]+$/), city: z.string().min(1), state: z.string(), shortDescription: z.string().min(1), longDescription: z.string().min(1), heroImage: imageSchema, featured: z.boolean(), seasonStory: z.object({ eyebrow: z.string().min(1), headline: z.string().min(1), description: z.string().min(1) }), highlights: z.array(z.object({ eyebrow: z.string().min(1), title: z.string().min(1), description: z.string().min(1), image: imageSchema })).min(1), seoTitle: z.string().min(1), seoDescription: z.string().min(1) });
 export const reviewSchema = z.object({ id: z.string().min(1), propertyId: z.string().optional(), author: z.string().min(1), quote: z.string().min(1), rating: z.number().min(1).max(5).optional(), source: z.string().min(1), permissionStatus: z.enum(["approved", "pending", "denied"]) });
 export const faqSchema = z.object({ id: z.string().min(1), category: z.enum(["stays", "owners", "membership", "design", "general"]), question: z.string().min(1), answer: z.string().min(1), sortOrder: z.number().int() });
+const publicLucyFaqSchema = z.object({
+  question: z.string().trim().min(2).max(500),
+  answer: z.string().trim().min(1).max(8_000),
+  source: z.string().url().refine((value) => {
+    try { return new URL(value).protocol === "https:"; } catch { return false; }
+  }, "Public Lucy sources must use HTTPS."),
+}).strict();
+export const publicLucyContentSchema = z.object({
+  publicationStatus: z.enum(["candidate", "approved"]),
+  intro: z.string().trim().min(1).max(500),
+  suggestions: z.array(z.string().trim().min(2).max(500)).min(1).max(6),
+  faqs: z.array(publicLucyFaqSchema).min(1),
+}).strict().superRefine((value, context) => {
+  const questions = new Set<string>();
+  for (const faq of value.faqs) {
+    const normalized = faq.question.trim().replace(/\s+/gu, " ").toLowerCase();
+    if (questions.has(normalized)) {
+      context.addIssue({ code: "custom", message: `Duplicate Public Lucy question: ${faq.question}`, path: ["faqs"] });
+    }
+    questions.add(normalized);
+  }
+  for (const suggestion of value.suggestions) {
+    const normalized = suggestion.trim().replace(/\s+/gu, " ").toLowerCase();
+    if (!questions.has(normalized)) {
+      context.addIssue({ code: "custom", message: `Public Lucy suggestion has no FAQ answer: ${suggestion}`, path: ["suggestions"] });
+    }
+  }
+});
 export const campaignSchema = z.object({ id: z.string().min(1), slug: z.string().regex(/^[a-z0-9-]+$/), name: z.string().min(1), partner: z.string().min(1), eyebrow: z.string().min(1), headline: z.string().min(1), description: z.string().min(1), heroImage: imageSchema, ctaLabel: z.string().min(1), ctaUrl: z.string().min(1), rulesUrl: z.string().url().optional(), active: z.boolean(), seoTitle: z.string().min(1), seoDescription: z.string().min(1) });
 export function validateCollection<T>(schema: z.ZodType<T>, records: unknown[], label: string): T[] { const result = z.array(schema).safeParse(records); if (!result.success) throw new Error(`Invalid ${label} content: ${result.error.message}`); return result.data; }

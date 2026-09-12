@@ -26,3 +26,14 @@ An `AFTER INSERT` database trigger creates one `notification_outbox` row in the 
 - **Production:** protected main branch, a separately configured production Supabase project/key, production transactional sender/recipient variables, and final external booking URLs.
 
 No production or preview environment may scrape Airbnb or Vrbo at runtime.
+
+## Public Lucy isolation
+
+Public Lucy is disabled by default and has no browser-visible provider or Cloud Lucy
+credential. The website proxy accepts a bounded question, establishes an opaque HttpOnly
+session, applies defense-in-depth rate limits, and sends no raw IP address or page/form
+context upstream. It does not store or log message content. Cloud Lucy remains the
+authoritative public-projection, tenant-binding, and distributed-admission boundary;
+private memory, transcript capture, tools, and paid inference are outside this website
+route. The exact contract and activation gate are recorded in
+`docs/lucy-public-integration.md`.

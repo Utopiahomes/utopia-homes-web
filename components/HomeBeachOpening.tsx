@@ -3,15 +3,17 @@ import Image from "next/image";
 export function HomeBeachOpening() {
   return <section className="home-beach-opening" aria-labelledby="home-hero-title">
     <div className="home-beach-sticky" aria-hidden="true">
-      <Image
-        className="home-beach-image"
-        src="/images/home/wildwoods-beach-summer.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-      />
-      <div className="home-beach-wash" />
+      <div className="home-beach-media">
+        <Image
+          className="home-beach-image"
+          src="/images/home/wildwoods-beach-summer.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+        />
+        <div className="home-beach-wash" />
+      </div>
     </div>
 
     <div className="home-beach-scenes">
