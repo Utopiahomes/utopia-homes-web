@@ -130,7 +130,7 @@ was changed by this website implementation.
 | Check | Result | Evidence | Invalidated by |
 | --- | --- | --- | --- |
 | Strict TypeScript and ESLint | Passed 2026-09-12 | Local working tree based on `f075de0`; `tsc --noEmit`, `eslint .` | Code/dependency/config changes |
-| Unit and contract tests | Passed 2026-09-12; 21 files, 84 tests | Full Vitest run, including Lucy request, digest pinning, cross-runtime candidate snapshot, upstream-validation, and widget tests | Code/dependency/config changes |
+| Unit and contract tests | Passed 2026-09-12; 21 files, 81 tests | Full Vitest run against the isolated release commit, including Lucy request, digest pinning, cross-runtime candidate snapshot, upstream-validation, and widget tests | Code/dependency/config changes |
 | Production build | Passed 2026-09-12; 27 routes generated | Next.js 16.3.2 production build with `/api/lucy` dynamic | Code/dependency/build-environment changes |
 | Browser and responsive flow | Passed 2026-09-12; all 21 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, external booking handoff, forms, redirects, and CMS 404s. The pass also confirmed the corrected relative hero-image wrapper and Next 16 smooth-scroll declaration without either prior runtime warning. | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
 | Mobile visual inspection | Passed 2026-09-11 | `lucy-mobile.png` in the task visualization directory; local fallback font was used because the dev sandbox could not reach Google Fonts | Widget, CSS, layout, viewport, or font changes |
