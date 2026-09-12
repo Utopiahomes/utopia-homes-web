@@ -103,6 +103,45 @@ export interface PublicLucyContent {
   faqs: PublicLucyFaqEntry[];
 }
 
+export interface PublicLucyReference {
+  id: string;
+  label: string;
+  href: string;
+}
+
+export interface PublicLucyPropertyFacts {
+  max_guests: number;
+  parking_spaces: number;
+  has_pool: boolean;
+  has_hot_tub: boolean;
+  bedrooms: number;
+  bathrooms: number;
+  pets_allowed: boolean;
+}
+
+export interface PublicLucyKnowledgeEntry {
+  id: string;
+  service_line: "homes" | "design" | "general";
+  kind: "fact" | "description" | "policy" | "navigation" | "call_to_action";
+  title: string;
+  approved_text: string;
+  aliases: string[];
+  topics: string[];
+  route: "home" | "stays" | "property" | "destinations" | "destination" | "owners" | "design" | "membership" | "about" | "contact" | "other_public";
+  property_slug?: "buttercup-beauty" | "central-ave-socialization" | "the-shamrock";
+  property_facts?: PublicLucyPropertyFacts;
+  source: PublicLucyReference;
+  links: PublicLucyReference[];
+  effective_from: string;
+  effective_until?: string;
+  direct_answer: boolean;
+}
+
+export interface PublicLucyKnowledgeSnapshot {
+  schema: "lucy-public-knowledge-v1";
+  entries: PublicLucyKnowledgeEntry[];
+}
+
 export type DesignAudience = "rental" | "personal";
 export type DesignServiceId = "rental_readiness_audit" | "room_design_plan" | "whole_home_design_plan" | "renovation_design_plan" | "turnkey_furnishing";
 export interface DesignAudienceContent {

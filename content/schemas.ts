@@ -37,5 +37,71 @@ export const publicLucyContentSchema = z.object({
     }
   }
 });
+
+const publicLucyReferenceSchema = z.object({
+  id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/),
+  label: z.string().trim().min(1).max(160),
+  href: z.string().url().refine((value) => {
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" && url.hostname === "www.utopiahomes.com";
+    } catch {
+      return false;
+    }
+  }, "Public Lucy references must use the approved Utopia hostname."),
+}).strict();
+
+const publicLucyPropertyFactsSchema = z.object({
+  max_guests: z.number().int().positive().max(100),
+  parking_spaces: z.number().int().nonnegative().max(50),
+  has_pool: z.boolean(),
+  has_hot_tub: z.boolean(),
+  bedrooms: z.number().nonnegative().max(100),
+  bathrooms: z.number().nonnegative().max(100),
+  pets_allowed: z.boolean(),
+}).strict();
+
+const publicLucyRouteSchema = z.enum(["home", "stays", "property", "destinations", "destination", "owners", "design", "membership", "about", "contact", "other_public"]);
+const publicLucyPropertySlugSchema = z.enum(["buttercup-beauty", "central-ave-socialization", "the-shamrock"]);
+
+const publicLucyKnowledgeEntrySchema = z.object({
+  id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/),
+  service_line: z.enum(["homes", "design", "general"]),
+  kind: z.enum(["fact", "description", "policy", "navigation", "call_to_action"]),
+  title: z.string().trim().min(1).max(200),
+  approved_text: z.string().trim().min(1).max(2_000),
+  aliases: z.array(z.string().trim().min(1)).max(24),
+  topics: z.array(z.string().trim().min(1)).min(1).max(24),
+  route: publicLucyRouteSchema,
+  property_slug: publicLucyPropertySlugSchema.optional(),
+  property_facts: publicLucyPropertyFactsSchema.optional(),
+  source: publicLucyReferenceSchema,
+  links: z.array(publicLucyReferenceSchema).max(8),
+  effective_from: z.iso.datetime({ offset: true }),
+  effective_until: z.iso.datetime({ offset: true }).optional(),
+  direct_answer: z.boolean(),
+}).strict().superRefine((value, context) => {
+  const isProperty = value.route === "property";
+  if (isProperty !== Boolean(value.property_slug)) {
+    context.addIssue({ code: "custom", message: "Property knowledge requires exactly one approved property slug.", path: ["property_slug"] });
+  }
+  if (Boolean(value.property_facts) !== isProperty) {
+    context.addIssue({ code: "custom", message: "Structured property facts belong on property knowledge only and are required there.", path: ["property_facts"] });
+  }
+  if (value.effective_until && new Date(value.effective_until) <= new Date(value.effective_from)) {
+    context.addIssue({ code: "custom", message: "Knowledge expiration must follow its effective time.", path: ["effective_until"] });
+  }
+});
+
+export const publicLucyKnowledgeSnapshotSchema = z.object({
+  schema: z.literal("lucy-public-knowledge-v1"),
+  entries: z.array(publicLucyKnowledgeEntrySchema).min(1).max(500),
+}).strict().superRefine((value, context) => {
+  const ids = new Set<string>();
+  for (const [index, entry] of value.entries.entries()) {
+    if (ids.has(entry.id)) context.addIssue({ code: "custom", message: `Duplicate Public Lucy knowledge id: ${entry.id}`, path: ["entries", index, "id"] });
+    ids.add(entry.id);
+  }
+});
 export const campaignSchema = z.object({ id: z.string().min(1), slug: z.string().regex(/^[a-z0-9-]+$/), name: z.string().min(1), partner: z.string().min(1), eyebrow: z.string().min(1), headline: z.string().min(1), description: z.string().min(1), heroImage: imageSchema, ctaLabel: z.string().min(1), ctaUrl: z.string().min(1), rulesUrl: z.string().url().optional(), active: z.boolean(), seoTitle: z.string().min(1), seoDescription: z.string().min(1) });
 export function validateCollection<T>(schema: z.ZodType<T>, records: unknown[], label: string): T[] { const result = z.array(schema).safeParse(records); if (!result.success) throw new Error(`Invalid ${label} content: ${result.error.message}`); return result.data; }

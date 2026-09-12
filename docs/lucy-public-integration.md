@@ -22,6 +22,27 @@ The initial eight-answer V0 snapshot below remains historical rollback context. 
 automatically eligible for R1 rollback: any rollback projection must be separately
 reviewed, effective, free of withdrawn/sensitive knowledge, and explicitly digest-pinned.
 
+## R1 knowledge candidate
+
+The first conversational corpus is now a review-only artifact at
+`content/lucy-public-knowledge.r1.candidate.json`. It has not been staged, approved,
+published, activated, or wired into the deployed widget.
+
+- Schema: `lucy-public-knowledge-v1`
+- Entries: 25
+- Canonical SHA-256: `5bfe35150606ad39e91eb82a9f73eabb41e8a4333257a0a76192834c3088c668`
+- Effective-from value: `2026-09-12T00:00:00Z`
+- Included: committed public property facts, owner services, design services and estimate
+  explanation, membership status, destination context, contact, and external booking handoff
+- Excluded: live rates and availability, reservation data, external booking-provider names,
+  pending biographies, email addresses, private knowledge, and model-provider details
+
+Property records include typed capacity, parking, pool, hot-tub, bedroom, bathroom, and
+pet facets. Website tests bind those values back to the canonical property modules. Cloud
+Lucy's independent validator reproduces the same digest, and retrieval uses the facets to
+evaluate multi-requirement questions before lexical ranking. The text and digest still
+require Ray/Lucy review; `candidate` in the filename is a release boundary, not decoration.
+
 ## Owner decision recorded
 
 - First scope: Public Lucy only on `www.utopiahomes.com`.
@@ -155,10 +176,11 @@ was changed by this website implementation.
 | Check | Result | Evidence | Invalidated by |
 | --- | --- | --- | --- |
 | Strict TypeScript and ESLint | Passed 2026-09-12 | Isolated branch based on canonical `c05c1ea`; `tsc --noEmit`, `eslint .` | Code/dependency/config changes |
-| Unit and contract tests | Passed 2026-09-12; 22 files, 88 tests | Full Vitest run including bounded/expiring history, page context, R1 response validation, digest pinning, source URL controls, fallbacks, and widget tests | Code/dependency/config changes |
+| Unit and contract tests | Passed 2026-09-12; 23 files, 91 tests | Full Vitest run including bounded/expiring history, page context, R1 response validation, digest pinning, source URL controls, candidate lineage, fallbacks, and widget tests | Code/dependency/config changes |
 | Production build | Passed 2026-09-12; 27 routes generated | Next.js 16.3.2 Webpack production build with `/api/lucy` dynamic. Webpack was used because Turbopack rejects the isolated worktree's external dependency junction. | Code/dependency/build-environment changes |
 | Browser and responsive flow | Passed 2026-09-12; all 22 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, context continuity across client navigation, external booking handoff, forms, redirects, and CMS 404s | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
 | Mobile visual inspection | Passed 2026-09-11 | `lucy-mobile.png` in the task visualization directory; local fallback font was used because the dev sandbox could not reach Google Fonts | Widget, CSS, layout, viewport, or font changes |
 | Candidate snapshot cross-runtime digest | Passed 2026-09-11 | Website canonicalizer and Cloud Lucy `faq_snapshot`/`snapshot_digest` both produced `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` for 8 FAQs | Candidate content or either canonicalizer changes |
+| R1 knowledge candidate digest | Passed 2026-09-12 | Website and Cloud validators both produced `5bfe35150606ad39e91eb82a9f73eabb41e8a4333257a0a76192834c3088c668` for 25 effective-dated entries | Candidate content, schema, or either canonicalizer changes |
 | Authenticated site-host binding | Passed 2026-09-11 | Full TypeScript, focused ESLint, 8 focused Vitest checks, and a 27-route production build after adding `X-Lucy-Public-Host` | Website proxy, Cloud ingress contract, or environment changes |
 | Deployed same-origin success and negative controls | Not yet executed | Requires exact pinned Cloud Lucy endpoint and deployment approval | Any ingress, credential, manifest, release, or environment change |
