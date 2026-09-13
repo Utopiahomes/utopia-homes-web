@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   askPublicLucy,
   PublicLucyUnavailable,
@@ -12,6 +12,10 @@ const enabledEnvironment = {
   LUCY_PUBLIC_SITE_HOSTNAME: "www.utopiahomes.com",
   LUCY_PUBLIC_SNAPSHOT_DIGEST: "a".repeat(64),
 };
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe("Public Lucy server adapter", () => {
   it("fails closed while the feature is disabled or incompletely configured", () => {
@@ -114,6 +118,29 @@ describe("Public Lucy server adapter", () => {
         fetcher,
       }),
     ).resolves.toMatchObject({ outcome: "fallback", links: [{ href: "/contact" }] });
+  });
+
+  it("allows the isolated model handoff to use its full upstream timeout", async () => {
+    vi.useFakeTimers();
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        }),
+    );
+
+    const pending = askPublicLucy(
+      "Which homes have pools?",
+      "1db886ff-7d89-4aa7-b9a1-083a98b80702",
+      { env: enabledEnvironment, fetcher },
+    );
+    const rejection = expect(pending).rejects.toThrow(PublicLucyUnavailable);
+
+    await vi.advanceTimersByTimeAsync(17_999);
+    expect(fetcher.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    await rejection;
+    expect(fetcher.mock.calls[0]?.[1]?.signal?.aborted).toBe(true);
   });
 
   it("rejects malformed upstream data instead of passing it to the browser", async () => {

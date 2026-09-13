@@ -5,7 +5,9 @@ import {
   type PublicLucyReference,
 } from "@/lib/lucy/contracts";
 
-const DEFAULT_TIMEOUT_MS = 10_000;
+// The public API may spend up to 15 seconds waiting on the isolated model service.
+// Leave a small handoff margin so this same-origin adapter does not abort first.
+const DEFAULT_TIMEOUT_MS = 18_000;
 
 type LucyEnvironment = {
   LUCY_PUBLIC_ENABLED?: string;
