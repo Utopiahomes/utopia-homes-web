@@ -1,25 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { publicLucyKnowledgeCandidate } from "@/content/lucy-knowledge";
+import { publicLucyKnowledgeSnapshot } from "@/content/lucy-knowledge";
 import { properties } from "@/content/properties";
 import {
   createPublicLucyKnowledgeSnapshot,
   digestPublicLucyKnowledgeSnapshot,
 } from "@/lib/lucy/knowledge";
 
-const EXPECTED_CANDIDATE_DIGEST = "95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422";
+const EXPECTED_APPROVED_DIGEST = "95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422";
 
-describe("Public Lucy R1 knowledge candidate", () => {
-  it("is review-only, bounded, effective-dated, and Utopia-linked", () => {
-    expect(publicLucyKnowledgeCandidate.schema).toBe("lucy-public-knowledge-v1");
-    expect(publicLucyKnowledgeCandidate.entries).toHaveLength(25);
-    expect(publicLucyKnowledgeCandidate.entries.every((entry) => entry.effective_from === "2026-09-12T00:00:00Z")).toBe(true);
-    expect(publicLucyKnowledgeCandidate.entries.every((entry) => new URL(entry.source.href).hostname === "www.utopiahomes.com")).toBe(true);
-    expect(JSON.stringify(publicLucyKnowledgeCandidate)).not.toMatch(/airbnb|uplisting|lodgify|openrouter|lucy@|ray@/i);
+describe("approved Public Lucy R1 test knowledge", () => {
+  it("is bounded, effective-dated, and Utopia-linked", () => {
+    expect(publicLucyKnowledgeSnapshot.schema).toBe("lucy-public-knowledge-v1");
+    expect(publicLucyKnowledgeSnapshot.entries).toHaveLength(25);
+    expect(publicLucyKnowledgeSnapshot.entries.every((entry) => entry.effective_from === "2026-09-12T00:00:00Z")).toBe(true);
+    expect(publicLucyKnowledgeSnapshot.entries.every((entry) => new URL(entry.source.href).hostname === "www.utopiahomes.com")).toBe(true);
+    expect(JSON.stringify(publicLucyKnowledgeSnapshot)).not.toMatch(/airbnb|uplisting|lodgify|openrouter|lucy@|ray@/i);
   });
 
   it("keeps structured property facts aligned with canonical website content", () => {
     for (const property of properties) {
-      const entries = publicLucyKnowledgeCandidate.entries.filter((entry) => entry.property_slug === property.slug);
+      const entries = publicLucyKnowledgeSnapshot.entries.filter((entry) => entry.property_slug === property.slug);
       expect(entries.length).toBeGreaterThan(0);
       const expected = {
         max_guests: property.maxGuests,
@@ -35,7 +35,7 @@ describe("Public Lucy R1 knowledge candidate", () => {
   });
 
   it("matches Cloud Lucy's canonical R1 digest", () => {
-    const snapshot = createPublicLucyKnowledgeSnapshot(publicLucyKnowledgeCandidate.entries);
-    expect(digestPublicLucyKnowledgeSnapshot(snapshot)).toBe(EXPECTED_CANDIDATE_DIGEST);
+    const snapshot = createPublicLucyKnowledgeSnapshot(publicLucyKnowledgeSnapshot.entries);
+    expect(digestPublicLucyKnowledgeSnapshot(snapshot)).toBe(EXPECTED_APPROVED_DIGEST);
   });
 });

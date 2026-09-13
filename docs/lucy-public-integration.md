@@ -2,8 +2,9 @@
 
 Status: the R1 conversational website slice is implemented and fail-closed on the local
 `codex/public-lucy-r1` branch. It is not deployed or enabled. The matching Cloud Lucy
-knowledge/retrieval boundary is implemented on its isolated local branch. The R1 corpus
-has not been finalized, staged, approved, or activated.
+knowledge/retrieval boundary is implemented on its isolated local branch. Ray approved
+the exact R1 corpus for testing on 2026-09-12; it has not been staged or activated, and
+that testing approval is not production-publication authorization.
 
 ## R1 amendment
 
@@ -22,11 +23,13 @@ The initial eight-answer V0 snapshot below remains historical rollback context. 
 automatically eligible for R1 rollback: any rollback projection must be separately
 reviewed, effective, free of withdrawn/sensitive knowledge, and explicitly digest-pinned.
 
-## R1 knowledge candidate
+## Approved R1 test corpus
 
-The first conversational corpus is now a review-only artifact at
-`content/lucy-public-knowledge.r1.candidate.json`. It has not been staged, approved,
-published, activated, or wired into the deployed widget.
+The first conversational corpus is the exact artifact at
+`content/lucy-public-knowledge.r1.approved.json`. Ray approved these bytes for R1 testing
+on 2026-09-12 while explicitly treating the corpus as a temporary test foundation rather
+than Lucy's long-term intelligence. It has not been staged, published, activated, or wired
+into the deployed widget.
 
 - Schema: `lucy-public-knowledge-v1`
 - Entries: 25
@@ -40,10 +43,9 @@ published, activated, or wired into the deployed widget.
 Property records include typed capacity, parking, pool, hot-tub, bedroom, bathroom, and
 pet facets. Website tests bind those values back to the canonical property modules. Cloud
 Lucy's independent validator reproduces the same digest, and retrieval uses the facets to
-evaluate multi-requirement questions before lexical ranking. The text and digest still
-require Ray/Lucy review; `candidate` in the filename is a release boundary, not decoration.
-Cloud Lucy's evidence-exact acceptance suite currently passes ten conversations against
-this candidate, including the five product-review conversations, ordinary paraphrases,
+evaluate multi-requirement questions before lexical ranking. Cloud Lucy's evidence-exact
+acceptance suite currently passes ten conversations against this snapshot, including the
+five product-review conversations, ordinary paraphrases,
 restricted reservation access, and an unknown-amenity fallback.
 
 ## Owner decision recorded
@@ -55,6 +57,9 @@ restricted reservation access, and an unknown-amenity fallback.
 - Initial V0 snapshot: Ray approved the eight-answer snapshot with digest
   `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` on
   2026-09-11.
+- R1 test corpus: Ray approved the 25-entry snapshot with digest
+  `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` on
+  2026-09-12 for testing. This does not authorize production publication.
 - Paid inference/OpenRouter: disabled.
 - Transcript capture: disabled. The website does not persist or log questions or answers.
 - Private Lucy: closed until a customer identity provider and strong-auth claims are
@@ -155,7 +160,7 @@ disconnected until its provider, privacy controls, and complete cost limits are 
 
 Before setting `LUCY_PUBLIC_ENABLED=true` for R1 in any deployed environment:
 
-1. Finalize and review the effective-dated R1 public corpus and exact digest.
+1. Reconfirm the approved test corpus for production use or approve a replacement digest.
 2. Stage and approve the snapshot without activating its route.
 3. Install compatible Cloud and website readers with conversation disabled.
 4. Under quarantine, apply migration `0057_public_conversation`, reprovision the exact
@@ -184,6 +189,6 @@ was changed by this website implementation.
 | Browser and responsive flow | Passed 2026-09-12; all 22 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, context continuity across client navigation, external booking handoff, forms, redirects, and CMS 404s | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
 | Mobile visual inspection | Passed 2026-09-11 | `lucy-mobile.png` in the task visualization directory; local fallback font was used because the dev sandbox could not reach Google Fonts | Widget, CSS, layout, viewport, or font changes |
 | Candidate snapshot cross-runtime digest | Passed 2026-09-11 | Website canonicalizer and Cloud Lucy `faq_snapshot`/`snapshot_digest` both produced `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` for 8 FAQs | Candidate content or either canonicalizer changes |
-| R1 knowledge candidate digest | Passed 2026-09-12 | Website and Cloud validators both produced `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` for 25 effective-dated entries | Candidate content, schema, or either canonicalizer changes |
+| R1 approved test-corpus digest | Passed 2026-09-12 | Website and Cloud validators both produced `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` for the 25 owner-approved testing entries | Snapshot content, schema, or either canonicalizer changes |
 | Authenticated site-host binding | Passed 2026-09-11 | Full TypeScript, focused ESLint, 8 focused Vitest checks, and a 27-route production build after adding `X-Lucy-Public-Host` | Website proxy, Cloud ingress contract, or environment changes |
 | Deployed same-origin success and negative controls | Not yet executed | Requires exact pinned Cloud Lucy endpoint and deployment approval | Any ingress, credential, manifest, release, or environment change |

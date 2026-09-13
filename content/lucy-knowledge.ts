@@ -1,11 +1,11 @@
 import type { PublicLucyKnowledgeSnapshot } from "@/types/content";
-import candidate from "./lucy-public-knowledge.r1.candidate.json";
+import approvedSnapshot from "./lucy-public-knowledge.r1.approved.json";
 import { publicLucyKnowledgeSnapshotSchema } from "./schemas";
 
-const result = publicLucyKnowledgeSnapshotSchema.safeParse(candidate);
+const result = publicLucyKnowledgeSnapshotSchema.safeParse(approvedSnapshot);
 
 if (!result.success) {
-  throw new Error(`Invalid Public Lucy R1 knowledge candidate: ${result.error.message}`);
+  throw new Error(`Invalid approved Public Lucy R1 knowledge: ${result.error.message}`);
 }
 
-export const publicLucyKnowledgeCandidate: PublicLucyKnowledgeSnapshot = result.data;
+export const publicLucyKnowledgeSnapshot: PublicLucyKnowledgeSnapshot = result.data;
