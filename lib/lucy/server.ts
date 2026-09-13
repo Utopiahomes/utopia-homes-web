@@ -1,4 +1,9 @@
-import { publicLucyUpstreamAnswerSchema } from "@/lib/lucy/contracts";
+import {
+  publicLucyUpstreamAnswerSchema,
+  type PublicLucyHistoryTurn,
+  type PublicLucyPageContext,
+  type PublicLucyReference,
+} from "@/lib/lucy/contracts";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -8,13 +13,14 @@ type LucyEnvironment = {
   LUCY_PUBLIC_API_TOKEN?: string;
   LUCY_PUBLIC_SITE_HOSTNAME?: string;
   LUCY_PUBLIC_SNAPSHOT_DIGEST?: string;
+  LUCY_PUBLIC_ROLLBACK_SNAPSHOT_DIGEST?: string;
 };
 
 type PublicLucyConfiguration = {
   endpoint: URL;
   token: string;
   siteHostname: string;
-  snapshotDigest: string;
+  snapshotDigests: ReadonlySet<string>;
 };
 
 export class PublicLucyUnavailable extends Error {
@@ -36,6 +42,7 @@ export function resolvePublicLucyConfiguration(
   const token = env.LUCY_PUBLIC_API_TOKEN?.trim();
   const siteHostname = env.LUCY_PUBLIC_SITE_HOSTNAME?.trim().toLowerCase();
   const snapshotDigest = env.LUCY_PUBLIC_SNAPSHOT_DIGEST?.trim();
+  const rollbackSnapshotDigest = env.LUCY_PUBLIC_ROLLBACK_SNAPSHOT_DIGEST?.trim();
   if (
     !endpointValue ||
     !token ||
@@ -44,6 +51,9 @@ export function resolvePublicLucyConfiguration(
     !snapshotDigest ||
     !/^[a-f0-9]{64}$/.test(snapshotDigest)
   ) {
+    throw new PublicLucyUnavailable();
+  }
+  if (rollbackSnapshotDigest && !/^[a-f0-9]{64}$/.test(rollbackSnapshotDigest)) {
     throw new PublicLucyUnavailable();
   }
 
@@ -66,7 +76,27 @@ export function resolvePublicLucyConfiguration(
     throw new PublicLucyUnavailable();
   }
 
-  return { endpoint, token, siteHostname, snapshotDigest };
+  return {
+    endpoint,
+    token,
+    siteHostname,
+    snapshotDigests: new Set([snapshotDigest, ...(rollbackSnapshotDigest ? [rollbackSnapshotDigest] : [])]),
+  };
+}
+
+function approvedReference(reference: PublicLucyReference, siteHostname: string) {
+  try {
+    const url = new URL(reference.href, `https://${siteHostname}`);
+    return (
+      url.protocol === "https:" &&
+      url.hostname === siteHostname &&
+      (url.port === "" || url.port === "443") &&
+      url.username === "" &&
+      url.password === ""
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function askPublicLucy(
@@ -76,6 +106,8 @@ export async function askPublicLucy(
     env?: LucyEnvironment;
     fetcher?: typeof fetch;
     timeoutMs?: number;
+    pageContext?: PublicLucyPageContext;
+    history?: PublicLucyHistoryTurn[];
   } = {},
 ) {
   const configuration = resolvePublicLucyConfiguration(options.env);
@@ -93,20 +125,56 @@ export async function askPublicLucy(
         "X-Lucy-Public-Host": configuration.siteHostname,
         "X-Lucy-Public-Session": sessionId,
       },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({
+        question,
+        ...(options.pageContext ? { page_context: options.pageContext } : {}),
+        ...(options.history?.length ? { history: options.history } : {}),
+      }),
       cache: "no-store",
       redirect: "error",
       signal: controller.signal,
     });
+    if (response.status === 404) {
+      return {
+        outcome: "fallback" as const,
+        answer:
+          "I don’t have enough approved information to answer that yet. You can explore the site or contact Utopia Homes for help.",
+        sources: [],
+        links: [{ id: "contact", label: "Contact Utopia Homes", href: "/contact" }],
+      };
+    }
     if (!response.ok) throw new PublicLucyUnavailable();
 
     const result = publicLucyUpstreamAnswerSchema.safeParse(
       await response.json().catch(() => null),
     );
-    if (!result.success || result.data.snapshot_digest !== configuration.snapshotDigest) {
+    if (
+      !result.success ||
+      !configuration.snapshotDigests.has(result.data.snapshot_digest)
+    ) {
       throw new PublicLucyUnavailable();
     }
-    return { answer: result.data.answer };
+    if (!("contract" in result.data)) {
+      return {
+        outcome: "answered" as const,
+        answer: result.data.answer,
+        sources: [
+          { id: "legacy-source", label: "Learn more", href: result.data.source },
+        ].filter((reference) => approvedReference(reference, configuration.siteHostname)),
+        links: [],
+      };
+    }
+    const references = [...result.data.sources, ...result.data.links];
+    if (!references.every((reference) => approvedReference(reference, configuration.siteHostname))) {
+      throw new PublicLucyUnavailable();
+    }
+    return {
+      outcome: result.data.outcome,
+      answer: result.data.answer,
+      clarification: result.data.clarification,
+      sources: result.data.sources,
+      links: result.data.links,
+    };
   } catch {
     throw new PublicLucyUnavailable();
   } finally {

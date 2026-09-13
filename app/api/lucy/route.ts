@@ -103,9 +103,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await askPublicLucy(parsed.data.question, sessionId);
+    const result = await askPublicLucy(parsed.data.question, sessionId, {
+      pageContext: parsed.data.page_context,
+      history: parsed.data.history,
+    });
     return attachSession(
-      json({ ok: true, answer: result.answer }, 200),
+      json({ ok: true, ...result }, 200),
       request,
       existingSession,
       sessionId,

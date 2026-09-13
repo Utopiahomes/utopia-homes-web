@@ -75,7 +75,10 @@ describe("POST /api/lucy", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       ok: true,
+      outcome: "answered",
       answer: "Utopia Homes serves the Wildwoods and Cape May region.",
+      sources: [],
+      links: [],
     });
     expect(response.headers.get("set-cookie")).toMatch(
       /utopia_lucy_session=.*HttpOnly.*SameSite=Strict/i,

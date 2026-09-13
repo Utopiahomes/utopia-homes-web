@@ -15,7 +15,7 @@ export type AnalyticsEvent =
   | { name: "design_goal_selected" | "quote_studio_started" | "quote_generated" | "quote_acknowledged"; properties: { audience: "rental" | "personal"; serviceId: string; quoteId?: string } }
   | { name: "quote_step_completed"; properties: { audience: "rental" | "personal"; serviceId: string; quoteStep: number } }
   | { name: "campaign_view" | "campaign_conversion"; properties: { campaignId: string; slug: string; partner: string } }
-  | { name: "lucy_open" | "lucy_question_submit" | "lucy_answer_received" | "lucy_unavailable"; properties: { entryPoint: "global_widget" } };
+  | { name: "lucy_open" | "lucy_question_submit" | "lucy_answer_received" | "lucy_partial_answer" | "lucy_fallback" | "lucy_unavailable"; properties: { entryPoint: "global_widget" } };
 
 export function track(event: AnalyticsEvent) {
   if (process.env.NODE_ENV === "development") console.info("[analytics]", event);

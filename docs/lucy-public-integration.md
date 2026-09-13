@@ -1,8 +1,52 @@
 # Public Lucy website integration checkpoint
 
-Status: the local website slice is implemented and fail-closed. It is not deployed or
-enabled. The matching Cloud Lucy HTTP and database boundary is implemented and verified
-locally. The approved snapshot has not been staged in or published to Cloud Lucy.
+Status: the R1 conversational website slice is implemented and fail-closed on the local
+`codex/public-lucy-r1` branch. It is not deployed or enabled. The matching Cloud Lucy
+knowledge/retrieval boundary is implemented on its isolated local branch. Ray approved
+the exact R1 corpus for testing on 2026-09-12; it has not been staged or activated, and
+that testing approval is not production-publication authorization.
+
+## R1 amendment
+
+The browser now sends the current question, an allowlisted page context, and at most six
+prior visitor/Lucy turns (4,000 characters total). History lives only in component memory,
+survives client-side page navigation, expires after 30 minutes, and clears on refresh or
+Start over. It is conversational context—not evidence or authorization. Cloud Lucy must
+retrieve supporting approved facts again for every question.
+
+The R1 response distinguishes `answered`, `partial`, and `fallback`, with optional compact
+source and useful-link references. The website displays those customer-facing fields but
+does not expose snapshot versions, evidence IDs, trace identifiers, coverage diagnostics,
+or restrictions. It records only fixed, content-free outcome analytics.
+
+The initial eight-answer V0 snapshot below remains historical rollback context. It is not
+automatically eligible for R1 rollback: any rollback projection must be separately
+reviewed, effective, free of withdrawn/sensitive knowledge, and explicitly digest-pinned.
+
+## Approved R1 test corpus
+
+The first conversational corpus is the exact artifact at
+`content/lucy-public-knowledge.r1.approved.json`. Ray approved these bytes for R1 testing
+on 2026-09-12 while explicitly treating the corpus as a temporary test foundation rather
+than Lucy's long-term intelligence. It has not been staged, published, activated, or wired
+into the deployed widget.
+
+- Schema: `lucy-public-knowledge-v1`
+- Entries: 25
+- Canonical SHA-256: `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422`
+- Effective-from value: `2026-09-12T00:00:00Z`
+- Included: committed public property facts, owner services, design services and estimate
+  explanation, membership status, destination context, contact, and external booking handoff
+- Excluded: live rates and availability, reservation data, external booking-provider names,
+  pending biographies, email addresses, private knowledge, and model-provider details
+
+Property records include typed capacity, parking, pool, hot-tub, bedroom, bathroom, and
+pet facets. Website tests bind those values back to the canonical property modules. Cloud
+Lucy's independent validator reproduces the same digest, and retrieval uses the facets to
+evaluate multi-requirement questions before lexical ranking. Cloud Lucy's evidence-exact
+acceptance suite currently passes ten conversations against this snapshot, including the
+five product-review conversations, ordinary paraphrases,
+restricted reservation access, and an unknown-amenity fallback.
 
 ## Owner decision recorded
 
@@ -13,6 +57,9 @@ locally. The approved snapshot has not been staged in or published to Cloud Lucy
 - Initial V0 snapshot: Ray approved the eight-answer snapshot with digest
   `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` on
   2026-09-11.
+- R1 test corpus: Ray approved the 25-entry snapshot with digest
+  `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` on
+  2026-09-12 for testing. This does not authorize production publication.
 - Paid inference/OpenRouter: disabled.
 - Transcript capture: disabled. The website does not persist or log questions or answers.
 - Private Lucy: closed until a customer identity provider and strong-auth claims are
@@ -50,8 +97,8 @@ knowledge or reasoning.
 ## Implemented website boundary
 
 The root layout mounts a site-wide, keyboard-accessible `Ask Lucy` widget only when
-`LUCY_PUBLIC_ENABLED=true`. The browser sends a bounded `{ "question": string }` body to
-the same-origin route. The route:
+`LUCY_PUBLIC_ENABLED=true`. The browser sends a bounded question, page context, and
+temporary history to the same-origin route. The route:
 
 - requires an exact same-origin browser request and JSON body;
 - caps the request at 8 KiB and the normalized question at 500 characters;
@@ -59,9 +106,8 @@ the same-origin route. The route:
 - creates a one-hour, HttpOnly, SameSite=Strict session cookie;
 - sends the question and opaque session only to the exact configured upstream URL;
 - keeps the upstream bearer server-only and refuses credential-bearing redirects;
-- validates the complete upstream response and requires its snapshot digest to equal
-  the exact owner-approved `LUCY_PUBLIC_SNAPSHOT_DIGEST` before returning only the
-  approved answer;
+- validates the complete upstream response and requires its snapshot digest to equal an
+  explicitly configured, currently eligible primary or rollback digest;
 - returns a generic, non-cached `503` on missing configuration, network failure, or an
   invalid upstream contract;
 - emits content-free analytics events only—never question or answer text.
@@ -83,42 +129,50 @@ Origin: https://www.utopiahomes.com
 X-Lucy-Public-Host: www.utopiahomes.com
 X-Lucy-Public-Session: <opaque UUID>
 
-{"question":"..."}
+{
+  "question":"...",
+  "page_context":{"route":"property","property_slug":"buttercup-beauty"},
+  "history":[{"role":"visitor","content":"Tell me about Buttercup."}]
+}
 ```
 
-The accepted `200` response is strict JSON:
+R1's accepted `200` response is strict JSON:
 
 ```json
 {
-  "answer": "Approved public answer",
-  "source": "content://approved-source-lineage",
-  "version": 1,
+  "contract": "lucy.public-answer.v2",
+  "outcome": "answered",
+  "answer": "Approved public answer.",
+  "sources": [{"id":"buttercup","label":"Buttercup Beauty","href":"https://www.utopiahomes.com/stays/buttercup-beauty"}],
+  "links": [],
+  "version": 2,
   "snapshot_digest": "64-lowercase-hex-characters"
 }
 ```
 
-Cloud Lucy must bind the dedicated credential to the Utopia public projection, accept
-only the approved origin/site binding, read only the published projection, and return no
-private-memory fallback. A miss should be a bounded non-`200` response without invoking
-a paid provider while OpenRouter is disabled. The website also rejects a structurally
-valid response when its snapshot digest differs from the configured approved digest.
+Cloud Lucy binds the dedicated credential to the Utopia public projection, accepts only
+the approved origin/site binding, reads only the currently effective published
+projection, and has no private-memory fallback. A knowledge miss is a successful,
+honest fallback; an operational failure is a generic `503`. Paid inference remains
+disconnected until its provider, privacy controls, and complete cost limits are approved.
 
 ## Activation gate
 
-Before setting `LUCY_PUBLIC_ENABLED=true` in any deployed environment:
+Before setting `LUCY_PUBLIC_ENABLED=true` for R1 in any deployed environment:
 
-1. Reconcile and review the locally implemented upstream contract in
-   `cloud-hermes-lucy` with the concurrent Stage 1 work.
-2. Stage and publish the exact owner-approved V0 snapshot bytes in Cloud Lucy; record
-   the approved digest and source lineage in the private activation manifest and
-   website environment.
-3. Create a dedicated website-to-Lucy bearer of at least 32 characters and store it only
+1. Reconfirm the approved test corpus for production use or approve a replacement digest.
+2. Stage and approve the snapshot without activating its route.
+3. Install compatible Cloud and website readers with conversation disabled.
+4. Under quarantine, apply migration `0057_public_conversation`, reprovision the exact
+   execute-only public role, and verify the readers and negative controls.
+5. Atomically activate the approved projection, then enable the conversational reader.
+6. Create a dedicated website-to-Lucy bearer of at least 32 characters and store it only
    in the corresponding encrypted Vercel and Cloud Lucy environments.
-4. Validate the populated activation manifest with paid inference and transcript capture
+7. Validate the populated activation manifest with paid inference and transcript capture
    both false.
-5. Under quarantine, prove missing/wrong bearer, foreign origin, cross-realm selection,
+8. Prove missing/wrong bearer, foreign origin, cross-realm selection,
    over-limit requests, snapshot miss, and direct private ingress all fail closed.
-6. Obtain separate deployment/activation approval, deploy the exact pinned revisions,
+9. Obtain separate deployment/activation approval, deploy the exact pinned revisions,
    verify one approved answer through `https://www.utopiahomes.com/api/lucy`, and exercise
    the documented rollback to `LUCY_PUBLIC_ENABLED=false`.
 
@@ -129,11 +183,12 @@ was changed by this website implementation.
 
 | Check | Result | Evidence | Invalidated by |
 | --- | --- | --- | --- |
-| Strict TypeScript and ESLint | Passed 2026-09-12 | Local working tree based on `f075de0`; `tsc --noEmit`, `eslint .` | Code/dependency/config changes |
-| Unit and contract tests | Passed 2026-09-12; 21 files, 81 tests | Full Vitest run against the isolated release commit, including Lucy request, digest pinning, cross-runtime candidate snapshot, upstream-validation, and widget tests | Code/dependency/config changes |
-| Production build | Passed 2026-09-12; 27 routes generated | Next.js 16.3.2 production build with `/api/lucy` dynamic | Code/dependency/build-environment changes |
-| Browser and responsive flow | Passed 2026-09-12; all 21 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, external booking handoff, forms, redirects, and CMS 404s. The pass also confirmed the corrected relative hero-image wrapper and Next 16 smooth-scroll declaration without either prior runtime warning. | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
+| Strict TypeScript and ESLint | Passed 2026-09-12 | Isolated branch based on canonical `c05c1ea`; `tsc --noEmit`, `eslint .` | Code/dependency/config changes |
+| Unit and contract tests | Passed 2026-09-12; 23 files, 91 tests | Full Vitest run including bounded/expiring history, page context, R1 response validation, digest pinning, source URL controls, candidate lineage, fallbacks, and widget tests | Code/dependency/config changes |
+| Production build | Passed 2026-09-12; 27 routes generated | Next.js 16.3.2 Webpack production build with `/api/lucy` dynamic. Webpack was used because Turbopack rejects the isolated worktree's external dependency junction. | Code/dependency/build-environment changes |
+| Browser and responsive flow | Passed 2026-09-12; all 22 Playwright scenarios | Lucy enabled with its upstream absent; includes mobile navigation, fail-closed Lucy, context continuity across client navigation, external booking handoff, forms, redirects, and CMS 404s | Widget, route, CSS, layout, Playwright config, or shared site behavior changes |
 | Mobile visual inspection | Passed 2026-09-11 | `lucy-mobile.png` in the task visualization directory; local fallback font was used because the dev sandbox could not reach Google Fonts | Widget, CSS, layout, viewport, or font changes |
 | Candidate snapshot cross-runtime digest | Passed 2026-09-11 | Website canonicalizer and Cloud Lucy `faq_snapshot`/`snapshot_digest` both produced `6232b5fa0b382346fba692f29e74d2b3fdbcd9a19ee960d2e609fd0b2ce2b99e` for 8 FAQs | Candidate content or either canonicalizer changes |
+| R1 approved test-corpus digest | Passed 2026-09-12 | Website and Cloud validators both produced `95e2e20a9e4a3786e3daa63a73bb5ff2866b5bae295e6dc138bf432e4361c422` for the 25 owner-approved testing entries | Snapshot content, schema, or either canonicalizer changes |
 | Authenticated site-host binding | Passed 2026-09-11 | Full TypeScript, focused ESLint, 8 focused Vitest checks, and a 27-route production build after adding `X-Lucy-Public-Host` | Website proxy, Cloud ingress contract, or environment changes |
 | Deployed same-origin success and negative controls | Not yet executed | Requires exact pinned Cloud Lucy endpoint and deployment approval | Any ingress, credential, manifest, release, or environment change |

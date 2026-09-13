@@ -30,9 +30,12 @@ No production or preview environment may scrape Airbnb or Vrbo at runtime.
 ## Public Lucy isolation
 
 Public Lucy is disabled by default and has no browser-visible provider or Cloud Lucy
-credential. The website proxy accepts a bounded question, establishes an opaque HttpOnly
-session, applies defense-in-depth rate limits, and sends no raw IP address or page/form
-context upstream. It does not store or log message content. Cloud Lucy remains the
+credential. The website proxy accepts a bounded question, an allowlisted public-page
+context, and a short browser-memory history; it establishes an opaque HttpOnly session,
+applies defense-in-depth rate limits, and sends no raw IP address or form context
+upstream. It does not persist or log message content. Conversation history clears on
+refresh, Start over, or expiry and may narrow retrieval but never expand access or serve
+as evidence. Cloud Lucy remains the
 authoritative public-projection, tenant-binding, and distributed-admission boundary;
 private memory, transcript capture, tools, and paid inference are outside this website
 route. The exact contract and activation gate are recorded in
