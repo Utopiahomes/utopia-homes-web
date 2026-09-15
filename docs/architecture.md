@@ -10,7 +10,7 @@ The V1 website is code-first and has no Wix application dependency.
 - **Content:** validated, version-controlled modules in `/content`
 - **Forms:** Vercel-compatible route handlers, provider-neutral submission and email interfaces, and durable Supabase storage
 - **Transactional email:** provider-neutral `EmailProvider` with Proton SMTP active for V1 and the Resend HTTPS adapter retained but inactive; authenticated server-only sender and centralized `LEAD_NOTIFICATION_EMAIL` recipient
-- **Booking:** configured external links to the approved StayNue/Uplisting environment
+- **Booking:** provider-neutral, per-property external handoff configuration (`booking.primary`/`booking.fallback`) with a source-controlled Airbnb rollback destination and an independent Airbnb review-attribution profile; no provider is currently activated as `primary` while a booking provider is evaluated — see `docs/direct-booking-handoff.md`
 - **Domain:** Wix or GoDaddy may remain registrar/DNS provider only
 
 Pages depend on `CmsAdapter`, not file paths. V1 binds that contract to `repositoryCms`. A future CMS or database can implement the same contract without rewriting pages.

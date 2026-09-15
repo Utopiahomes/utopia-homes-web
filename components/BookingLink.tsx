@@ -1,26 +1,36 @@
 "use client";
 
 import type { MouseEvent } from "react";
+import type { BookingDestination } from "@/types/content";
 import { track } from "@/lib/analytics/events";
 import { appendAttribution, getBookingHost } from "@/lib/booking/link";
 
 interface BookingLinkProps {
   propertyId: string;
+  propertyName: string;
   slug: string;
-  bookingUrl: string;
+  destination: BookingDestination;
   location: string;
   className?: string;
   children?: React.ReactNode;
 }
 
-export function BookingLink({ propertyId, slug, bookingUrl, location, className, children }: BookingLinkProps) {
+export function BookingLink({ propertyId, propertyName, slug, destination, location, className, children }: BookingLinkProps) {
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
     track({
       name: "outbound_booking_click",
-      properties: { propertyId, slug, bookingHost: getBookingHost(bookingUrl), ctaLocation: location },
+      properties: {
+        propertyId,
+        propertyName,
+        slug,
+        bookingProvider: destination.provider,
+        bookingHost: getBookingHost(destination.url),
+        ctaLocation: location,
+        sourcePage: window.location.pathname,
+      },
     });
-    event.currentTarget.href = appendAttribution(bookingUrl, window.location.search);
+    event.currentTarget.href = appendAttribution(destination.url, window.location.search);
   }
 
-  return <a className={className ?? "button button-primary"} href={bookingUrl} onClick={handleClick}>{children ?? "Check availability"}</a>;
+  return <a aria-label={`Check availability for ${propertyName}`} className={className ?? "button button-primary"} data-booking-provider={destination.provider} href={destination.url} onClick={handleClick}>{children ?? "Check availability"}</a>;
 }

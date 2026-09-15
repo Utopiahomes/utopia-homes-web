@@ -29,6 +29,30 @@ export interface PropertyReviewSummary {
   highlights: string[];
 }
 
+export type BookingProvider = "uplisting" | "lodgify" | "airbnb" | "vrbo" | "other";
+
+export interface BookingDestination {
+  provider: BookingProvider;
+  url: string;
+}
+
+// `primary` is the intended direct-booking destination once a verified provider URL is
+// approved for a property; `fallback` is the durable rollback (currently Airbnb for every
+// launch property). `mode` selects which one guests actually see. No property currently
+// has a `primary` destination configured -- see docs/direct-booking-handoff.md.
+export interface PropertyBookingConfiguration {
+  mode: "primary" | "fallback";
+  primary?: BookingDestination;
+  fallback: BookingDestination;
+}
+
+// Independent of `booking`: the property's own listing/review-source profile on another
+// platform, kept separate so switching booking providers never touches review attribution.
+export interface PropertyExternalProfiles {
+  airbnb?: { url: string };
+  vrbo?: { url: string };
+}
+
 export interface Property {
   id: string;
   name: string;
@@ -54,7 +78,8 @@ export interface Property {
   petPolicy: string;
   parking: string;
   accessibility: string;
-  bookingUrl: string;
+  booking: PropertyBookingConfiguration;
+  profiles?: PropertyExternalProfiles;
   sourceUrls: string[];
   sourceSnapshot: {
     listingTitle: string;
