@@ -19,6 +19,7 @@
     "retention:place-legal-hold": "node scripts/retention.mjs place-legal-hold",
     "retention:release-legal-hold": "node scripts/retention.mjs release-legal-hold",
     "e2e": "playwright test",
+    "lucy:reproduce": "node scripts/lucy-reproduction.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
   },
   "dependencies": {
