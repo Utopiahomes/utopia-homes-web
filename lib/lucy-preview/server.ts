@@ -90,6 +90,9 @@ export async function askPreviewGuestAnswer(
     // the existing /api/lucy route's own no-leak convention for the legacy upstream.
     if (!response.ok) throw new PreviewGuestAnswerUnavailable();
 
+    // Deliberately never read `response.headers` here, including the provider's diagnostic
+    // X-Utopia-Preview-Mode header: that header exists for out-of-band operational visibility
+    // only and must never reach a public widget or analytics. Only the JSON body is read.
     const payload = await response.json().catch(() => null);
     const result = previewGuestAnswerResponseSchema.safeParse(payload);
     if (!result.success || result.data.outcome !== "answered") {

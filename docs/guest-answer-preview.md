@@ -6,12 +6,17 @@ Pins Business Contract RC2 commit `daf99943abf177f2209a6efb00e03c087bc542c6` and
 
 **Conformance status**: the provider this route calls is a preconformant compatibility stage — it
 delegates to the legacy `cloud-hermes-lucy` FAQ engine and does not satisfy `guest.answer@1.0`
-conformance (RC2 §§13-18). Every answer it returns carries a fixed `limitations[]` entry saying so
-on the wire. This route exists to prove the consumer-side protocol integration, not to preview
-guest-answer quality. See `utopia-homes-guest-answer-provider`'s
-`docs/guest-answer-preview-rollout.md` for the two-stage plan and why only the second stage
-(Homes-owned prompts/knowledge/policy behind a private Shared Model Execution call, no legacy
-delegation) is eligible for Tier B evaluation.
+conformance (RC2 §§13-18). That status is carried only out of band, via an
+`X-Utopia-Preview-Mode: legacy-bridge` diagnostic response header — **not** in the
+customer-visible `limitations[]` field, which RC2 §12.2 requires to stay customer-relevant and
+explicitly prohibits from revealing internal provider/infrastructure detail. `lib/lucy-preview/
+server.ts` deliberately never reads `response.headers` at all (only the JSON body), so that
+diagnostic header can never leak into this route's own `{ok, answer}` response to the browser or
+into analytics — keep it that way if this file changes. This route exists to prove the
+consumer-side protocol integration, not to preview guest-answer quality. See
+`utopia-homes-guest-answer-provider`'s `docs/guest-answer-preview-rollout.md` for the two-stage
+plan and why only the second stage (Homes-owned prompts/knowledge/policy behind a private Shared
+Model Execution call, no legacy delegation) is eligible for Tier B evaluation.
 
 ## What this branch adds
 
