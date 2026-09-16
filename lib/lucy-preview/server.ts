@@ -1,6 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { previewGuestAnswerResponseSchema } from "@/lib/lucy-preview/contracts";
 import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "@/lib/lucy-preview/jwt";
+import {
+  PreviewMarkerMissing,
+  PreviewResponseTooLarge,
+  PreviewSetCookiePresent,
+  readBoundedResponseBody,
+  validateResponseHeaders,
+} from "@/lib/lucy-preview/response-validation";
 
 const DEFAULT_TIMEOUT_MS = 15_000; // RC2's consumer total-interaction deadline is 22s; leave margin.
 
@@ -69,6 +76,7 @@ export async function askPreviewGuestAnswer(
     message: { turn_id: randomUUID(), content: question },
     locale: "en-US",
   };
+  const requestId = randomUUID();
 
   try {
     const response = await (options.fetcher ?? fetch)(providerUrl, {
@@ -77,7 +85,7 @@ export async function askPreviewGuestAnswer(
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "X-Request-ID": randomUUID(),
+        "X-Request-ID": requestId,
         "Idempotency-Key": randomUUID(),
       },
       body: JSON.stringify(requestBody),
@@ -86,20 +94,45 @@ export async function askPreviewGuestAnswer(
       signal: controller.signal,
     });
 
+    // Read and validate the RC2-required/diagnostic header allowlist server-side, so Stage 1 can
+    // accurately claim protocol-preview coverage — see response-validation.ts for exactly which
+    // checks are hard failures (Set-Cookie, the preview marker) versus logged-only diagnostics.
+    // This is the ONLY thing that touches response.headers; the object below is content-free
+    // (booleans/short strings) and is logged server-side ONLY — never returned from this
+    // function, never included in the route's {ok, answer} response, never sent to analytics.
+    const diagnostics = validateResponseHeaders(response, requestId);
+    if (!diagnostics.requestIdEchoOk || !diagnostics.contentTypeOk || !diagnostics.cacheControlOk) {
+      console.warn("[lucy-preview] response header diagnostic mismatch", diagnostics);
+    }
+
+    // Bounded raw-byte read BEFORE any JSON parsing (RC2 Section 6's 64 KiB response cap) —
+    // never parse first and check size after.
+    const rawBody = await readBoundedResponseBody(response);
+
     // Never forward provider error detail (code/message/correlation_id) to the caller — matches
     // the existing /api/lucy route's own no-leak convention for the legacy upstream.
     if (!response.ok) throw new PreviewGuestAnswerUnavailable();
 
-    // Deliberately never read `response.headers` here, including the provider's diagnostic
-    // X-Utopia-Preview-Mode header: that header exists for out-of-band operational visibility
-    // only and must never reach a public widget or analytics. Only the JSON body is read.
-    const payload = await response.json().catch(() => null);
+    const payload = ((): unknown => {
+      try {
+        return JSON.parse(rawBody);
+      } catch {
+        return null;
+      }
+    })();
     const result = previewGuestAnswerResponseSchema.safeParse(payload);
     if (!result.success || result.data.outcome !== "answered") {
       throw new PreviewGuestAnswerUnavailable();
     }
     return { answer: result.data.answer };
   } catch (err) {
+    if (
+      err instanceof PreviewMarkerMissing ||
+      err instanceof PreviewSetCookiePresent ||
+      err instanceof PreviewResponseTooLarge
+    ) {
+      console.warn("[lucy-preview] response failed a hard validation check", err.message);
+    }
     if (err instanceof PreviewGuestAnswerUnavailable) throw err;
     throw new PreviewGuestAnswerUnavailable();
   } finally {
