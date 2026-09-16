@@ -2,11 +2,13 @@ import { randomUUID } from "node:crypto";
 import { previewGuestAnswerResponseSchema } from "@/lib/lucy-preview/contracts";
 import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "@/lib/lucy-preview/jwt";
 import {
-  PreviewMarkerMissing,
+  PreviewResponseHeaderViolation,
+  PreviewResponseInvalidEncoding,
   PreviewResponseTooLarge,
-  PreviewSetCookiePresent,
   readBoundedResponseBody,
-  validateResponseHeaders,
+  validatePreBodyHeaders,
+  validateRetryableErrorHeaders,
+  validateSuccessReleaseHeaders,
 } from "@/lib/lucy-preview/response-validation";
 
 const DEFAULT_TIMEOUT_MS = 15_000; // RC2's consumer total-interaction deadline is 22s; leave margin.
@@ -78,8 +80,12 @@ export async function askPreviewGuestAnswer(
   };
   const requestId = randomUUID();
 
+  // Hoisted so the catch block can cancel an unread body — see below. Only assigned once the
+  // fetch itself succeeds; a fetch-level failure has no body to worry about.
+  let response: Response | undefined;
+
   try {
-    const response = await (options.fetcher ?? fetch)(providerUrl, {
+    response = await (options.fetcher ?? fetch)(providerUrl, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -94,25 +100,17 @@ export async function askPreviewGuestAnswer(
       signal: controller.signal,
     });
 
-    // Read and validate the RC2-required/diagnostic header allowlist server-side, so Stage 1 can
-    // accurately claim protocol-preview coverage — see response-validation.ts for exactly which
-    // checks are hard failures (Set-Cookie, the preview marker) versus logged-only diagnostics.
-    // This is the ONLY thing that touches response.headers; the object below is content-free
-    // (booleans/short strings) and is logged server-side ONLY — never returned from this
-    // function, never included in the route's {ok, answer} response, never sent to analytics.
-    const diagnostics = validateResponseHeaders(response, requestId);
-    if (!diagnostics.requestIdEchoOk || !diagnostics.contentTypeOk || !diagnostics.cacheControlOk) {
-      console.warn("[lucy-preview] response header diagnostic mismatch", diagnostics);
-    }
+    // Phase 1: header checks available before the body is read. Fails closed (throws) on ANY
+    // violation — wrong Content-Type, missing no-store, an unexpected Set-Cookie, a request-ID
+    // echo mismatch, or a wrong/missing preview marker. This is the ONLY thing that touches
+    // response.headers before the body is read; nothing here is ever forwarded to the browser.
+    const preBodyDiagnostics = validatePreBodyHeaders(response, requestId);
 
-    // Bounded raw-byte read BEFORE any JSON parsing (RC2 Section 6's 64 KiB response cap) —
-    // never parse first and check size after.
+    // Phase 2: bounded, STREAMING raw-byte read (cancels the instant 64 KiB is exceeded, rather
+    // than buffering the whole body via response.arrayBuffer() and checking size after the fact)
+    // with a FATAL UTF-8 decode (RC2 requires valid UTF-8 JSON; a lossy decode would silently
+    // substitute replacement characters instead of rejecting malformed bytes).
     const rawBody = await readBoundedResponseBody(response);
-
-    // Never forward provider error detail (code/message/correlation_id) to the caller — matches
-    // the existing /api/lucy route's own no-leak convention for the legacy upstream.
-    if (!response.ok) throw new PreviewGuestAnswerUnavailable();
-
     const payload = ((): unknown => {
       try {
         return JSON.parse(rawBody);
@@ -120,18 +118,59 @@ export async function askPreviewGuestAnswer(
         return null;
       }
     })();
-    const result = previewGuestAnswerResponseSchema.safeParse(payload);
-    if (!result.success || result.data.outcome !== "answered") {
-      throw new PreviewGuestAnswerUnavailable();
+
+    // Phase 3: outcome-specific fail-closed checks, using the parsed body only to extract a
+    // single boolean (never forwarded) for the error path.
+    if (response.ok) {
+      const releaseDiagnostics = validateSuccessReleaseHeaders(response);
+      const result = previewGuestAnswerResponseSchema.safeParse(payload);
+      if (!result.success || result.data.outcome !== "answered") {
+        throw new PreviewGuestAnswerUnavailable();
+      }
+      // Evidence, per the header-validation boundary: a content-free record that every check ran
+      // and passed, logged server-side only. Deliberately omits previewModeValue (a raw,
+      // provider-controlled header value) even though it's already been validated equal to the
+      // one expected constant — every other field is a plain boolean.
+      console.info("[lucy-preview] response passed all wire validation checks", {
+        contentTypeOk: preBodyDiagnostics.contentTypeOk,
+        cacheControlOk: preBodyDiagnostics.cacheControlOk,
+        setCookieAbsent: preBodyDiagnostics.setCookieAbsent,
+        requestIdEchoOk: preBodyDiagnostics.requestIdEchoOk,
+        previewModeOk: preBodyDiagnostics.previewModeOk,
+        businessReleasePresent: releaseDiagnostics.businessReleasePresent,
+        knowledgeReleasePresent: releaseDiagnostics.knowledgeReleasePresent,
+      });
+      return { answer: result.data.answer };
     }
-    return { answer: result.data.answer };
+
+    // Never forward provider error detail (code/message/correlation_id) to the caller — matches
+    // the existing /api/lucy route's own no-leak convention for the legacy upstream. Error detail
+    // is read here only to validate Retry-After, never returned.
+    const retryDiagnostics = validateRetryableErrorHeaders(response, payload);
+    console.info("[lucy-preview] error response passed wire validation checks", {
+      contentTypeOk: preBodyDiagnostics.contentTypeOk,
+      cacheControlOk: preBodyDiagnostics.cacheControlOk,
+      setCookieAbsent: preBodyDiagnostics.setCookieAbsent,
+      requestIdEchoOk: preBodyDiagnostics.requestIdEchoOk,
+      previewModeOk: preBodyDiagnostics.previewModeOk,
+      retryable: retryDiagnostics.retryable,
+      retryAfterOk: retryDiagnostics.retryAfterOk,
+    });
+    throw new PreviewGuestAnswerUnavailable();
   } catch (err) {
+    // A violation thrown by validatePreBodyHeaders happens before readBoundedResponseBody is
+    // ever called, so the body is still unread — without this, the connection would stay open
+    // until garbage collection instead of being released immediately. Any later failure has
+    // already disturbed the body (bodyUsed is true by then), so this is a no-op there.
+    if (response && !response.bodyUsed) {
+      await response.body?.cancel().catch(() => undefined);
+    }
     if (
-      err instanceof PreviewMarkerMissing ||
-      err instanceof PreviewSetCookiePresent ||
-      err instanceof PreviewResponseTooLarge
+      err instanceof PreviewResponseHeaderViolation ||
+      err instanceof PreviewResponseTooLarge ||
+      err instanceof PreviewResponseInvalidEncoding
     ) {
-      console.warn("[lucy-preview] response failed a hard validation check", err.message);
+      console.warn("[lucy-preview] response failed a hard validation check:", err.message);
     }
     if (err instanceof PreviewGuestAnswerUnavailable) throw err;
     throw new PreviewGuestAnswerUnavailable();
