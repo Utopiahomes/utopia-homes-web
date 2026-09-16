@@ -4,6 +4,15 @@ Pins Business Contract RC2 commit `daf99943abf177f2209a6efb00e03c087bc542c6` and
 `sha256:50492b998b393a25322cb9b76e4a8fbd7199905b8457450b8aa48ae00149ad4c`, the same pin as the
 `utopia-homes-guest-answer-provider` repo this branch talks to.
 
+**Conformance status**: the provider this route calls is a preconformant compatibility stage — it
+delegates to the legacy `cloud-hermes-lucy` FAQ engine and does not satisfy `guest.answer@1.0`
+conformance (RC2 §§13-18). Every answer it returns carries a fixed `limitations[]` entry saying so
+on the wire. This route exists to prove the consumer-side protocol integration, not to preview
+guest-answer quality. See `utopia-homes-guest-answer-provider`'s
+`docs/guest-answer-preview-rollout.md` for the two-stage plan and why only the second stage
+(Homes-owned prompts/knowledge/policy behind a private Shared Model Execution call, no legacy
+delegation) is eligible for Tier B evaluation.
+
 ## What this branch adds
 
 - `lib/lucy-preview/jwt.ts` — signs a `stoin-business-jwt-v1` EdDSA JWT with an ephemeral,
