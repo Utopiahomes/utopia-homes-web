@@ -126,6 +126,7 @@ export async function readBoundedResponseBody(response: Response): Promise<strin
 export function validatePreBodyHeaders(
   response: Response,
   expectedRequestId: string,
+  expectedPreviewMode: string = EXPECTED_PREVIEW_MODE,
 ): PreBodyDiagnostics {
   const headers = response.headers;
 
@@ -140,7 +141,7 @@ export function validatePreBodyHeaders(
     cacheControlOk: cacheControlDirectives.includes("no-store"),
     setCookieAbsent: !headers.has("set-cookie"),
     requestIdEchoOk: headers.get("x-request-id") === expectedRequestId,
-    previewModeOk: previewModeValue === EXPECTED_PREVIEW_MODE,
+    previewModeOk: previewModeValue === expectedPreviewMode,
     previewModeValue,
   };
 

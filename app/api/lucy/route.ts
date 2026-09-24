@@ -2,11 +2,27 @@ import { randomUUID } from "node:crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/forms/rate-limit";
 import { publicLucyQuestionSchema, type PublicLucyResponse } from "@/lib/lucy/contracts";
+import { askHomesPrime, isHomesPrimeBackend } from "@/lib/lucy/homes-prime";
 import {
   askPublicLucy,
   isPublicLucyEnabled,
   resolvePublicLucyConfiguration,
 } from "@/lib/lucy/server";
+
+const SITE_HOSTNAME =
+  /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+
+/**
+ * The site this deployment answers for. With the Homes Prime backend only the hostname binding is
+ * needed; the legacy upstream still validates its full configuration, so rolling back to legacy
+ * (LUCY_ANSWER_BACKEND unset) needs that configuration to still be present.
+ */
+function resolveSiteHostname() {
+  if (!isHomesPrimeBackend()) return resolvePublicLucyConfiguration().siteHostname;
+  const hostname = process.env.LUCY_PUBLIC_SITE_HOSTNAME?.trim().toLowerCase();
+  if (!hostname || !SITE_HOSTNAME.test(hostname)) throw new Error("site hostname is not configured");
+  return hostname;
+}
 
 const MAX_REQUEST_BYTES = 8_192;
 const SESSION_COOKIE = "utopia_lucy_session";
@@ -48,7 +64,7 @@ export async function POST(request: NextRequest) {
   }
   let siteHostname: string;
   try {
-    siteHostname = resolvePublicLucyConfiguration().siteHostname;
+    siteHostname = resolveSiteHostname();
   } catch {
     return json(
       { ok: false, message: "Lucy is taking a quiet moment. Please try again shortly." },
@@ -103,7 +119,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await askPublicLucy(parsed.data.question, sessionId, {
+    // The operator picks the backend (LUCY_ANSWER_BACKEND); there is no automatic fallback.
+    const ask = isHomesPrimeBackend() ? askHomesPrime : askPublicLucy;
+    const result = await ask(parsed.data.question, sessionId, {
       pageContext: parsed.data.page_context,
       history: parsed.data.history,
     });
