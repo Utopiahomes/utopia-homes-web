@@ -4,9 +4,12 @@ export type AnalyticsEvent =
       name: "outbound_booking_click";
       properties: {
         propertyId: string;
+        propertyName: string;
         slug: string;
+        bookingProvider: "uplisting" | "airbnb" | "vrbo" | "other";
         bookingHost: string;
         ctaLocation: string;
+        sourcePage: string;
       };
     }
   | { name: "property_view"; properties: { propertyId: string; slug: string; destination: string } }

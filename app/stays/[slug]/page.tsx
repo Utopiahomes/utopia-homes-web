@@ -9,6 +9,7 @@ import { PropertyGallery } from "@/components/PropertyGallery";
 import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
 import { PropertyReviews } from "@/components/PropertyReviews";
 import { cms } from "@/lib/cms";
+import { resolveBookingDestination } from "@/lib/booking/destination";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,11 +29,12 @@ export default async function PropertyPage({ params }: Props) {
   if (renamedSlugs[slug]) permanentRedirect(`/stays/${renamedSlugs[slug]}`);
   const property = await cms.getPropertyBySlug(slug);
   if (!property) notFound();
+  const bookingDestination = resolveBookingDestination(property.booking);
   return <article className="property-page">
     <AnalyticsView event={{ name: "property_view", properties: { propertyId: property.id, slug: property.slug, destination: property.destinationId } }} />
     <header className="property-hero">
       <div className="property-kicker"><p className="eyebrow">Utopia stay · {property.city}, {property.state}</p><span>{property.propertyType}</span></div>
-      <div className="property-title-row"><div><h1>{property.name}</h1><p>{property.shortDescription}</p></div><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_hero" className="round-booking-link">Check<br />availability <span aria-hidden="true">↗</span></BookingLink></div>
+      <div className="property-title-row"><div><h1>{property.name}</h1><p>{property.shortDescription}</p></div><BookingLink propertyId={property.id} propertyName={property.name} slug={property.slug} destination={bookingDestination} location="property_hero" className="round-booking-link">Check<br />availability <span aria-hidden="true">↗</span></BookingLink></div>
     </header>
     <PropertyGallery images={property.gallery} />
     <section className="property-content">
@@ -43,7 +45,7 @@ export default async function PropertyPage({ params }: Props) {
         <div className="amenities-section"><p className="eyebrow">At the house</p><h2>Everything your<br />crew needs.</h2><AmenityGroups groups={property.amenities} /></div>
         <div className="stay-notes"><p className="eyebrow">Good to know</p><dl><div><dt>Pets</dt><dd>{property.petPolicy}</dd></div><div><dt>Parking</dt><dd>{property.parking}</dd></div><div><dt>Accessibility</dt><dd>{property.accessibility}</dd></div></dl></div>
       </div>
-      <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} /><div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div></aside>
+      <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} /><div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p><BookingLink propertyId={property.id} propertyName={property.name} slug={property.slug} destination={bookingDestination} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div></aside>
     </section>
     <PropertyReviews summary={property.reviewSummary} />
     <PropertyPhotoStory property={property} />

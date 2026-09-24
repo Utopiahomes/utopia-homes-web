@@ -29,6 +29,24 @@ export interface PropertyReviewSummary {
   highlights: string[];
 }
 
+export type BookingProvider = "uplisting" | "airbnb" | "vrbo" | "other";
+
+export interface BookingDestination {
+  provider: BookingProvider;
+  url: string;
+}
+
+export interface PropertyBookingConfiguration {
+  mode: "primary" | "fallback";
+  primary?: BookingDestination;
+  fallback: BookingDestination;
+}
+
+export interface PropertyExternalProfiles {
+  airbnb?: { url: string };
+  vrbo?: { url: string };
+}
+
 export interface Property {
   id: string;
   name: string;
@@ -54,7 +72,8 @@ export interface Property {
   petPolicy: string;
   parking: string;
   accessibility: string;
-  bookingUrl: string;
+  booking: PropertyBookingConfiguration;
+  profiles?: PropertyExternalProfiles;
   sourceUrls: string[];
   sourceSnapshot: {
     listingTitle: string;

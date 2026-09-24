@@ -10,7 +10,8 @@ The V1 website is code-first and has no Wix application dependency.
 - **Content:** validated, version-controlled modules in `/content`
 - **Forms:** Vercel-compatible route handlers, provider-neutral submission and email interfaces, and durable Supabase storage
 - **Transactional email:** provider-neutral `EmailProvider` with Proton SMTP active for V1 and the Resend HTTPS adapter retained but inactive; authenticated server-only sender and centralized `LEAD_NOTIFICATION_EMAIL` recipient
-- **Booking:** configured external links to the approved StayNue/Uplisting environment
+- **Booking:** provider-neutral, per-property external handoff configuration with an explicit primary destination and source-controlled fallback; Phase 1 does not use an Uplisting API
+- **Public Lucy:** optional site-wide client behind a same-origin `/api/lucy` route; the server-only proxy is bound to one exact Cloud Lucy endpoint and returns only validated approved-public answers
 - **Domain:** Wix or GoDaddy may remain registrar/DNS provider only
 
 Pages depend on `CmsAdapter`, not file paths. V1 binds that contract to `repositoryCms`. A future CMS or database can implement the same contract without rewriting pages.
