@@ -113,12 +113,19 @@ export function toGuestAnswerHistory(history: PublicLucyHistoryTurn[]) {
   return kept.map((turn) => ({ turn_id: randomUUID(), ...turn }));
 }
 
+/**
+ * Homes Prime links only to the public Utopia site. A preview deployment answers on its own
+ * *.vercel.app hostname, so links are approved for the public site as well as the deployment's
+ * configured hostname.
+ */
+const PUBLIC_SITE_HOSTNAME = "www.utopiahomes.com";
+
 function approvedReference(reference: PublicLucyReference, siteHostname: string) {
   try {
     const url = new URL(reference.href, `https://${siteHostname}`);
     return (
       url.protocol === "https:" &&
-      url.hostname === siteHostname &&
+      (url.hostname === siteHostname || url.hostname === PUBLIC_SITE_HOSTNAME) &&
       (url.port === "" || url.port === "443") &&
       url.username === "" &&
       url.password === ""

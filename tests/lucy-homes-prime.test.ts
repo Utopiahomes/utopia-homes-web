@@ -156,6 +156,15 @@ describe("askHomesPrime", () => {
     );
   });
 
+  it("accepts public-site links on a preview deployment's own hostname", async () => {
+    const previewEnv = { ...env, LUCY_PUBLIC_SITE_HOSTNAME: "utopia-homes-web-git-branch-stoincock.vercel.app" };
+    const result = await askHomesPrime("How many guests?", randomUUID(), {
+      env: previewEnv,
+      fetcher: provider(answer()),
+    });
+    expect(result.links[0].href).toBe("https://www.utopiahomes.com/stays/the-shamrock");
+  });
+
   it("is unavailable without its configuration", async () => {
     const fetcher = vi.fn<typeof fetch>();
     await expect(
