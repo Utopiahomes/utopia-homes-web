@@ -6,6 +6,18 @@ Build a premium public hospitality site that supports property discovery, owner 
 
 Never modify production data, production Wix, production StayNue/Uplisting, UtopiaHomes.com, DNS, or deployment configuration without explicit approval.
 
+## Early-stage delivery default
+
+This is one of Ray's early-stage ventures. Prioritize proving the business and shipping the smallest useful product over extensive prelaunch assurance. Ray's roughly 3/10 initial assurance-effort preference is a tolerance for an early build, not a measured security score.
+
+- Make ordinary implementation choices within the authorized task and finish the main user flow without routine Lyra–Claude approval or review loops. Ask for another review only when Ray requests it or a concrete consequential issue warrants it.
+- Use a minimal, targeted check of the changed user flow. Expand testing only for a specific consequential uncertainty or an existing enforced check; do not automatically run `pnpm check`, the full test suite, E2E suite, and build for every change or repeat unchanged reviews.
+- Accept rough edges, technical debt, and some edge-case failures while the venture learns. A substantial rebuild in roughly two months is acceptable if real usage warrants it.
+- Prefer simple architecture and basic security controls; defer advanced hardening, elaborate recovery ceremonies, speculative scaling, and architectural polish until justified by real use or a concrete failure.
+- Report what works, what was actually checked, and significant known limitations without presenting an early build as production-hardened.
+
+This replaces the earlier default of extensive prelaunch assurance, not the explicit production-change boundary above, tool permissions, sandbox controls, or a check actually enforced by the host or CI.
+
 ## Commands
 
 - `pnpm install` — install
@@ -15,7 +27,7 @@ Never modify production data, production Wix, production StayNue/Uplisting, Utop
 - `pnpm test` — unit tests
 - `pnpm e2e` — Playwright E2E
 - `pnpm build` — production-mode build validation
-- `pnpm check` — full non-browser check suite
+- `pnpm check` — full non-browser check suite when specifically needed or enforced; not the default for every change
 
 ## Architecture
 
@@ -31,7 +43,7 @@ Never modify production data, production Wix, production StayNue/Uplisting, Utop
 
 ## Definition of done
 
-A scoped change is complete when relevant content is structured, mobile and desktop layouts work, accessibility is preserved, metadata is appropriate, and typecheck, lint, unit tests, relevant E2E tests, and build pass. Keep production isolated and document assumptions or unresolved content questions.
+A scoped early-stage change is complete when its main user flow works under a focused check and significant limitations are reported. Keep relevant content, accessibility, metadata, and mobile/desktop usability in view, but do not require every typecheck, lint, unit, E2E, and build command for every change. Run a wider check only for a concrete consequential uncertainty or an enforced gate. Keep production isolated; record unresolved content questions that matter to the user flow.
 
 ## Environment and deployment
 
