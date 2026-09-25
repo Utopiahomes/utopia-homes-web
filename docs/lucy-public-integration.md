@@ -1,5 +1,11 @@
 # Public Lucy website integration checkpoint
 
+> **Historical (superseded 2026-09-24/25).** `/api/lucy` now answers through Utopia Homes Prime
+> (`lib/lucy/homes-prime.ts`). Lucy's knowledge no longer lives in this repository: the site
+> publishes its property facts at `/lucy-knowledge/properties.json`
+> (`lib/lucy/knowledge-feed.ts`). Homes Prime turns them into a knowledge release for Ray to
+> approve. The R1 copy described below has been removed from this repository.
+
 Status: the R1 conversational website slice is implemented and fail-closed on the local
 `codex/public-lucy-r1` branch. It is not deployed or enabled. The matching Cloud Lucy
 knowledge/retrieval boundary is implemented on its isolated local branch. Ray approved
