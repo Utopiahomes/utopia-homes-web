@@ -17,6 +17,7 @@ import "./scroll-story.css";
 import "./design.css";
 import "./design-adjustments.css";
 import "./lucy.css";
+import "./about.css";
 import { siteContent } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 

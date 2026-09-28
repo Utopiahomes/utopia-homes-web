@@ -1,0 +1,117 @@
+/* About: the owners' landing cards and Meghan's hosting story. */
+
+.about-people {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1rem, 2vw, 2rem);
+  padding: 0 clamp(1.25rem, 5vw, 5rem) clamp(5rem, 8vw, 8rem);
+}
+.about-person-card { display: flex; flex-direction: column; background: var(--cream); }
+.about-person-image { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--deep); }
+.about-person-image img { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.about-person-card:hover .about-person-image img { transform: scale(1.03); }
+.about-person-copy { padding: clamp(2rem, 4vw, 3.5rem); }
+.about-person-copy h2 { margin-bottom: 1.5rem; font-size: clamp(3rem, 5vw, 5.2rem); }
+.about-person-copy ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.about-person-copy li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+}
+
+.meghan-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: clamp(3rem, 5vw, 5rem) clamp(1.25rem, 7vw, 8rem);
+  border-bottom: 1px solid var(--line);
+}
+.meghan-stats div { padding: 1.5rem 1rem 1.5rem 0; border-top: 1px solid var(--line); }
+.meghan-stats strong {
+  display: block;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.meghan-stats span {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--sage);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.meghan-stats-source { grid-column: 1 / -1; margin: 1.5rem 0 0; color: var(--sage); font-size: 0.75rem; }
+
+.meghan-callout p { max-width: 1100px; }
+
+.meghan-chapters { padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 7vw, 8rem) 0; }
+.meghan-chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(2.5rem, 6vw, 7rem);
+  align-items: start;
+  padding: clamp(4rem, 7vw, 7rem) 0;
+  border-top: 1px solid var(--line);
+}
+.meghan-chapter:nth-child(even) header { order: 2; }
+.meghan-chapter header { position: sticky; top: 2rem; }
+.meghan-chapter-index {
+  display: block;
+  margin-bottom: 2rem;
+  color: var(--clay);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+.meghan-chapter h2 { margin-bottom: 2rem; font-size: clamp(2.8rem, 5vw, 5rem); }
+.meghan-chapter header > p:not(.eyebrow) { max-width: 560px; font-size: 1.05rem; }
+.meghan-chapter blockquote {
+  max-width: 560px;
+  margin: 2.5rem 0 0;
+  padding: 1.75rem 0 0;
+  border-top: 1px solid var(--line);
+}
+.meghan-chapter blockquote p {
+  margin-bottom: 1rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.35rem, 2.1vw, 1.9rem);
+  line-height: 1.35;
+}
+.meghan-chapter cite {
+  color: var(--clay);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.meghan-chapter-images { display: grid; gap: 0.5rem; }
+.meghan-chapter-images figure { position: relative; margin: 0; aspect-ratio: 3 / 2; overflow: hidden; background: var(--deep); }
+.meghan-chapter-gallery .meghan-chapter-images { grid-template-columns: repeat(2, 1fr); }
+.meghan-chapter-gallery .meghan-chapter-images figure:first-child { grid-column: 1 / -1; }
+.meghan-chapter-images img { transition: transform 0.6s; }
+.meghan-chapter-images figure:hover img { transform: scale(1.025); }
+
+.meghan-today { padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 7vw, 8rem); background: var(--cream); }
+.meghan-today-heading { max-width: 860px; margin-bottom: clamp(3rem, 6vw, 5rem); }
+.meghan-today-heading h2 { margin-bottom: 1.5rem; }
+.meghan-today-heading > p:last-child { font-size: 1.05rem; }
+.meghan-today-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 3vw, 3rem); }
+.meghan-today-card { display: flex; flex-direction: column; }
+.meghan-today-image { position: relative; aspect-ratio: 4 / 3; margin-bottom: 1.75rem; overflow: hidden; background: var(--deep); }
+.meghan-today-image img { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.meghan-today-card:hover .meghan-today-image img { transform: scale(1.03); }
+.meghan-today-card h3 { margin-bottom: 1.25rem; font-size: clamp(1.8rem, 2.6vw, 2.6rem); }
+.meghan-today-card > p:not(.eyebrow) { color: #4f665f; }
+.meghan-today-card .text-link { margin-top: auto; }
+
+@media (max-width: 900px) {
+  .about-people, .meghan-chapter, .meghan-today-grid { grid-template-columns: 1fr; }
+  .meghan-stats { grid-template-columns: repeat(2, 1fr); }
+  .meghan-chapter:nth-child(even) header { order: 0; }
+  .meghan-chapter header { position: static; }
+}

@@ -4,7 +4,7 @@ export const leadershipProfiles: LeadershipProfile[] = [
   {
     id: "leadership-ray",
     name: "Ray DeLuca",
-    role: "Founder · Owner · Host",
+    role: "Owner · Utopia Homes · Utopia Workspaces · Stoin (AI consulting)",
     summary: "Ray is the owner of the former Shamrock Hotel and has welcomed thousands of guests over nearly 15 years as a vacation-rental host. His approach to Utopia Homes begins with a simple belief: the best hospitality comes from people who understand the guest experience and the realities of ownership firsthand.",
     initials: "RD",
     approvalStatus: "approved",
@@ -12,11 +12,11 @@ export const leadershipProfiles: LeadershipProfile[] = [
   },
   {
     id: "leadership-meghan",
-    name: "Meghan",
-    role: "Utopia leadership · Design perspective",
-    summary: "Meghan leads the design perspective behind Utopia Design—looking at how a home can feel more distinctive, function more naturally, and present itself with clarity and character.",
-    initials: "M",
+    name: "Meghan DeLuca",
+    role: "Owner · Utopia Homes · Utopia Design",
+    summary: "Meghan has hosted guests at the Jersey Shore since 2014, across 17 Airbnb listings from North Wildwood to the Pocono Mountains, and today designs and hosts the Utopia Homes collection.",
+    initials: "MD",
     approvalStatus: "placeholder",
-    editorialNotes: ["Conservative placeholder biography for Ray's review.", "Add approved background, responsibilities, and personal design perspective when supplied; do not infer credentials."],
+    editorialNotes: ["Drafted 2026-09-28 from Meghan's Airbnb host record (listings, review counts, paraphrased guest themes); awaiting Meghan's review."],
   },
 ];

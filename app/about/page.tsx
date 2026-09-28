@@ -1,39 +1,62 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
-import { ParallaxMedia } from "@/components/ParallaxMedia";
-import { LeadershipProfile } from "@/components/LeadershipProfile";
 import { leadershipProfiles } from "@/content";
 
 export const metadata: Metadata = {
-  title: "About Ray DeLuca",
-  description: "Meet Utopia Homes founder Ray DeLuca, a longtime Wildwood host, vacation-property owner, and steward of the former Shamrock Hotel.",
+  title: "About Utopia",
+  description: "Meet Ray and Meghan DeLuca, the owners behind Utopia Homes.",
 };
 
-export default function AboutPage() {
-  const image = { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of the former Shamrock Hotel in Wildwood" };
-  const ray = leadershipProfiles.find(({ id }) => id === "leadership-ray")!;
+const people = [
+  {
+    id: "leadership-ray",
+    href: "/about/ray",
+    image: { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of the former Shamrock Hotel in Wildwood" },
+    businesses: ["Utopia Homes", "Utopia Workspaces", "Stoin (AI consulting)"],
+  },
+  {
+    id: "leadership-meghan",
+    href: "/about/meghan",
+    image: { src: "/images/about/meghan/crest-luxury-loft.webp", alt: "A living room Meghan styled, with a tufted navy sofa and a gallery wall" },
+    businesses: ["Utopia Homes", "Utopia Design"],
+  },
+];
 
+export default function AboutPage() {
   return <>
     <PageHero
-      eyebrow="Meet the founder"
-      title={<>Hospitality,<br /><em>from the owner’s side.</em></>}
-      intro="Utopia Homes grew from nearly 15 years of hosting, thousands of guest stays, and a lifelong affection for the Wildwoods."
+      eyebrow="About Utopia"
+      title={<>Two owners.<br /><em>One way of hosting.</em></>}
+      intro="Utopia Homes is Ray and Meghan DeLuca: owners who host, design, and care for every home themselves."
       tone="light"
     />
-    <ParallaxMedia image={image} />
+    <section className="about-people" aria-label="The owners">
+      {people.map(({ id, href, image, businesses }) => {
+        const profile = leadershipProfiles.find((p) => p.id === id)!;
+        return (
+          <Link key={id} href={href} className="about-person-card">
+            <div className="about-person-image">
+              <Image src={image.src} alt={image.alt} fill sizes="(max-width: 900px) 100vw, 50vw" />
+            </div>
+            <div className="about-person-copy">
+              <p className="eyebrow">Owner</p>
+              <h2>{profile.name}</h2>
+              <ul>{businesses.map((b) => <li key={b}>{b}</li>)}</ul>
+              <span className="text-link">Read {profile.name.split(" ")[0]}’s story <span aria-hidden="true">→</span></span>
+            </div>
+          </Link>
+        );
+      })}
+    </section>
     <section className="about-statement founder-statement">
-      <span>R / D</span>
+      <span>R / M</span>
       <h2>We do not just operate vacation homes. <em>We own them.</em></h2>
       <div>
-        <p>That distinction shapes everything. We know what it means to care for a property, earn a guest’s trust, protect an owner’s investment, and make the decisions that turn an ordinary stay into one people remember.</p>
-        <p>Utopia is built around the guest experience because great hospitality is not a layer added at the end. It begins with the home, carries through every interaction, and continues long after checkout.</p>
+        <p>That shapes everything: caring for each property, earning each guest’s trust, and making the decisions that turn an ordinary stay into one people remember.</p>
         <Link className="text-link" href="/stays">Meet our homes <span>→</span></Link>
       </div>
-    </section>
-    <section className="profile-section founder-profile">
-      <LeadershipProfile profile={ray} context="The story behind Utopia" />
-      <p className="founder-aside">Ray’s Wildwood story began on the beach as a lifeguard—back when, as he puts it, he was skinny. Years later, it continues as the owner of the former Shamrock Hotel and a host who still believes the smallest details can define an entire trip.</p>
     </section>
   </>;
 }
