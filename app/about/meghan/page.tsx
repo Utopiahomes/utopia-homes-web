@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { properties } from "@/content";
-import { hostingChapters, meghanIntro, meghanStats, meghanTodayIntro } from "@/content/meghan";
+import { hostingChapters, meghanBeyondRentals, meghanIntro, meghanStats, meghanTodayIntro } from "@/content/meghan";
 
 export const metadata: Metadata = {
   title: "About Meghan DeLuca",
@@ -76,6 +76,19 @@ export default function MeghanPage() {
             <p>{p.designerNote!.paragraphs[0]}</p>
             <span className="text-link">See the home <span aria-hidden="true">→</span></span>
           </Link>
+        ))}
+      </div>
+    </section>
+
+    <section className="meghan-beyond">
+      <div>
+        <p className="eyebrow">Beyond rentals</p>
+        <h2>{meghanBeyondRentals.title}</h2>
+        <p>{meghanBeyondRentals.text}</p>
+      </div>
+      <div className="meghan-beyond-stats">
+        {meghanBeyondRentals.stats.map((s) => (
+          <div key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>
         ))}
       </div>
     </section>

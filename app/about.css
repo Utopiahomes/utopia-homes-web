@@ -109,7 +109,40 @@
 .meghan-today-card > p:not(.eyebrow) { color: #4f665f; }
 .meghan-today-card .text-link { margin-top: auto; }
 
+.meghan-beyond {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: clamp(3rem, 7vw, 8rem);
+  align-items: end;
+  padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 7vw, 8rem);
+  background: var(--deep);
+  color: var(--white);
+}
+.meghan-beyond .eyebrow { color: #e8c68e; }
+.meghan-beyond h2 { margin-bottom: 2rem; }
+.meghan-beyond p:not(.eyebrow) { max-width: 640px; margin-bottom: 0; color: rgba(255, 255, 255, 0.75); font-size: 1.05rem; }
+.meghan-beyond-stats { display: grid; grid-template-columns: repeat(2, 1fr); }
+.meghan-beyond-stats div { padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.25); }
+.meghan-beyond-stats strong {
+  display: block;
+  color: #e8c68e;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(4rem, 8vw, 7.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+.meghan-beyond-stats span {
+  display: block;
+  margin-top: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
+  .meghan-beyond { grid-template-columns: 1fr; }
   .about-people, .meghan-chapter, .meghan-today-grid { grid-template-columns: 1fr; }
   .meghan-stats { grid-template-columns: repeat(2, 1fr); }
   .meghan-chapter:nth-child(even) header { order: 0; }

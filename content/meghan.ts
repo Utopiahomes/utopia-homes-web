@@ -52,11 +52,11 @@ export const hostingChapters: HostingChapter[] = [
   {
     id: "wildwood-crest-condos",
     years: "2018 – 2020",
-    title: "Eight condos, eight personalities.",
+    title: "Nine units, nine personalities.",
     place: "Wildwood Crest",
     paragraphs: [
-      "Near the end of the Wildwood boardwalk, a single building became a collection: studios, lofts, and two- and three-bedroom condos, each styled with its own identity. Our Oasis by the Sea. Farmhouse Chic by the Shore. Luxury Loft by the Beach. Modern, Clean, and by the Beautiful Sea.",
-      "Same building, same two blocks to the ocean, and no two alike.",
+      "Near the end of the Wildwood boardwalk, a nine-unit building became a collection: studios, lofts, and two- and three-bedroom condos, each styled with its own identity. Our Oasis by the Sea. Farmhouse Chic by the Shore. Luxury Loft by the Beach. Modern, Clean, and by the Beautiful Sea.",
+      "Meghan designed and decorated every unit, ran the building as a mini motel for several seasons, and then saw it through to its sale.",
     ],
     guestsSaid:
       "Across more than 200 reviews, the words repeat: stylish, thoughtfully decorated, the finishing touches.",
@@ -100,6 +100,16 @@ export const hostingChapters: HostingChapter[] = [
     ],
   },
 ];
+
+export const meghanBeyondRentals = {
+  title: "Designing for the sale, too.",
+  text:
+    "Meghan has been the lead designer and decorator on five flips and twenty property sales, preparing each home to get the most value, whether it was headed for guests or for a buyer.",
+  stats: [
+    { value: "5", label: "Flips designed" },
+    { value: "20", label: "Property sales" },
+  ],
+};
 
 export const meghanTodayIntro =
   "Today Meghan designs and hosts the Utopia Homes collection: large-group homes where the design starts with how people actually spend time together.";

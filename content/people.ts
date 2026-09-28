@@ -14,7 +14,7 @@ export const leadershipProfiles: LeadershipProfile[] = [
     id: "leadership-meghan",
     name: "Meghan DeLuca",
     role: "Owner · Utopia Homes · Utopia Design",
-    summary: "Meghan has hosted guests at the Jersey Shore since 2014, across 17 Airbnb listings from North Wildwood to the Pocono Mountains, and today designs and hosts the Utopia Homes collection.",
+    summary: "Meghan has hosted guests at the Jersey Shore since 2014, across 17 Airbnb listings from North Wildwood to the Pocono Mountains, has been lead designer on five flips and twenty property sales, and today designs and hosts the Utopia Homes collection.",
     initials: "MD",
     approvalStatus: "placeholder",
     editorialNotes: ["Drafted 2026-09-28 from Meghan's Airbnb host record (listings, review counts, paraphrased guest themes); awaiting Meghan's review."],
