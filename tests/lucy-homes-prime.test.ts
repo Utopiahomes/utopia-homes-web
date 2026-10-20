@@ -215,7 +215,7 @@ describe("POST /api/lucy with the operator switch", () => {
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({
       ok: false,
-      message: "Lucy is taking a quiet moment. Please try again shortly.",
+      message: "Lyra is taking a quiet moment. Please try again shortly.",
     });
     expect(fetcher).toHaveBeenCalledTimes(1); // the legacy upstream was not tried
   });

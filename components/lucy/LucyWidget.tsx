@@ -119,7 +119,7 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
           ? result.answer
           : !result.ok
             ? result.message
-            : "Lucy is taking a quiet moment. Please try again shortly.";
+            : "Lyra is taking a quiet moment. Please try again shortly.";
       setMessages((current) => [
         ...current,
         {
@@ -152,7 +152,7 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
         {
           id: nextMessageId.current++,
           role: "lucy",
-          text: "Lucy is taking a quiet moment. Please try again shortly.",
+          text: "Lyra is taking a quiet moment. Please try again shortly.",
         },
       ]);
       track({ name: "lucy_unavailable", properties: { entryPoint: "global_widget" } });
@@ -162,18 +162,18 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
   }
 
   return (
-    <aside className="lucy-widget" aria-label="Ask Lucy">
+    <aside className="lucy-widget" aria-label="Ask Lyra">
       {open ? (
         <section className="lucy-panel" role="dialog" aria-labelledby={titleId}>
           <header className="lucy-panel-header">
             <div>
               <p className="lucy-kicker">Utopia concierge</p>
-              <h2 id={titleId}>Ask Lucy</h2>
+              <h2 id={titleId}>Ask Lyra</h2>
             </div>
             <button
               className="lucy-close"
               type="button"
-              aria-label="Close Lucy"
+              aria-label="Close Lyra"
               onClick={closeWidget}
             >
               ×
@@ -182,7 +182,7 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
           <div className="lucy-messages" aria-live="polite" aria-busy={sending}>
             {messages.map((message) => (
               <div className={`lucy-message lucy-message-${message.role}`} key={message.id}>
-                <span>{message.role === "lucy" ? "Lucy" : "You"}</span>
+                <span>{message.role === "lucy" ? "Lyra" : "You"}</span>
                 <p>{message.text}</p>
                 {message.clarification && <p className="lucy-clarification">{message.clarification}</p>}
                 {message.sources?.length ? (
@@ -202,7 +202,7 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
                 ) : null}
               </div>
             ))}
-            {sending && <p className="lucy-thinking">Lucy is looking through Utopia’s guide…</p>}
+            {sending && <p className="lucy-thinking">Lyra is looking through Utopia’s guide…</p>}
           </div>
           {messages.length === 1 && (
             <div className="lucy-suggestions" aria-label="Suggested questions">
@@ -221,7 +221,7 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
             }}
           >
             <label className="lucy-visually-hidden" htmlFor={`${titleId}-question`}>
-              Ask Lucy a question
+              Ask Lyra a question
             </label>
             <input
               id={`${titleId}-question`}
@@ -246,13 +246,13 @@ export function LucyWidget({ intro, suggestions }: LucyWidgetProps) {
           ref={launcherRef}
           className="lucy-launcher"
           type="button"
-          aria-label="Ask Lucy"
+          aria-label="Ask Lyra"
           aria-haspopup="dialog"
           aria-expanded="false"
           onClick={openWidget}
         >
           <span className="lucy-mark" aria-hidden="true">L</span>
-          <span><small>Utopia concierge</small>Ask Lucy</span>
+          <span><small>Utopia concierge</small>Ask Lyra</span>
         </button>
       )}
     </aside>

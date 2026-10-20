@@ -60,14 +60,14 @@ function attachSession(
 
 export async function POST(request: NextRequest) {
   if (!isPublicLucyEnabled()) {
-    return json({ ok: false, message: "Lucy is not available yet." }, 503);
+    return json({ ok: false, message: "Lyra is not available yet." }, 503);
   }
   let siteHostname: string;
   try {
     siteHostname = resolveSiteHostname();
   } catch {
     return json(
-      { ok: false, message: "Lucy is taking a quiet moment. Please try again shortly." },
+      { ok: false, message: "Lyra is taking a quiet moment. Please try again shortly." },
       503,
     );
   }
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     !checkRateLimit(`lucy:session:${sessionId}`, 30, 60_000)
   ) {
     return attachSession(
-      json({ ok: false, message: "Lucy has received too many questions. Please wait a minute." }, 429),
+      json({ ok: false, message: "Lyra has received too many questions. Please wait a minute." }, 429),
       request,
       existingSession,
       sessionId,
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
   } catch {
     return attachSession(
       json(
-        { ok: false, message: "Lucy is taking a quiet moment. Please try again shortly." },
+        { ok: false, message: "Lyra is taking a quiet moment. Please try again shortly." },
         503,
       ),
       request,

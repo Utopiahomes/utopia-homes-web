@@ -95,7 +95,7 @@ describe("POST /api/lucy", () => {
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({
       ok: false,
-      message: "Lucy is taking a quiet moment. Please try again shortly.",
+      message: "Lyra is taking a quiet moment. Please try again shortly.",
     });
     expect(fetcher).not.toHaveBeenCalled();
   });

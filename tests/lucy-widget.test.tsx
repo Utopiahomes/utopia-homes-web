@@ -27,8 +27,8 @@ describe("LucyWidget", () => {
     vi.stubGlobal("fetch", mockedFetch);
     render(<LucyWidget intro={publicLucyContent.intro} suggestions={publicLucyContent.suggestions} />);
 
-    await user.click(screen.getByRole("button", { name: "Ask Lucy" }));
-    expect(screen.getByRole("dialog", { name: "Ask Lucy" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Ask Lyra" }));
+    expect(screen.getByRole("dialog", { name: "Ask Lyra" })).toBeVisible();
     expect(screen.getByText(/Approved public information only.*isn’t saved/u)).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "What is Utopia Design?" }));
@@ -46,7 +46,7 @@ describe("LucyWidget", () => {
     expect(screen.getByRole("link", { name: "Utopia Design" })).toHaveAttribute("href", "/design");
     expect(screen.getByRole("button", { name: "Start over" })).toBeVisible();
 
-    await user.type(screen.getByLabelText("Ask Lucy a question"), "How does it work?");
+    await user.type(screen.getByLabelText("Ask Lyra a question"), "How does it work?");
     await user.click(screen.getByRole("button", { name: "Send" }));
     const secondBody = JSON.parse(String(mockedFetch.mock.calls[1][1].body));
     expect(secondBody.history).toEqual([
@@ -74,15 +74,15 @@ describe("LucyWidget", () => {
     vi.stubGlobal("fetch", mockedFetch);
     render(<LucyWidget intro={publicLucyContent.intro} suggestions={publicLucyContent.suggestions} />);
 
-    await user.click(screen.getByRole("button", { name: "Ask Lucy" }));
-    await user.type(screen.getByLabelText("Ask Lucy a question"), "First question");
+    await user.click(screen.getByRole("button", { name: "Ask Lyra" }));
+    await user.type(screen.getByLabelText("Ask Lyra a question"), "First question");
     await user.click(screen.getByRole("button", { name: "Send" }));
     await screen.findByText("Approved answer.");
-    await user.click(screen.getByRole("button", { name: "Close Lucy" }));
+    await user.click(screen.getByRole("button", { name: "Close Lyra" }));
 
     observedAt += 30 * 60 * 1_000 + 1;
-    await user.click(screen.getByRole("button", { name: "Ask Lucy" }));
-    await user.type(screen.getByLabelText("Ask Lucy a question"), "Second question");
+    await user.click(screen.getByRole("button", { name: "Ask Lyra" }));
+    await user.type(screen.getByLabelText("Ask Lyra a question"), "Second question");
     await user.click(screen.getByRole("button", { name: "Send" }));
 
     const secondBody = JSON.parse(String(mockedFetch.mock.calls[1][1].body));
