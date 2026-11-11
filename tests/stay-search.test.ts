@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkStay, parseStaySearch, shoreToday, type CalendarDay, type StaySearch } from "@/lib/booking/stay-search";
+import { checkStay, lodgifyCheckoutUrl, parseStaySearch, shoreToday, staySearchQuery, type CalendarDay, type StaySearch } from "@/lib/booking/stay-search";
 
 function calendar(start: string, days: number, overrides: Record<string, Partial<CalendarDay>> = {}): CalendarDay[] {
   const out: CalendarDay[] = [];
@@ -34,4 +34,9 @@ describe("checking a house's calendar", () => {
   it("respects closed check-in days", () => expect(checkStay(calendar("2026-12-11", 90, { "2026-12-11": { isCheckInAvailable: false } }), stay("2026-12-11", "2026-12-13"), 22)).toMatchObject({ available: false }));
   it("respects the guest limit", () => expect(checkStay(calendar("2026-12-11", 90), stay("2026-12-11", "2026-12-13", 30), 22)).toMatchObject({ reason: "Sleeps up to 22" }));
   it("says when dates are past the open calendar", () => expect(checkStay(calendar("2026-12-11", 1), stay("2026-12-11", "2026-12-13"), 22)).toMatchObject({ reason: "Not open for booking yet" }));
+});
+
+describe("carrying a search to the house page", () => {
+  it("links the house with dates and guests", () => expect(staySearchQuery({ arrival: "2026-12-11", departure: "2026-12-13", guests: 4 })).toBe("arrival=2026-12-11&departure=2026-12-13&guests=4&adults=4"));
+  it("builds Lodgify's checkout link", () => expect(lodgifyCheckoutUrl("raymond-p-deluca", "863593", { arrival: "2026-12-11", departure: "2026-12-13", guests: 4 })).toBe("https://checkout.lodgify.com/en/raymond-p-deluca/863593/reservation?currency=USD&arrival=2026-12-11&departure=2026-12-13&adults=4"));
 });

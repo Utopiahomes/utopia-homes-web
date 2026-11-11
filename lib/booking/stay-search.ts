@@ -90,8 +90,16 @@ export function checkStay(calendar: readonly CalendarDay[], search: StaySearch, 
   return { available: true };
 }
 
+// adults is what Lodgify's book-now box reads from the page link, so its own Book Now keeps the
+// guest count too.
 export function staySearchQuery(search: Pick<StaySearch, "arrival" | "departure" | "guests">): string {
-  return new URLSearchParams({ arrival: search.arrival, departure: search.departure, guests: String(search.guests) }).toString();
+  return new URLSearchParams({ arrival: search.arrival, departure: search.departure, guests: String(search.guests), adults: String(search.guests) }).toString();
+}
+
+/** Lodgify's checkout for one house with the dates and guests filled in (the link its book-now box builds). */
+export function lodgifyCheckoutUrl(accountSlug: string, rentalId: string, search: Pick<StaySearch, "arrival" | "departure" | "guests">): string {
+  const query = new URLSearchParams({ currency: "USD", arrival: search.arrival, departure: search.departure, adults: String(search.guests) });
+  return `https://checkout.lodgify.com/en/${encodeURIComponent(accountSlug)}/${encodeURIComponent(rentalId)}/reservation?${query.toString()}`;
 }
 
 export function formatStayDates(search: Pick<StaySearch, "arrival" | "departure">): string {
