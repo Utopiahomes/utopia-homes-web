@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { LodgifySearchBar } from "@/components/LodgifySearchBar";
 
 export function HomeBeachOpening() {
   return <section className="home-beach-opening" aria-labelledby="home-hero-title">
@@ -20,6 +21,7 @@ export function HomeBeachOpening() {
       <div className="home-beach-hero">
         <p>Utopia Homes</p>
         <h1 id="home-hero-title">Big homes.<br /><em>Better weekends.</em></h1>
+        <LodgifySearchBar className="search-bar-wrap home-search-bar" />
         <span className="home-scroll-cue" aria-hidden="true">Scroll</span>
       </div>
       <div className="home-beach-belief">
