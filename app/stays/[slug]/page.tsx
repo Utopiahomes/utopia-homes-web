@@ -33,7 +33,10 @@ export default async function PropertyPage({ params }: Props) {
     <AnalyticsView event={{ name: "property_view", properties: { propertyId: property.id, slug: property.slug, destination: property.destinationId } }} />
     <header className="property-hero">
       <div className="property-kicker"><p className="eyebrow">Utopia stay · {property.city}, {property.state}</p><span>{property.propertyType}</span></div>
-      <div className="property-title-row"><div><h1>{property.name}</h1><p>{property.shortDescription}</p></div><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_hero" className="round-booking-link">Check<br />availability <span aria-hidden="true">↗</span></BookingLink></div>
+      <div className="property-title-row"><div><h1>{property.name}</h1><p>{property.shortDescription}</p></div>{property.lodgify
+        // Ray, 2026-11-11: with a direct-booking box, the top button goes to it, not to Airbnb.
+        ? <a href="#book" className="round-booking-link">Check<br />availability <span aria-hidden="true">↓</span></a>
+        : <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_hero" className="round-booking-link">Check<br />availability <span aria-hidden="true">↗</span></BookingLink>}</div>
     </header>
     <PropertyGallery images={property.gallery} />
     <section className="property-content">
