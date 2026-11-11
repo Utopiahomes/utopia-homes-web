@@ -4,8 +4,12 @@ import { useRef } from "react";
 import { addDays, DEFAULT_NIGHTS, shoreToday } from "@/lib/booking/stay-search";
 
 // Check-in and check-out as two plain, labeled date fields (typeable, and Lyra can fill them), with
-// one convenience Ray asked for: after picking check-in, check-out is set 2 nights later and its
-// picker opens on that month, instead of starting over from today.
+// one convenience Ray asked for: picking check-in sets check-out 2 nights later, so the check-out
+// picker opens on that month instead of starting over from today.
+//
+// It must not open the check-out picker or move focus itself (Ray, 2026-11-11): Chrome's picker
+// changes the check-in value live as you use its month arrows, so the first up/down counted as a
+// pick, jumped to check-out and closed the calendar you were browsing.
 export function DateRangeInputs({ arrival, departure }: { arrival?: string; departure?: string }) {
   const departureRef = useRef<HTMLInputElement>(null);
   const today = shoreToday();
@@ -18,7 +22,6 @@ export function DateRangeInputs({ arrival, departure }: { arrival?: string; depa
     if (dayAfter) out.min = dayAfter;
     if (!out.value || out.value <= chosen) {
       out.value = addDays(chosen, DEFAULT_NIGHTS) ?? "";
-      try { out.showPicker(); } catch { out.focus(); }
     }
   }
 
