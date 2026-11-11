@@ -4,6 +4,8 @@
 
 Build a premium public hospitality site that supports property discovery, owner acquisition, membership interest, external booking handoff, and Utopia Design lead qualification. Utopia Design V1 includes a versioned preliminary-estimate engine and a gated consultation journey; estimates are nonbinding and are not payments or booking transactions. Do not build or embed booking, payments, owner operational onboarding, guest support, maintenance, PMS, points, token, DAO, or blockchain functionality. Utopia owns the customer experience and data; avoid direct coupling to StayNue implementation details.
 
+Exception (Ray, 2026-11-11): a property may show Lodgify's direct-booking box (its `lodgify` content value, rendered by `LodgifyBookNowBox`) with the line that booking direct is 10% cheaper. Lodgify runs the booking and payment; its Airbnb link stays beside it. The Shamrock is the first.
+
 Never modify production data, production Wix, production StayNue/Uplisting, UtopiaHomes.com, DNS, or deployment configuration without explicit approval.
 
 ## Commands

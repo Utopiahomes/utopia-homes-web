@@ -4,6 +4,7 @@ import { AmenityGroups } from "@/components/AmenityGroups";
 import { AnalyticsView } from "@/components/AnalyticsView";
 import { BookingLink } from "@/components/BookingLink";
 import { DesignerNote } from "@/components/DesignerNote";
+import { LodgifyBookNowBox } from "@/components/LodgifyBookNowBox";
 import { PropertyFacts } from "@/components/PropertyFacts";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
@@ -43,7 +44,9 @@ export default async function PropertyPage({ params }: Props) {
         <div className="amenities-section"><p className="eyebrow">At the house</p><h2>Everything your<br />crew needs.</h2><AmenityGroups groups={property.amenities} /></div>
         <div className="stay-notes"><p className="eyebrow">Good to know</p><dl><div><dt>Pets</dt><dd>{property.petPolicy}</dd></div><div><dt>Parking</dt><dd>{property.parking}</dd></div><div><dt>Accessibility</dt><dd>{property.accessibility}</dd></div></dl></div>
       </div>
-      <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} /><div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div></aside>
+      <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} />{property.lodgify
+        ? <div className="aside-cta book-direct" id="book"><p className="eyebrow">Book direct · save 10%</p><h3>{property.city} is calling.</h3><p>Booking direct with Utopia Homes is 10% cheaper than Airbnb.</p><LodgifyBookNowBox rentalId={property.lodgify.rentalId} websiteId={property.lodgify.websiteId} accountSlug={property.lodgify.accountSlug} /><p className="book-direct-or">Prefer Airbnb?</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button booking-wide">Book on Airbnb <span aria-hidden="true">↗</span></BookingLink></div>
+        : <div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div>}</aside>
     </section>
     <PropertyReviews summary={property.reviewSummary} />
     <PropertyPhotoStory property={property} />

@@ -55,6 +55,8 @@ export interface Property {
   parking: string;
   accessibility: string;
   bookingUrl: string;
+  /** Lodgify's direct-booking box, shown beside the Airbnb link (Ray, 2026-11-11). */
+  lodgify?: { rentalId: string; websiteId: string; accountSlug: string };
   sourceUrls: string[];
   sourceSnapshot: {
     listingTitle: string;
