@@ -70,7 +70,7 @@ export function StayResults({ search, houses }: { search: StaySearch; houses: St
                 <p className="stay-result-city">{house.city}</p>
                 <h3>{house.name}</h3>
                 {state.status === "done" && state.ok
-                  ? <p className="stay-result-price"><strong>{formatUsd(state.quote.total)}</strong> total · {formatUsd(state.quote.nightly)} a night + fees <span>Book direct and save 10%</span></p>
+                  ? <p className="stay-result-price"><strong>{formatUsd(state.quote.total)}</strong> total for {state.quote.nights} {state.quote.nights === 1 ? "night" : "nights"}{state.quote.discounts.length ? ` · includes ${state.quote.discounts[0].name.toLowerCase()}` : ""} <span>Book direct and save 10%</span></p>
                   : <p className="stay-result-status">{state.status === "checking" ? "Checking price…" : state.status === "airbnb" ? "Check these dates on Airbnb" : state.status === "error" ? "Couldn't check right now. See the house page." : state.reason}</p>}
               </div>
               {state.status === "airbnb"

@@ -70,7 +70,8 @@ function Quote({ search, rentalId, accountSlug }: { search: StaySearch; rentalId
     <div className="direct-booking-quote" aria-live="polite">
       <p className="direct-booking-dates">{dates}</p>
       <dl className="direct-booking-lines">
-        <div><dt>{formatUsd(quote.nightly)} × {quote.nights} {quote.nights === 1 ? "night" : "nights"}</dt><dd>{formatUsd(quote.rentalTotal)}</dd></div>
+        <div><dt>{quote.nightly * quote.nights === quote.rentalTotal ? `${formatUsd(quote.nightly)} × ` : ""}{quote.nights} {quote.nights === 1 ? "night" : "nights"}</dt><dd>{formatUsd(quote.rentalTotal)}</dd></div>
+        {quote.discounts.map((discount) => <div key={discount.name} className="direct-booking-discount"><dt>{discount.name}</dt><dd>−{formatUsd(-discount.value)}</dd></div>)}
         {quote.fees.map((fee) => <div key={fee.name}><dt>{fee.name}</dt><dd>{formatUsd(fee.value)}</dd></div>)}
         {quote.taxes > 0 ? <div><dt>Taxes</dt><dd>{formatUsd(quote.taxes)}</dd></div> : null}
         <div className="direct-booking-total"><dt>Total</dt><dd>{formatUsd(quote.total)}</dd></div>

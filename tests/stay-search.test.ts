@@ -22,7 +22,12 @@ describe("reading Lodgify's price quote", () => {
   it("reads a price", () => {
     // Shape of Lodgify's answer for The Shamrock, Dec 11-13 2026, 4 guests.
     const body = { rentalPrice: { totalWithPromotions: 1154, total: 1154, nightlyPrice: 577, nights: 2 }, fees: { total: 350, details: [{ name: "Cleaning fee", value: 350 }] }, localTaxes: { total: 0, details: [] }, totalPrice: { total: 1504 } };
-    expect(readQuote(200, body)).toEqual({ ok: true, quote: { nights: 2, nightly: 577, rentalTotal: 1154, fees: [{ name: "Cleaning fee", value: 350 }], taxes: 0, total: 1504 } });
+    expect(readQuote(200, body)).toEqual({ ok: true, quote: { nights: 2, nightly: 577, rentalTotal: 1154, discounts: [], fees: [{ name: "Cleaning fee", value: 350 }], taxes: 0, total: 1504 } });
+  });
+  it("keeps Lodgify's discounts", () => {
+    // The Shamrock, Dec 4-6 2026: Lodgify's last-minute discount.
+    const body = { rentalPrice: { nightlyPrice: 577, nights: 2, promotions: [{ name: "Last Minute Discount", value: -57.7 }], total: 1154, totalWithPromotions: 1096.3 }, fees: { details: [{ name: "Cleaning fee", value: 350 }] }, totalPrice: { total: 1446.3 } };
+    expect(readQuote(200, body)).toMatchObject({ ok: true, quote: { rentalTotal: 1154, discounts: [{ name: "Last Minute Discount", value: -57.7 }], total: 1446.3 } });
   });
   it("passes on why a house can't take the stay", () => expect(readQuote(400, { title: "The maximum number of guests allowed is 22." })).toEqual({ ok: false, reason: "The maximum number of guests allowed is 22" }));
   it("has a fallback reason", () => expect(readQuote(400, null)).toEqual({ ok: false, reason: "Not available for those dates" }));

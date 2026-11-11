@@ -25,7 +25,10 @@ export type StaySearchResult = { search: StaySearch } | { error: string; partial
 export interface StayQuote {
   nights: number;
   nightly: number;
+  /** Nights before discounts. */
   rentalTotal: number;
+  /** Lodgify promotions such as "Last Minute Discount", as negative amounts. */
+  discounts: { name: string; value: number }[];
   fees: { name: string; value: number }[];
   taxes: number;
   total: number;
@@ -115,12 +118,14 @@ export function readQuote(status: number, body: unknown): QuoteResult {
   if (status === 200 && totalPrice && typeof totalPrice.total === "number" && totalPrice.total > 0) {
     const rental = (data.rentalPrice ?? {}) as Record<string, unknown>;
     const fees = ((data.fees as { details?: unknown } | undefined)?.details ?? []) as { name?: unknown; value?: unknown }[];
+    const promotions = (rental.promotions ?? []) as { name?: unknown; value?: unknown }[];
     return {
       ok: true,
       quote: {
         nights: num(rental.nights),
         nightly: num(rental.nightlyPrice),
-        rentalTotal: num(rental.totalWithPromotions) || num(rental.total),
+        rentalTotal: num(rental.total),
+        discounts: Array.isArray(promotions) ? promotions.filter((promo) => typeof promo.name === "string" && num(promo.value) !== 0).map((promo) => ({ name: promo.name as string, value: -Math.abs(num(promo.value)) })) : [],
         fees: Array.isArray(fees) ? fees.filter((fee) => typeof fee.name === "string" && num(fee.value) > 0).map((fee) => ({ name: fee.name as string, value: num(fee.value) })) : [],
         taxes: num((data.localTaxes as { total?: unknown } | undefined)?.total),
         total: totalPrice.total,
