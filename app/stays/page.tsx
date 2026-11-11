@@ -17,7 +17,6 @@ export default async function StaysPage({ searchParams }: { searchParams: Search
     slug: property.slug,
     name: property.name,
     city: property.city,
-    maxGuests: property.maxGuests,
     bookingUrl: property.bookingUrl,
     image: { src: property.heroImage.src, alt: property.heroImage.alt },
     lodgify: property.lodgify ? { rentalId: property.lodgify.rentalId, accountSlug: property.lodgify.accountSlug } : undefined,

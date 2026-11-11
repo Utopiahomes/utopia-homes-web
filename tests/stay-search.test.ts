@@ -1,21 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkStay, lodgifyCheckoutUrl, parseStaySearch, shoreToday, staySearchQuery, type CalendarDay, type StaySearch } from "@/lib/booking/stay-search";
-
-function calendar(start: string, days: number, overrides: Record<string, Partial<CalendarDay>> = {}): CalendarDay[] {
-  const out: CalendarDay[] = [];
-  const base = Date.parse(`${start}T00:00:00Z`);
-  for (let i = 0; i < days; i += 1) {
-    const date = new Date(base + i * 86_400_000).toISOString().slice(0, 10);
-    out.push({ date, minimalStay: 2, maximumStay: 365, isCheckInAvailable: true, isCheckOutAvailable: true, isAvailable: true, ...overrides[date] });
-  }
-  return out;
-}
-
-const stay = (arrival: string, departure: string, guests = 4): StaySearch => {
-  const result = parseStaySearch({ arrival, departure, guests: String(guests) }, "2026-11-11");
-  if (!result || !("search" in result)) throw new Error("bad test stay");
-  return result.search;
-};
+import { addDays, formatUsd, lodgifyCheckoutUrl, lodgifyPriceUrl, parseStaySearch, readQuote, shoreToday, staySearchQuery } from "@/lib/booking/stay-search";
 
 describe("stay search params", () => {
   it("is empty without dates", () => expect(parseStaySearch({}, "2026-11-11")).toBeNull());
@@ -24,19 +8,23 @@ describe("stay search params", () => {
   it("rejects past check-in", () => expect(parseStaySearch({ arrival: "2026-11-01", departure: "2026-11-03" }, "2026-11-11")).toMatchObject({ error: expect.stringContaining("past") }));
   it("rejects impossible dates", () => expect(parseStaySearch({ arrival: "2026-02-30", departure: "2026-03-02" }, "2026-01-01")).toMatchObject({ error: expect.any(String) }));
   it("uses the shore's date", () => expect(shoreToday(new Date("2026-11-12T03:00:00Z"))).toBe("2026-11-11"));
+  it("adds days across months", () => expect(addDays("2026-12-31", 2)).toBe("2027-01-02"));
 });
 
-describe("checking a house's calendar", () => {
-  it("is available when every night is open", () => expect(checkStay(calendar("2026-12-11", 90), stay("2026-12-11", "2026-12-13"), 22)).toEqual({ available: true }));
-  it("is not when a night is booked", () => expect(checkStay(calendar("2026-12-11", 90, { "2026-12-12": { isAvailable: false } }), stay("2026-12-11", "2026-12-14"), 22)).toMatchObject({ available: false, reason: expect.stringContaining("Booked") }));
-  it("lets a stay end on the day the next booking starts", () => expect(checkStay(calendar("2026-12-01", 90, { "2026-12-04": { isAvailable: false } }), stay("2026-12-02", "2026-12-04"), 22)).toEqual({ available: true }));
-  it("respects the minimum stay", () => expect(checkStay(calendar("2026-12-11", 90, { "2026-12-11": { minimalStay: 3 } }), stay("2026-12-11", "2026-12-13"), 22)).toMatchObject({ reason: "3-night minimum for those dates" }));
-  it("respects closed check-in days", () => expect(checkStay(calendar("2026-12-11", 90, { "2026-12-11": { isCheckInAvailable: false } }), stay("2026-12-11", "2026-12-13"), 22)).toMatchObject({ available: false }));
-  it("respects the guest limit", () => expect(checkStay(calendar("2026-12-11", 90), stay("2026-12-11", "2026-12-13", 30), 22)).toMatchObject({ reason: "Sleeps up to 22" }));
-  it("says when dates are past the open calendar", () => expect(checkStay(calendar("2026-12-11", 1), stay("2026-12-11", "2026-12-13"), 22)).toMatchObject({ reason: "Not open for booking yet" }));
+describe("Lodgify links", () => {
+  const stay = { arrival: "2026-12-11", departure: "2026-12-13", guests: 4 };
+  it("links a search", () => expect(staySearchQuery(stay)).toBe("arrival=2026-12-11&departure=2026-12-13&guests=4"));
+  it("builds the checkout link", () => expect(lodgifyCheckoutUrl("raymond-p-deluca", "863593", stay)).toBe("https://checkout.lodgify.com/en/raymond-p-deluca/863593/reservation?currency=USD&arrival=2026-12-11&departure=2026-12-13&adults=4"));
+  it("builds the price link", () => expect(lodgifyPriceUrl("raymond-p-deluca", "863593", stay)).toBe("https://checkout.lodgify.com/api/v2/websites/raymond-p-deluca/rentals/863593/price?arrival=2026-12-11&departure=2026-12-13&currency=USD&adults=4&language=en"));
 });
 
-describe("carrying a search to the house page", () => {
-  it("links the house with dates and guests", () => expect(staySearchQuery({ arrival: "2026-12-11", departure: "2026-12-13", guests: 4 })).toBe("arrival=2026-12-11&departure=2026-12-13&guests=4&adults=4"));
-  it("builds Lodgify's checkout link", () => expect(lodgifyCheckoutUrl("raymond-p-deluca", "863593", { arrival: "2026-12-11", departure: "2026-12-13", guests: 4 })).toBe("https://checkout.lodgify.com/en/raymond-p-deluca/863593/reservation?currency=USD&arrival=2026-12-11&departure=2026-12-13&adults=4"));
+describe("reading Lodgify's price quote", () => {
+  it("reads a price", () => {
+    // Shape of Lodgify's answer for The Shamrock, Dec 11-13 2026, 4 guests.
+    const body = { rentalPrice: { totalWithPromotions: 1154, total: 1154, nightlyPrice: 577, nights: 2 }, fees: { total: 350, details: [{ name: "Cleaning fee", value: 350 }] }, localTaxes: { total: 0, details: [] }, totalPrice: { total: 1504 } };
+    expect(readQuote(200, body)).toEqual({ ok: true, quote: { nights: 2, nightly: 577, rentalTotal: 1154, fees: [{ name: "Cleaning fee", value: 350 }], taxes: 0, total: 1504 } });
+  });
+  it("passes on why a house can't take the stay", () => expect(readQuote(400, { title: "The maximum number of guests allowed is 22." })).toEqual({ ok: false, reason: "The maximum number of guests allowed is 22" }));
+  it("has a fallback reason", () => expect(readQuote(400, null)).toEqual({ ok: false, reason: "Not available for those dates" }));
+  it("formats dollars", () => expect([formatUsd(1504), formatUsd(340.5)]).toEqual(["$1,504", "$340.50"]));
 });

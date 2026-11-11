@@ -1,10 +1,17 @@
-// Our own stay search (Ray, 2026-11-11). Lodgify's search bar sent guests to Utopia's Lodgify
-// website, whose search lists no houses at all (that site was never set up), so every search said
-// "no results". Instead the search stays on utopiahomes.com: /stays?arrival=&departure=&guests=
-// checks each house against its Lodgify calendar, the same calendar the house page's book-now box
-// reads. Plain GET links so people (and Lyra) can share or open a search directly.
+// Our own stay search and direct booking (Ray, 2026-11-11).
+//
+// Lodgify's search bar sent guests to Utopia's Lodgify website, whose search lists no houses (that
+// site was never set up), so every search said "no results". Lodgify's book-now box couldn't start
+// from searched dates, and next to our own "Book these dates" it made two book buttons. So the
+// whole flow is ours: /stays?arrival=&departure=&guests= lists the houses with a price for those
+// dates, and the house page's booking card shows the price and one Book now button that opens
+// Lodgify's checkout with the dates and guests filled in. Prices and availability come from
+// Lodgify's price quote (the one its book-now box uses), read in the guest's browser. Plain GET
+// links throughout, so people (and Lyra) can share or open a search directly.
 
 export const MAX_NIGHTS = 60;
+/** Most houses need at least 2 nights, so check-out defaults to 2 nights after check-in. */
+export const DEFAULT_NIGHTS = 2;
 
 export interface StaySearch {
   arrival: string;
@@ -15,21 +22,22 @@ export interface StaySearch {
 
 export type StaySearchResult = { search: StaySearch } | { error: string; partial: Partial<StaySearch> } | null;
 
-export interface CalendarDay {
-  date: string;
-  minimalStay: number;
-  maximumStay: number;
-  isCheckInAvailable: boolean;
-  isCheckOutAvailable: boolean;
-  isAvailable: boolean;
+export interface StayQuote {
+  nights: number;
+  nightly: number;
+  rentalTotal: number;
+  fees: { name: string; value: number }[];
+  taxes: number;
+  total: number;
 }
 
-export type StayVerdict = { available: true } | { available: false; reason: string };
+export type QuoteResult = { ok: true; quote: StayQuote } | { ok: false; reason: string };
 
 type Param = string | string[] | undefined;
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 const DAY_MS = 86_400_000;
+const LODGIFY_API = "https://checkout.lodgify.com/api/v2/websites";
 
 function first(value: Param): string | undefined {
   return Array.isArray(value) ? value[0] : value;
@@ -46,12 +54,17 @@ export function isoFromDay(day: number): string {
   return new Date(day * DAY_MS).toISOString().slice(0, 10);
 }
 
+export function addDays(iso: string, days: number): string | null {
+  const day = dayNumber(iso);
+  return day === null ? null : isoFromDay(day + days);
+}
+
 /** Today's date at the shore (the houses are in New Jersey), as YYYY-MM-DD. */
 export function shoreToday(now = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
 }
 
-/** Reads /stays search params. null when no dates were given (plain Stays page). */
+/** Reads search params. null when no dates were given. */
 export function parseStaySearch(params: { arrival?: Param; departure?: Param; guests?: Param }, today: string): StaySearchResult {
   const arrival = first(params.arrival)?.trim() ?? "";
   const departure = first(params.departure)?.trim() ?? "";
@@ -70,36 +83,63 @@ export function parseStaySearch(params: { arrival?: Param; departure?: Param; gu
   return { search: { arrival, departure, guests, nights } };
 }
 
-/** Whether one house can take this stay, from its Lodgify calendar (starting at or before arrival). */
-export function checkStay(calendar: readonly CalendarDay[], search: StaySearch, maxGuests: number | undefined): StayVerdict {
-  if (maxGuests && search.guests > maxGuests) return { available: false, reason: `Sleeps up to ${maxGuests}` };
-  const byDate = new Map(calendar.map((day) => [day.date, day]));
-  const start = dayNumber(search.arrival)!;
-  const end = dayNumber(search.departure)!;
-  for (let day = start; day < end; day += 1) {
-    const entry = byDate.get(isoFromDay(day));
-    if (!entry) return { available: false, reason: "Not open for booking yet" };
-    if (!entry.isAvailable) return { available: false, reason: "Booked for some of those nights" };
-  }
-  const arrivalDay = byDate.get(search.arrival)!;
-  const departureDay = byDate.get(search.departure);
-  if (!arrivalDay.isCheckInAvailable) return { available: false, reason: "Check-in isn't available that day" };
-  if (departureDay && !departureDay.isCheckOutAvailable) return { available: false, reason: "Check-out isn't available that day" };
-  if (search.nights < arrivalDay.minimalStay) return { available: false, reason: `${arrivalDay.minimalStay}-night minimum for those dates` };
-  if (arrivalDay.maximumStay && search.nights > arrivalDay.maximumStay) return { available: false, reason: `Up to ${arrivalDay.maximumStay} nights for those dates` };
-  return { available: true };
+type Stay = Pick<StaySearch, "arrival" | "departure" | "guests">;
+
+export function staySearchQuery(search: Stay): string {
+  return new URLSearchParams({ arrival: search.arrival, departure: search.departure, guests: String(search.guests) }).toString();
 }
 
-// adults is what Lodgify's book-now box reads from the page link, so its own Book Now keeps the
-// guest count too.
-export function staySearchQuery(search: Pick<StaySearch, "arrival" | "departure" | "guests">): string {
-  return new URLSearchParams({ arrival: search.arrival, departure: search.departure, guests: String(search.guests), adults: String(search.guests) }).toString();
-}
-
-/** Lodgify's checkout for one house with the dates and guests filled in (the link its book-now box builds). */
-export function lodgifyCheckoutUrl(accountSlug: string, rentalId: string, search: Pick<StaySearch, "arrival" | "departure" | "guests">): string {
+/** Lodgify's checkout for one house with the dates and guests filled in (adults = guest count). */
+export function lodgifyCheckoutUrl(accountSlug: string, rentalId: string, search: Stay): string {
   const query = new URLSearchParams({ currency: "USD", arrival: search.arrival, departure: search.departure, adults: String(search.guests) });
   return `https://checkout.lodgify.com/en/${encodeURIComponent(accountSlug)}/${encodeURIComponent(rentalId)}/reservation?${query.toString()}`;
+}
+
+export function lodgifyPriceUrl(accountSlug: string, rentalId: string, search: Stay): string {
+  const query = new URLSearchParams({ arrival: search.arrival, departure: search.departure, currency: "USD", adults: String(search.guests), language: "en" });
+  return `${LODGIFY_API}/${encodeURIComponent(accountSlug)}/rentals/${encodeURIComponent(rentalId)}/price?${query.toString()}`;
+}
+
+function num(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+/**
+ * Lodgify's price quote. 200 = the house takes the stay, with its price. 400 = it can't, and
+ * `title` says why in plain words ("The house is already booked on these dates", "The minimum
+ * stay for this rental is 2 days", "The maximum number of guests allowed is 22.").
+ */
+export function readQuote(status: number, body: unknown): QuoteResult {
+  const data = (body && typeof body === "object" ? body : {}) as Record<string, unknown>;
+  const totalPrice = data.totalPrice as Record<string, unknown> | undefined;
+  if (status === 200 && totalPrice && typeof totalPrice.total === "number" && totalPrice.total > 0) {
+    const rental = (data.rentalPrice ?? {}) as Record<string, unknown>;
+    const fees = ((data.fees as { details?: unknown } | undefined)?.details ?? []) as { name?: unknown; value?: unknown }[];
+    return {
+      ok: true,
+      quote: {
+        nights: num(rental.nights),
+        nightly: num(rental.nightlyPrice),
+        rentalTotal: num(rental.totalWithPromotions) || num(rental.total),
+        fees: Array.isArray(fees) ? fees.filter((fee) => typeof fee.name === "string" && num(fee.value) > 0).map((fee) => ({ name: fee.name as string, value: num(fee.value) })) : [],
+        taxes: num((data.localTaxes as { total?: unknown } | undefined)?.total),
+        total: totalPrice.total,
+      },
+    };
+  }
+  const title = typeof data.title === "string" ? data.title.trim().replace(/\.$/u, "") : "";
+  return { ok: false, reason: title || "Not available for those dates" };
+}
+
+export async function fetchQuote(accountSlug: string, rentalId: string, search: Stay, signal?: AbortSignal): Promise<QuoteResult> {
+  const response = await fetch(lodgifyPriceUrl(accountSlug, rentalId, search), { signal });
+  const body: unknown = await response.json().catch(() => null);
+  if (response.status >= 500) throw new Error(`Lodgify price ${response.status}`);
+  return readQuote(response.status, body);
+}
+
+export function formatUsd(amount: number): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: Number.isInteger(amount) ? 0 : 2 }).format(amount);
 }
 
 export function formatStayDates(search: Pick<StaySearch, "arrival" | "departure">): string {

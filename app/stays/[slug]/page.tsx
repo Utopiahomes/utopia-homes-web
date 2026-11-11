@@ -3,9 +3,8 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AmenityGroups } from "@/components/AmenityGroups";
 import { AnalyticsView } from "@/components/AnalyticsView";
 import { BookingLink } from "@/components/BookingLink";
-import { BookYourDates } from "@/components/BookYourDates";
 import { DesignerNote } from "@/components/DesignerNote";
-import { LodgifyBookNowBox } from "@/components/LodgifyBookNowBox";
+import { DirectBookingCard } from "@/components/DirectBookingCard";
 import { PropertyFacts } from "@/components/PropertyFacts";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
@@ -49,7 +48,7 @@ export default async function PropertyPage({ params }: Props) {
         <div className="stay-notes"><p className="eyebrow">Good to know</p><dl><div><dt>Pets</dt><dd>{property.petPolicy}</dd></div><div><dt>Parking</dt><dd>{property.parking}</dd></div><div><dt>Accessibility</dt><dd>{property.accessibility}</dd></div></dl></div>
       </div>
       <aside><div className="facts-label">The essentials</div><PropertyFacts property={property} />{property.lodgify
-        ? <><span id="book" className="book-anchor" aria-hidden="true" /><div className="aside-cta book-direct"><p className="eyebrow">Book direct · save 10%</p><h3>{property.city} is calling.</h3><p>Booking direct with Utopia Homes is 10% cheaper than Airbnb.</p><BookYourDates rentalId={property.lodgify.rentalId} accountSlug={property.lodgify.accountSlug} /><LodgifyBookNowBox rentalId={property.lodgify.rentalId} websiteId={property.lodgify.websiteId} accountSlug={property.lodgify.accountSlug} /><p className="book-direct-or">Prefer Airbnb?</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button booking-wide">Book on Airbnb <span aria-hidden="true">↗</span></BookingLink></div></>
+        ? <><span id="book" className="book-anchor" aria-hidden="true" /><div className="aside-cta book-direct"><p className="eyebrow">Book direct · save 10%</p><h3>{property.city} is calling.</h3><p>Booking direct with Utopia Homes is 10% cheaper than Airbnb.</p><DirectBookingCard slug={property.slug} rentalId={property.lodgify.rentalId} accountSlug={property.lodgify.accountSlug} /><p className="book-direct-or">Prefer Airbnb?</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button booking-wide">Book on Airbnb <span aria-hidden="true">↗</span></BookingLink></div></>
         : <div className="aside-cta"><p className="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p><BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink></div>}</aside>
     </section>
     <PropertyReviews summary={property.reviewSummary} />
