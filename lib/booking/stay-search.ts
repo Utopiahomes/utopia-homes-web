@@ -10,8 +10,8 @@
 // links throughout, so people (and Lyra) can share or open a search directly.
 
 export const MAX_NIGHTS = 60;
-/** Most houses need at least 2 nights, so check-out defaults to 2 nights after check-in. */
-export const DEFAULT_NIGHTS = 2;
+/** Check-out defaults to a week after check-in (Ray, 2026-11-11: rather longer than shorter; guests shorten it). */
+export const DEFAULT_NIGHTS = 7;
 
 export interface StaySearch {
   arrival: string;

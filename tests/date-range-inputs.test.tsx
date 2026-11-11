@@ -15,11 +15,11 @@ describe("check-in and check-out fields", () => {
     checkIn.focus();
 
     fireEvent.change(checkIn, { target: { value: "2027-03-12" } });
-    expect(checkOut.value).toBe("2027-03-14");
+    expect(checkOut.value).toBe("2027-03-19");
     expect(checkOut.min).toBe("2027-03-13");
 
     fireEvent.change(checkIn, { target: { value: "2027-04-12" } });
-    expect(checkOut.value).toBe("2027-04-14");
+    expect(checkOut.value).toBe("2027-04-19");
 
     expect(showPicker).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(checkIn);

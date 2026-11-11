@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { addDays, DEFAULT_NIGHTS, shoreToday } from "@/lib/booking/stay-search";
 
 // Check-in and check-out as two plain, labeled date fields (typeable, and Lyra can fill them), with
-// one convenience Ray asked for: picking check-in sets check-out 2 nights later, so the check-out
+// one convenience Ray asked for: picking check-in sets check-out a week later, so the check-out
 // picker opens on that month instead of starting over from today.
 //
 // It must not open the check-out picker or move focus itself (Ray, 2026-11-11): Chrome's picker
