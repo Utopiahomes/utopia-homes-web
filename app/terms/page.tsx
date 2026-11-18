@@ -1,5 +1,56 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { pageMetadata } from "@/lib/page-metadata";
-export const metadata: Metadata = pageMetadata({ title: "Terms", description: "Utopia Homes website terms overview.", path: "/terms" });
-export default function TermsPage() { return <><PageHero eyebrow="Legal" title={<>A clear basis<br /><em>for every stay.</em></>} intro="A local-development placeholder for the website terms that will govern UtopiaHomes.com." /><article className="legal-copy"><h2>Website terms overview</h2><p>Utopia property pages are informational. Availability, pricing, booking terms, payments, cancellations, and stay-specific rules are supplied by the external booking environment reached through each property’s configured link.</p><h3>No on-site booking</h3><p>UtopiaHomes.com does not process bookings or payments in V1. Following an external link does not itself create a reservation.</p><h3>Before launch</h3><p>These terms are not final legal advice. Counsel must review property-content rights, disclaimers, governing law, liability, intellectual-property, external-provider, and dispute provisions before publication.</p></article></>; }
+
+export const metadata: Metadata = pageMetadata({ title: "Terms", description: "The terms for using UtopiaHomes.com, booking a stay, and asking about Utopia Homes management and design services.", path: "/terms" });
+
+// Ray, 2026-11-18: the public page still called itself a local-development placeholder, and he asked
+// for basic terms without a lawyer. They stay deliberately plain. No arbitration clause, liability cap,
+// or "void in some states" wording, because New Jersey consumer-contract law penalizes overreaching
+// terms. Crawling stays allowed so search and answer engines can read the site.
+export default function TermsPage() {
+  return <>
+    <PageHero eyebrow="Legal" title={<>A clear basis<br /><em>for every stay.</em></>} intro="The plain rules for using UtopiaHomes.com and booking a stay with Utopia Homes." />
+    <article className="legal-copy">
+      <h2>Terms of use</h2>
+      <p>Last updated November 18, 2026. These terms apply when you use UtopiaHomes.com. “Utopia Homes,” “we,” and “us” mean the business operating this website. By using the site, you agree to these terms.</p>
+
+      <h3>Using this website</h3>
+      <p>Please use the site lawfully and give accurate information in any form you submit. Do not try to disrupt the site, overload it, or reach any part of it that is not meant to be public.</p>
+
+      <h3>Information about our homes</h3>
+      <p>We work to keep photos, descriptions, amenities, ratings, prices, and availability accurate, but details can change and mistakes can happen. The details shown when you complete your booking are the ones that apply to your reservation.</p>
+
+      <h3>Booking a stay</h3>
+      <p>You can check dates and prices on this website, but your reservation is completed at secure checkout or on Airbnb. You have a reservation only after your booking is confirmed. The price, payment schedule, cancellation policy, house rules, and any rental agreement presented when you book apply to your stay. If they differ from these terms, they control for that stay. Bookings made on Airbnb are also subject to Airbnb’s terms.</p>
+
+      <h3>During your stay</h3>
+      <p>Please stay within the guest limit and follow the pet policy for your home, along with the house rules provided for your stay.</p>
+
+      <h3>Owner, design, and membership inquiries</h3>
+      <p>Submitting a form does not create a management, design, or membership agreement. Utopia Design estimates are preliminary and nonbinding. Management or design services begin only under a separate written agreement. Joining the membership launch list does not guarantee membership or any particular benefit.</p>
+
+      <h3>Automated assistant</h3>
+      <p>If an AI assistant is available on this site, its answers are general information and may be wrong. Its answers do not change any price, policy, or reservation. Please confirm important details before you book.</p>
+
+      <h3>Our content</h3>
+      <p>The photos, text, logos, and designs on this site belong to Utopia Homes or the people who licensed them to us. You are welcome to link to our pages and quote brief passages with credit. Please ask us before using our content for your own listing, marketing, or other commercial purpose.</p>
+
+      <h3>Other websites</h3>
+      <p>Our site links to services we do not control, including Airbnb and our booking provider’s checkout. Their own terms and privacy policies apply when you use them.</p>
+
+      <h3>Limits of this website</h3>
+      <p>We provide this website for general information and cannot promise that it will always be available or free of errors. We are not responsible for indirect losses that result from using the website, such as travel plans made from information that later changed. This does not apply to losses caused by our negligence or intentional misconduct, and it does not limit any right you have under New Jersey consumer protection law.</p>
+
+      <h3>New Jersey law</h3>
+      <p>New Jersey law governs these terms.</p>
+
+      <h3>Changes to these terms</h3>
+      <p>We may update these terms and will change the date above when we do. An update does not change the terms of a reservation that is already confirmed.</p>
+
+      <h3>Questions</h3>
+      <p>Use our <Link href="/contact">contact form</Link> with any questions about these terms. Our <Link href="/privacy">privacy page</Link> explains how we handle information you share with us.</p>
+    </article>
+  </>;
+}
