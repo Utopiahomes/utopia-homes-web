@@ -23,11 +23,17 @@ describe("stayStructuredData", () => {
     expect(place.additionalProperty).toContainEqual({ "@type": "PropertyValue", name: "Bathrooms", value: 3.5 });
   });
 
-  it("gives every stay absolute images and no guest ratings", () => {
+  it("publishes the current Airbnb rating only when review rights are approved", () => {
+    const property = stay("buttercup-beauty");
+    expect(stayStructuredData(property, origin).aggregateRating).toEqual({ "@type": "AggregateRating", ratingValue: 4.95, reviewCount: 81, bestRating: 5 });
+    const pending = { ...property, sourceAudit: { ...property.sourceAudit, reviewRights: "pending" as const } };
+    expect(stayStructuredData(pending, origin)).not.toHaveProperty("aggregateRating");
+  });
+
+  it("gives every stay absolute images", () => {
     for (const property of properties) {
       const data = stayStructuredData(property, origin);
       expect((data.image as string[]).every((src) => src.startsWith(`${origin}/`))).toBe(true);
-      expect(data).not.toHaveProperty("aggregateRating");
       expect((data.containsPlace as Place).petsAllowed).toBe(true);
     }
   });

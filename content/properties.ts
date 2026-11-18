@@ -161,11 +161,11 @@ const records = [
     uniqueFeatures: ["Approximately 3,200 square feet of interior space", "Heated private pool and eight-person hot tub", "Game room, covered dining area, and bakery directly across the street"],
     designerNote: { designer: "Meghan", role: "Interior design", headline: "Three generations. One Wildwood experience.", paragraphs: ["Buttercup Beauty was designed around multigenerational hosting—a place where grandparents, parents, and children can come together in Wildwood and share one experience without giving up the comfort each generation needs.", "Livability guided the redesign. A large central living area gives the whole family room to gather, while multiple seating moments and thoughtful design elements create places to connect throughout the home. Every decision was made to help a large family settle in naturally, spend meaningful time together, and leave with a shared collection of Wildwood memories."], status: "approved" },
     reviewSummary: {
-      rating: 4.96,
-      count: 75,
+      rating: 4.95,
+      count: 81,
       sourceLabel: "Airbnb",
       sourceUrl: "https://www.airbnb.com/rooms/639163446287777223",
-      lastVerifiedAt: "2026-08-23",
+      lastVerifiedAt: "2026-11-18",
       editorialNote: "Anonymous guest feedback, condensed and paraphrased from verified five-star Airbnb reviews.",
       highlights: [
         "A natural setup for several families, with plenty of room to gather and still spread out.",
@@ -180,7 +180,7 @@ const records = [
     accessibility: "Guests climb a few stairs at the entrance. Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/639163446287777223", lodgify: { rentalId: "863595", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/639163446287777223"],
     sourceSnapshot: { listingTitle: "7 Bedroom Pet Friendly Gorgeous Home Pool+Hot Tub", locationLabel: "Entire home in Wildwood Crest, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 60, factualSummary: "Seven-bedroom, 3.5-bath entire home on Buttercup Road with a fenced backyard, seasonal heated in-ground pool, private hot tub, and shared beach access." },
-    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 22-guest capacity, four-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Airbnb shows 13 beds; Ray confirmed 12 beds on 2026-09-26 (counting the trundle, not the futon).", "Ray owns the photography and approves its use on Utopia Homes; verbatim review publication rights remain pending. Public review highlights are anonymous editorial paraphrases."] },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 22-guest capacity, four-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Airbnb shows 13 beds; Ray confirmed 12 beds on 2026-09-26 (counting the trundle, not the futon).", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
     seoTitle: "Buttercup Beauty, Wildwood Crest | Utopia Homes", seoDescription: "Explore Buttercup Beauty, a seven-bedroom Wildwood Crest group home with a heated private pool, hot tub, and fenced backyard.",
   },
   {
@@ -199,10 +199,10 @@ const records = [
     designerNote: { designer: "Meghan", role: "Interior design", headline: "Made for gathering. Designed to feel lived in.", paragraphs: ["Central Ave Socialization was designed around hosting events and giving large groups multiple living areas where they can come together. The goal was a home that felt genuinely lived in—not another sterile vacation rental.", "That meant choosing extremely comfortable oversized couches, adding blackout shades in every bedroom, and selecting artwork that entertains as much as it decorates. Every space is intended to help a full house settle in, connect, and feel at home together."], status: "approved" },
     reviewSummary: {
       rating: 5,
-      count: 8,
+      count: 12,
       sourceLabel: "Airbnb",
       sourceUrl: "https://www.airbnb.com/rooms/1137760792304016998",
-      lastVerifiedAt: "2026-08-23",
+      lastVerifiedAt: "2026-11-18",
       editorialNote: "Anonymous guest feedback, condensed and paraphrased from verified five-star Airbnb reviews.",
       highlights: [
         "A great location for a Wildwood group, close enough to walk to the beach and boardwalk.",
@@ -217,7 +217,7 @@ const records = [
     accessibility: "Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/1137760792304016998", lodgify: { rentalId: "863596", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/1137760792304016998"],
     sourceSnapshot: { listingTitle: "Private Pool & Hot Tub- sleeps 22 & pups welcome!", locationLabel: "Entire home in North Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 63, factualSummary: "Recently renovated seven-bedroom entire home with a large open living area, private pool, hot tub, fenced backyard, beach access, and private access to the property." },
-    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 22-guest capacity, three-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary lists 3.5 baths while the description says four bathrooms; Utopia displays the approved current value of 3.5.", "The description calls the pool in-ground while a listing highlight calls it above-ground.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Ray owns the photography and approves its use on Utopia Homes; verbatim review publication rights remain pending. Public review highlights are anonymous editorial paraphrases."] },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 22-guest capacity, three-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary lists 3.5 baths while the description says four bathrooms; Utopia displays the approved current value of 3.5.", "The description calls the pool in-ground while a listing highlight calls it above-ground.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
     seoTitle: "Central Ave Socialization | Utopia Homes", seoDescription: "Explore Central Ave Socialization, a seven-bedroom North Wildwood group home with a heated private pool, hot tub, and beach access.",
   },
   {
@@ -236,10 +236,10 @@ const records = [
     designerNote: { designer: "Meghan", role: "Interior design", headline: "A Wildwood original, carried forward.", paragraphs: ["The Shamrock is part of Wildwood history. The Shamrock Bar & Grill is the oldest bar and grill in Wildwood, and the house itself was moved from a block away rather than torn down—preserving a piece of that history for what came next.", "We wanted the home to retain as much of its historic charm as possible while still introducing a point of view of our own. The result is an intentional mix of old and new. Rooms such as Marilyn Monroe and Motorcycle preserve much of the historic house’s look and spirit, while Puppy Love and Mermaid were transformed more dramatically.", "Across every room, the goal remained the same: create a distinct experience with a personality guests would remember, just like The Shamrock itself."], status: "approved" },
     reviewSummary: {
       rating: 5,
-      count: 6,
+      count: 12,
       sourceLabel: "Airbnb",
       sourceUrl: "https://www.airbnb.com/rooms/1629070581710289311",
-      lastVerifiedAt: "2026-08-23",
+      lastVerifiedAt: "2026-11-18",
       editorialNote: "Anonymous guest feedback, condensed and paraphrased from verified five-star Airbnb reviews.",
       highlights: [
         "A memorable historic setting with enough personality to become part of the group’s Wildwood story.",
@@ -254,7 +254,7 @@ const records = [
     accessibility: "Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/1629070581710289311", lodgify: { rentalId: "863593", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/1629070581710289311"],
     sourceSnapshot: { listingTitle: "Shamrock Shindigs for 30+ people!", locationLabel: "Entire home in Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 30, disclosedAmenityCount: 64, factualSummary: "Restored ten-bedroom Wildwood home with four living rooms, five baths, two decks, a large garage, shared beach access, and a location close to the beach and boardwalk." },
-    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "pending", notes: ["Official Utopia name, 32-guest capacity, six-car parking, and no-pool facts approved by Ray on 2026-08-23.", "Airbnb displays 16+ guests; the source title says 30+ while Utopia's approved advertised capacity is 32.", "The summary states ten bedrooms and nineteen beds, but the visible sleeping-area list shows only nine named bedrooms plus a living room.", "Source parking counts vary; Ray confirmed eight spots (3 garage, 5 driveway) plus street parking on 2026-09-26.", "Ray owns the photography and approves its use on Utopia Homes; verbatim review publication rights remain pending. Public review highlights are anonymous editorial paraphrases."] },
+    sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 32-guest capacity, six-car parking, and no-pool facts approved by Ray on 2026-08-23.", "Airbnb displays 16+ guests; the source title says 30+ while Utopia's approved advertised capacity is 32.", "The summary states ten bedrooms and nineteen beds, but the visible sleeping-area list shows only nine named bedrooms plus a living room.", "Source parking counts vary; Ray confirmed eight spots (3 garage, 5 driveway) plus street parking on 2026-09-26.", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
     seoTitle: "The Shamrock, Wildwood | Utopia Homes", seoDescription: "Explore The Shamrock, a restored ten-bedroom Wildwood landmark for up to 32 guests near the beach and boardwalk.",
   },
 ];

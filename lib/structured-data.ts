@@ -12,8 +12,8 @@ const detail = (name: string, value: string | number): JsonLd => ({ "@type": "Pr
  * bans dogs and has 4 bedrooms, and Buttercup Beauty has 5. These facts come from the same approved
  * property records the page shows, so the two can't disagree.
  *
- * Guest ratings are left out on purpose: they come from Airbnb and their publication rights are
- * still marked pending in each record's source audit. Bathrooms are a named detail because
+ * Guest ratings appear only for records whose source audit approves publishing reviews (Ray
+ * confirmed the right for the Airbnb reviews on 2026-11-18). Bathrooms are a named detail because
  * schema.org's bathroom count must be a whole number and these homes have half baths.
  */
 export function stayStructuredData(property: Property, origin: string): JsonLd {
@@ -24,6 +24,7 @@ export function stayStructuredData(property: Property, origin: string): JsonLd {
     detail("Parking", property.parking),
     detail("Accessibility", property.accessibility),
   ].filter(Boolean);
+  const ratings = property.sourceAudit.reviewRights === "approved" ? property.reviewSummary : undefined;
   return {
     "@context": "https://schema.org",
     "@type": "VacationRental",
@@ -34,6 +35,7 @@ export function stayStructuredData(property: Property, origin: string): JsonLd {
     image: property.gallery.slice(0, 8).map((image) => new URL(image.src, origin).href),
     address: { "@type": "PostalAddress", addressLocality: property.city, addressRegion: property.state, addressCountry: "US" },
     brand: { "@type": "Organization", name: siteContent.name, url: origin },
+    ...(ratings && { aggregateRating: { "@type": "AggregateRating", ratingValue: ratings.rating, reviewCount: ratings.count, bestRating: 5 } }),
     containsPlace: {
       "@type": "Accommodation",
       additionalType: property.propertyType,

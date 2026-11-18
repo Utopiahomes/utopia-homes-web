@@ -22,6 +22,6 @@ Edit the human-readable TypeScript modules in `/content`. Each collection is val
 
 Each property stores a `sourceSnapshot` containing the source listing title, displayed capacity, stated sleeping capacity, source location label, disclosed amenity count, and a factual summary. This audit layer is intentionally separate from Utopia's `shortDescription` and `fullDescription`, which are curated editorial copy.
 
-All three records currently have `factStatus: partial` because the live source pages contain internal inconsistencies. Ray owns and has approved the property photography for Utopia Homes. Review rights remain `pending`; public visibility on Airbnb is not treated as publication permission.
+All three records currently have `factStatus: partial` because the live source pages contain internal inconsistencies. Ray owns and has approved the property photography for Utopia Homes. Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews, so review rights are `approved`. Public visibility on Airbnb alone is not treated as publication permission.
 
 Source listings are research inputs, never production runtime dependencies. Curated Utopia names and editorial copy must not be silently overwritten by source changes.
