@@ -10,6 +10,8 @@ import { PropertyGallery } from "@/components/PropertyGallery";
 import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
 import { PropertyReviews } from "@/components/PropertyReviews";
 import { cms } from "@/lib/cms";
+import { getSiteUrl } from "@/lib/site-url";
+import { jsonLdText, stayStructuredData } from "@/lib/structured-data";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,6 +32,7 @@ export default async function PropertyPage({ params }: Props) {
   const property = await cms.getPropertyBySlug(slug);
   if (!property) notFound();
   return <article className="property-page">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdText(stayStructuredData(property, getSiteUrl().origin)) }} />
     <AnalyticsView event={{ name: "property_view", properties: { propertyId: property.id, slug: property.slug, destination: property.destinationId } }} />
     <header className="property-hero">
       <div className="property-kicker"><p className="eyebrow">Utopia stay · {property.city}, {property.state}</p><span>{property.propertyType}</span></div>
