@@ -14,7 +14,7 @@ export default function TermsPage() {
     <PageHero eyebrow="Legal" title={<>A clear basis<br /><em>for every stay.</em></>} intro="The plain rules for using UtopiaHomes.com and booking a stay with Utopia Homes." />
     <article className="legal-copy">
       <h2>Terms of use</h2>
-      <p>Last updated November 18, 2026. These terms apply when you use UtopiaHomes.com. “Utopia Homes,” “we,” and “us” mean the business operating this website. By using the site, you agree to these terms.</p>
+      <p>Last updated November 18, 2026. These terms apply when you use UtopiaHomes.com. UtopiaHomes.com is operated by Delco Property Investments LLC. “Utopia Homes,” “we,” and “us” mean Delco Property Investments LLC. By using the site, you agree to these terms.</p>
 
       <h3>Using this website</h3>
       <p>Please use the site lawfully and give accurate information in any form you submit. Do not try to disrupt the site, overload it, or reach any part of it that is not meant to be public.</p>
