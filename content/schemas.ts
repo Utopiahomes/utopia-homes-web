@@ -9,6 +9,12 @@ export const propertySchema = z.object({
 export const destinationSchema = z.object({ id: z.string().min(1), name: z.string().min(1), slug: z.string().regex(/^[a-z0-9-]+$/), city: z.string().min(1), state: z.string(), shortDescription: z.string().min(1), longDescription: z.string().min(1), heroImage: imageSchema, featured: z.boolean(), seasonStory: z.object({ eyebrow: z.string().min(1), headline: z.string().min(1), description: z.string().min(1) }), highlights: z.array(z.object({ eyebrow: z.string().min(1), title: z.string().min(1), description: z.string().min(1), image: imageSchema })).min(1), seoTitle: z.string().min(1), seoDescription: z.string().min(1) });
 export const reviewSchema = z.object({ id: z.string().min(1), propertyId: z.string().optional(), author: z.string().min(1), quote: z.string().min(1), rating: z.number().min(1).max(5).optional(), source: z.string().min(1), permissionStatus: z.enum(["approved", "pending", "denied"]) });
 export const faqSchema = z.object({ id: z.string().min(1), category: z.enum(["stays", "owners", "membership", "design", "general"]), question: z.string().min(1), answer: z.string().min(1), sortOrder: z.number().int() });
+export const stayGuideSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/), navLabel: z.string().min(1), navSummary: z.string().min(1), inFooter: z.boolean(), eyebrow: z.string().min(1), title: z.string().min(1), titleEmphasis: z.string().min(1), answer: z.string().min(1), heroImage: imageSchema,
+  propertySlugs: z.array(z.string().min(1)).min(2), tableCaption: z.string().min(1), extraRows: z.array(z.object({ label: z.string().min(1), values: z.record(z.string(), z.string().min(1)) })),
+  fitHeading: z.string().min(1), fits: z.array(z.object({ propertySlug: z.string().min(1), heading: z.string().min(1), body: z.string().min(1) })).min(2),
+  notesHeading: z.string().min(1), notes: z.array(z.object({ title: z.string().min(1), body: z.string().min(1) })).min(2), faqs: z.array(faqSchema).min(3), defaultGuests: z.number().int().positive().optional(), seoTitle: z.string().min(1), seoDescription: z.string().min(1),
+});
 const publicLucyFaqSchema = z.object({
   question: z.string().trim().min(2).max(500),
   answer: z.string().trim().min(1).max(8_000),

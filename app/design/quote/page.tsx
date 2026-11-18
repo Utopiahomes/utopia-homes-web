@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { QuoteStudio } from "@/components/design/QuoteStudio";
+import { pageMetadata } from "@/lib/page-metadata";
 import type { DesignAudience, DesignServiceId } from "@/types/content";
 
-export const metadata: Metadata = { title: "Quote Studio | Utopia Design", description: "Build a Utopia Design project profile and receive a preliminary, nonbinding estimate." };
+export const metadata: Metadata = pageMetadata({ title: "Quote Studio | Utopia Design", description: "Build a Utopia Design project profile and receive a preliminary, nonbinding estimate.", path: "/design/quote", image: { src: "/images/shamrock/gallery/20.webp", alt: "Finished open-plan living and dining room at The Shamrock" } });
 const serviceIds: DesignServiceId[] = ["rental_readiness_audit", "room_design_plan", "whole_home_design_plan", "renovation_design_plan", "turnkey_furnishing"];
 
 export default async function DesignQuotePage({ searchParams }: { searchParams: Promise<{ audience?: string; goal?: string }> }) {

@@ -89,6 +89,41 @@ export interface Destination {
 
 export interface Review { id: string; propertyId?: string; author: string; quote: string; rating?: number; source: string; permissionStatus: "approved" | "pending" | "denied"; }
 export interface FAQ { id: string; category: "stays" | "owners" | "membership" | "design" | "general"; question: string; answer: string; sortOrder: number; }
+export interface StayGuideRow { label: string; values: Record<string, string>; }
+export interface StayGuideFit { propertySlug: string; heading: string; body: string; }
+export interface StayGuideNote { title: string; body: string; }
+/** A trip-type page comparing the homes that fit one kind of group. */
+export interface StayGuide {
+  slug: string;
+  navLabel: string;
+  navSummary: string;
+  inFooter: boolean;
+  eyebrow: string;
+  title: string;
+  titleEmphasis: string;
+  answer: string;
+  heroImage: ContentImage;
+  propertySlugs: string[];
+  tableCaption: string;
+  extraRows: StayGuideRow[];
+  fitHeading: string;
+  fits: StayGuideFit[];
+  notesHeading: string;
+  notes: StayGuideNote[];
+  faqs: FAQ[];
+  defaultGuests?: number;
+  seoTitle: string;
+  seoDescription: string;
+}
+export interface BusinessService { name: string; path: string; summary: string; includes: string[]; }
+export interface BusinessProfile {
+  name: string;
+  description: string;
+  areaServedName: string;
+  shareImage: ContentImage;
+  management: BusinessService;
+  design: BusinessService;
+}
 export interface Campaign { id: string; slug: string; name: string; partner: string; eyebrow: string; headline: string; description: string; heroImage: ContentImage; ctaLabel: string; ctaUrl: string; rulesUrl?: string; active: boolean; seoTitle: string; seoDescription: string; }
 export interface LeadershipProfile { id: string; name: string; role: string; summary: string; initials: string; approvalStatus: "approved" | "placeholder"; editorialNotes: string[]; }
 
@@ -167,6 +202,7 @@ export interface DesignAudienceContent {
   quoteCta: string;
 }
 export interface DesignPageContent {
+  overview: { eyebrow: string; heading: string; paragraphs: string[] };
   audiences: Record<DesignAudience, DesignAudienceContent>;
   meghan: { heading: string; statement: string; supportingCopy: string; principles: string[] };
 }

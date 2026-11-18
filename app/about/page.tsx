@@ -3,11 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { leadershipProfiles } from "@/content";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About Utopia",
   description: "Meet Ray and Meghan DeLuca, the owners behind Utopia Homes.",
-};
+  path: "/about",
+});
 
 const people = [
   {

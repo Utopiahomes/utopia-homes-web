@@ -8,7 +8,7 @@ export function HomeBeachOpening() {
         <Image
           className="home-beach-image"
           src="/images/home/wildwoods-beach-summer.jpg"
-          alt=""
+          alt="Busy summer beach in the Wildwoods with amusement pier rides in the distance"
           fill
           priority
           sizes="100vw"

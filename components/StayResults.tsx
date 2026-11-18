@@ -64,7 +64,7 @@ export function StayResults({ search, houses }: { search: StaySearch; houses: St
           return (
             <li key={house.slug} className={`stay-result ${open ? "is-open" : state.status === "done" ? "is-closed" : ""}`} data-availability={state.status === "done" ? (state.ok ? "open" : "closed") : state.status}>
               <Link className="stay-result-image" href={href} tabIndex={-1} aria-hidden="true">
-                <Image src={house.image.src} alt="" fill sizes="(max-width: 700px) 100vw, 220px" />
+                <Image src={house.image.src} alt={house.image.alt} fill sizes="(max-width: 700px) 100vw, 220px" />
               </Link>
               <div className="stay-result-copy">
                 <p className="stay-result-city">{house.city}</p>

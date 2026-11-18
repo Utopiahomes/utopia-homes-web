@@ -22,12 +22,11 @@ function DivisionInitial({ division }: { division: "Homes" | "Interiors" }) {
 export function Wordmark({ className = "", division = "Homes" }: WordmarkProps) {
   if (division === "Homes") {
     return (
-      <span className={`wordmark wordmark-homes ${className}`.trim()} aria-label="Utopia Homes">
+      <span className={`wordmark wordmark-homes ${className}`.trim()}>
         <Image
           className="wordmark-logo-image"
           src="/images/utopia-homes-logo.png"
-          alt=""
-          aria-hidden="true"
+          alt="Utopia Homes"
           width={2172}
           height={724}
           sizes="(max-width: 620px) 190px, 240px"

@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { FAQList } from "@/components/FAQList";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { ImmersiveScrollStory } from "@/components/ImmersiveScrollStory";
 import { PageHero } from "@/components/PageHero";
 import { cms } from "@/lib/cms";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "List Your Home",
-  description: "Utopia helps owners earn more from distinctive Wildwood vacation homes without turning ownership into another job.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Vacation Rental Management in the Wildwoods, NJ",
+  description: "Utopia Homes manages vacation rentals in the Wildwoods, NJ, from pricing and marketing to guest communication, cleaning, maintenance, and local oversight.",
+  path: "/list-your-home",
+  image: { src: "/images/shamrock/gallery/02.webp", alt: "The restored green facade of The Shamrock" },
+});
 
 const collectionOrder = ["buttercup-beauty", "central-ave-socialization", "the-shamrock"];
 
 export default async function ListYourHomePage() {
-  const [faqs, properties] = await Promise.all([cms.getFAQs("owners"), cms.getProperties()]);
+  const [faqs, properties, profile] = await Promise.all([cms.getFAQs("owners"), cms.getProperties(), cms.getBusinessProfile()]);
   const collection = collectionOrder.map((slug) => properties.find((property) => property.slug === slug)).filter((property) => property !== undefined);
 
   return <>
     <PageHero eyebrow="For Wildwood homeowners" title={<>Your home should earn more<br /><em>without becoming another job.</em></>} intro="Utopia combines local ownership, sophisticated vacation-rental management, distinctive marketing, and hands-on property stewardship—so your home performs without consuming your time." image={properties.find((property) => property.slug === "the-shamrock")?.heroImage} action={{ href: "#owner-conversation", label: "Talk to us about your home" }} />
+
+    {/* Ray, 2026-11-18: owners asking who manages rentals in Wildwood never found Utopia, so the page now says it plainly. */}
+    <section className="plain-answer" aria-labelledby="owner-management-title">
+      <p className="eyebrow">{profile.management.name}</p>
+      <h2 id="owner-management-title">Utopia Homes manages vacation rentals in the Wildwoods.</h2>
+      <p>{profile.management.summary}</p>
+      <ul>{profile.management.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+      <p>Need the home furnished or redesigned first? <Link href={profile.design.path}>Utopia Design</Link> designs and furnishes vacation rentals.</p>
+    </section>
 
     <section className="owner-proof">
       <p className="eyebrow">The owner’s perspective</p>

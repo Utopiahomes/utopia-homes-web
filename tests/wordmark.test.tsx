@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/Wordmark";
 describe("Wordmark", () => {
   it("uses the Homes division by default", () => {
     const markup = renderToStaticMarkup(<Wordmark />);
-    expect(markup).toContain('aria-label="Utopia Homes"');
+    expect(markup).toContain('alt="Utopia Homes"');
     expect(markup).toContain("wordmark-homes");
     expect(markup).toContain("utopia-homes-logo.png");
   });

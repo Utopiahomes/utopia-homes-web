@@ -191,6 +191,14 @@ export function UtopiaDesignPage({
         </div>
       </section>
 
+      <section className="plain-answer" aria-labelledby="design-overview-title">
+        <p className="eyebrow">{content.overview.eyebrow}</p>
+        <h2 id="design-overview-title">{content.overview.heading}</h2>
+        {content.overview.paragraphs.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </section>
+
       <section
         className="design-values"
         aria-label={`${audienceLabels[audience]} design benefits`}

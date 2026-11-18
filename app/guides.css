@@ -1,0 +1,75 @@
+/* Trip guides, the FAQ, and the plain-language service sections. */
+.guide-page .page-hero { min-height: auto; }
+.guide-page .page-hero-copy { justify-content: center; min-height: auto; padding: clamp(3.5rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem); }
+.guide-page .page-hero-copy h1 { margin-bottom: 1.5rem; font-size: clamp(3rem, 5.6vw, 6rem); line-height: .98; }
+.guide-page .page-hero-copy > p:last-child { max-width: 640px; font-size: 1.08rem; }
+.guide-page .page-hero-image { min-height: 460px; }
+
+.guide-section { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem); }
+.guide-section-cream { background: var(--cream); }
+.guide-section h2, .guide-book h2, .guide-page .faq-section h2, .guide-links h2, .plain-answer h2 { margin-bottom: clamp(2rem, 4vw, 3.5rem); font-size: clamp(2.3rem, 4.4vw, 4rem); line-height: 1.02; }
+
+.guide-table-frame { border-top: 1px solid var(--ink); }
+.guide-table { width: 100%; border-collapse: collapse; font-size: .95rem; line-height: 1.45; }
+.guide-table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.guide-table th, .guide-table td { padding: 1rem 1.25rem 1rem 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.guide-table thead th { color: var(--forest); font-family: var(--font-display), serif; font-size: clamp(1.35rem, 2vw, 1.8rem); font-weight: 600; line-height: 1.1; vertical-align: bottom; }
+.guide-table thead th:first-child, .guide-table tbody th { width: 18%; color: var(--clay); font-family: var(--font-sans), sans-serif; font-size: .66rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.guide-table thead a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+.guide-table td a { text-decoration: underline; text-underline-offset: .2em; }
+
+.guide-fit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(2rem, 4vw, 3.5rem); }
+.guide-fit { display: flex; flex-direction: column; }
+.guide-fit-image { position: relative; aspect-ratio: 4 / 3; margin-bottom: 1.5rem; overflow: hidden; }
+.guide-fit-image img { object-fit: cover; }
+.guide-fit .eyebrow { margin-bottom: .75rem; }
+.guide-fit h3 { margin-bottom: 1rem; font-size: clamp(1.7rem, 2.4vw, 2.3rem); line-height: 1.05; }
+.guide-fit-actions { display: flex; flex-direction: column; gap: .75rem; align-items: flex-start; margin-top: auto; padding-top: .75rem; }
+.guide-fit-actions .text-link { margin-top: 0; }
+
+.guide-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: clamp(2rem, 4vw, 4rem); }
+.guide-notes > div { padding-top: 1.25rem; border-top: 1px solid var(--ink); }
+.guide-notes h3 { margin-bottom: .75rem; font-size: clamp(1.5rem, 2vw, 1.9rem); line-height: 1.1; }
+.guide-notes p { margin-bottom: 0; }
+
+.guide-book { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem); background: var(--forest); color: var(--white); }
+.guide-book h2 { margin-bottom: 1rem; }
+.guide-book > p:not(.eyebrow) { max-width: 620px; margin-bottom: 2rem; }
+
+.guide-page .faq-section { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem); }
+.guide-page .faq-section + .faq-section { padding-top: 0; }
+.guide-page .faq-list details > p { max-width: 760px; }
+.guide-page .faq-section > .text-link { margin-top: 2rem; }
+
+.guide-links { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 6vw, 6rem); background: var(--cream); }
+.page-shell .guide-links { margin-top: clamp(4rem, 7vw, 7rem); }
+.guide-links ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.guide-links li a { display: grid; align-content: start; gap: .6rem; height: 100%; padding: 1.5rem; background: var(--white); transition: transform .18s; }
+.guide-links li a:hover { transform: translateY(-2px); }
+.guide-links strong { color: var(--forest); font-family: var(--font-display), serif; font-size: 1.6rem; font-weight: 600; line-height: 1.1; }
+.guide-links span { font-size: .92rem; line-height: 1.55; }
+
+.plain-answer { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 8vw, 9rem); background: var(--cream); }
+.plain-answer h2 { max-width: 980px; }
+.plain-answer > p:not(.eyebrow) { max-width: 760px; font-size: 1.08rem; }
+.plain-answer ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 1rem 2.5rem; max-width: 1100px; margin: 2rem 0; padding: 0; list-style: none; }
+.plain-answer li { padding-top: .9rem; border-top: 1px solid var(--line); line-height: 1.55; }
+.plain-answer a { text-decoration: underline; text-underline-offset: .2em; }
+
+.footer-links { display: flex; flex-wrap: wrap; gap: 2.5rem clamp(2.5rem, 5vw, 5rem); }
+.footer-links nav { align-content: start; }
+
+@media (max-width: 800px) {
+  .guide-page .page-hero-image { min-height: 62vw; }
+}
+
+/* Phones read one fact at a time, with each home's answer on its own line. */
+@media (max-width: 720px) {
+  .guide-table, .guide-table tbody, .guide-table tr, .guide-table td, .guide-table tbody th { display: block; width: 100%; }
+  .guide-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .guide-table tbody tr { padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
+  .guide-table tbody th { padding: 0 0 .6rem; border: 0; }
+  .guide-table td { display: grid; grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 1rem; padding: .35rem 0; border: 0; }
+  .guide-table td::before { content: attr(data-home); color: #4f665f; font-size: .84rem; font-weight: 700; }
+  .footer-links { gap: 2.5rem 3.5rem; }
+}

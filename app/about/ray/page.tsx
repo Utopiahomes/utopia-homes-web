@@ -4,11 +4,14 @@ import { PageHero } from "@/components/PageHero";
 import { ParallaxMedia } from "@/components/ParallaxMedia";
 import { LeadershipProfile } from "@/components/LeadershipProfile";
 import { leadershipProfiles } from "@/content";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About Ray DeLuca",
   description: "Meet Utopia Homes founder Ray DeLuca, a longtime Wildwood host, vacation-property owner, and steward of the former Shamrock Hotel.",
-};
+  path: "/about/ray",
+  image: { src: "/images/shamrock/gallery/02.webp", alt: "The restored green facade of The Shamrock" },
+});
 
 export default function RayPage() {
   const image = { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of the former Shamrock Hotel in Wildwood" };

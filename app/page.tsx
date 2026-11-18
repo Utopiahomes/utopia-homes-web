@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HomeBeachOpening } from "@/components/HomeBeachOpening";
 import { cms } from "@/lib/cms";
+import { pageMetadata } from "@/lib/page-metadata";
+import { listOf, stayFacts } from "@/lib/stay-facts";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const homes = (await cms.getProperties()).map(stayFacts);
+  const guests = homes.map((home) => home.guests);
+  return pageMetadata({
+    title: "Large-Group Vacation Rentals in the Wildwoods, NJ | Utopia Homes",
+    absoluteTitle: true,
+    description: `Book direct at large vacation homes for ${Math.min(...guests)} to ${Math.max(...guests)} guests in ${listOf(homes.map((home) => home.city))}, NJ. Dogs welcome. We also manage and design vacation rentals.`,
+    path: "/",
+  });
+}
 
 export default async function Home() {
   const properties = await cms.getProperties();

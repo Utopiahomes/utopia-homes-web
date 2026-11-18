@@ -1,4 +1,4 @@
-import type { Campaign, DesignPageContent, Destination, FAQ, Property, PublicLucyContent, Review } from "@/types/content";
+import type { BusinessProfile, Campaign, DesignPageContent, Destination, FAQ, Property, PublicLucyContent, Review, StayGuide } from "@/types/content";
 
 export interface CmsAdapter {
   getProperties(): Promise<Property[]>;
@@ -10,4 +10,7 @@ export interface CmsAdapter {
   getCampaignBySlug(slug: string): Promise<Campaign | null>;
   getDesignPage(): Promise<DesignPageContent>;
   getPublicLucyContent(): Promise<PublicLucyContent>;
+  getStayGuides(): Promise<StayGuide[]>;
+  getStayGuideBySlug(slug: string): Promise<StayGuide | null>;
+  getBusinessProfile(): Promise<BusinessProfile>;
 }

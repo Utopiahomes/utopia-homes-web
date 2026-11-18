@@ -47,6 +47,7 @@ export function SiteHeader() {
           <div className="mobile-secondary">
             <Link href="/contact">Contact</Link>
             <Link href="/membership">Membership</Link>
+            <Link href="/faq">FAQ</Link>
           </div>
         </div>
       </details>

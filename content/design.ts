@@ -1,6 +1,20 @@
 import type { DesignPageContent } from "@/types/content";
+import { listOf } from "@/lib/stay-facts";
+import { properties } from "./properties";
+
+const designedByMeghan = properties.filter((property) => property.status === "active" && property.designerNote.designer === "Meghan" && property.designerNote.status === "approved");
 
 export const designPageContent: DesignPageContent = {
+  // Ray, 2026-11-18: "who designs and furnishes vacation rental homes at the Jersey Shore" never
+  // surfaced Utopia, because the page said how design feels but not plainly what we do.
+  overview: {
+    eyebrow: "Vacation rental design and furnishing",
+    heading: "We design and furnish vacation rentals.",
+    paragraphs: [
+      "Utopia Design, a Utopia Homes company, designs and furnishes vacation rentals. We can improve an existing rental, furnish an empty one until it is complete and guest-ready, or plan a rental renovation before construction decisions lock in. We design personal homes too.",
+      `Meghan DeLuca designed the homes in the Utopia Homes collection at the Jersey Shore: ${listOf(designedByMeghan.map((property) => `${property.name} in ${property.city}`))}.`,
+    ],
+  },
   audiences: {
     rental: {
       eyebrow: "Design for memorable stays",

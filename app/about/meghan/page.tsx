@@ -4,12 +4,15 @@ import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { properties } from "@/content";
 import { hostingChapters, meghanBeyondRentals, meghanIntro, meghanStats, meghanTodayIntro } from "@/content/meghan";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About Meghan DeLuca",
   description:
     "Meghan DeLuca, owner of Utopia Homes and Utopia Design, has hosted guests at the Jersey Shore and in the Poconos since 2014.",
-};
+  path: "/about/meghan",
+  image: { src: "/images/about/meghan/crest-oasis.webp", alt: "Our Oasis by the Sea, one of the Wildwood Crest condos Meghan styled and hosted" },
+});
 
 export default function MeghanPage() {
   const today = properties.filter((p) => p.status === "active" && p.designerNote);

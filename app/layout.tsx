@@ -18,8 +18,11 @@ import "./design.css";
 import "./design-adjustments.css";
 import "./lucy.css";
 import "./about.css";
-import { siteContent } from "@/content";
+import "./guides.css";
+import { businessProfile, siteContent } from "@/content";
+import { cms } from "@/lib/cms";
 import { getSiteUrl } from "@/lib/site-url";
+import { jsonLdText, organizationStructuredData } from "@/lib/structured-data";
 
 const display = Cormorant_Garamond({ subsets: ["latin"], variable: "--font-display", weight: ["500", "600"] });
 const sans = Manrope({ subsets: ["latin"], variable: "--font-sans" });
@@ -28,9 +31,12 @@ export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: { default: siteContent.defaultTitle, template: `%s | ${siteContent.name}` },
   description: siteContent.description,
+  openGraph: { type: "website", siteName: siteContent.name, images: [{ url: businessProfile.shareImage.src, alt: businessProfile.shareImage.alt }] },
+  twitter: { card: "summary_large_image", images: [businessProfile.shareImage.src] },
   robots: process.env.VERCEL_ENV === "production" ? { index: true, follow: true } : { index: false, follow: false, noarchive: true, nocache: true },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" data-scroll-behavior="smooth"><body className={`${display.variable} ${sans.variable}`}><SiteHeader /><main>{children}</main><SiteFooter /><LucyWidgetMount /></body></html>;
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
+  return <html lang="en" data-scroll-behavior="smooth"><body className={`${display.variable} ${sans.variable}`}><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdText(organizationStructuredData(profile, properties, getSiteUrl().origin)) }} /><SiteHeader /><main>{children}</main><SiteFooter /><LucyWidgetMount /></body></html>;
 }

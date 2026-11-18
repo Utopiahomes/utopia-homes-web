@@ -9,7 +9,9 @@ import { PropertyFacts } from "@/components/PropertyFacts";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
 import { PropertyReviews } from "@/components/PropertyReviews";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
 import { cms } from "@/lib/cms";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 import { jsonLdText, stayStructuredData } from "@/lib/structured-data";
 
@@ -22,7 +24,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await cms.getPropertyBySlug((await params).slug);
   if (!property) return { title: "Stay not found" };
-  return { title: property.seoTitle.replace(" | Utopia Homes", ""), description: property.seoDescription, openGraph: { title: property.seoTitle, description: property.seoDescription, images: [property.heroImage.src] } };
+  return pageMetadata({ title: property.seoTitle.replace(" | Utopia Homes", ""), description: property.seoDescription, path: `/stays/${property.slug}`, image: property.heroImage });
 }
 
 export default async function PropertyPage({ params }: Props) {
@@ -31,6 +33,8 @@ export default async function PropertyPage({ params }: Props) {
   if (renamedSlugs[slug]) permanentRedirect(`/stays/${renamedSlugs[slug]}`);
   const property = await cms.getPropertyBySlug(slug);
   if (!property) notFound();
+  // Only the guides this home belongs to, so The Shamrock is never linked as a pool home.
+  const guides = (await cms.getStayGuides()).filter((guide) => guide.propertySlugs.includes(property.slug));
   return <article className="property-page">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdText(stayStructuredData(property, getSiteUrl().origin)) }} />
     <AnalyticsView event={{ name: "property_view", properties: { propertyId: property.id, slug: property.slug, destination: property.destinationId } }} />
@@ -56,5 +60,6 @@ export default async function PropertyPage({ params }: Props) {
     </section>
     <PropertyReviews summary={property.reviewSummary} />
     <PropertyPhotoStory property={property} />
+    <StayGuideLinks guides={guides} heading="Compare this home for your trip." />
   </article>;
 }
