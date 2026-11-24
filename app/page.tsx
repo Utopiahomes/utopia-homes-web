@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { HomeBeachOpening } from "@/components/HomeBeachOpening";
 import { cms } from "@/lib/cms";
+import { wording } from "@/lib/edit/wording";
 import { pageMetadata } from "@/lib/page-metadata";
 import { listOf, stayFacts } from "@/lib/stay-facts";
 
@@ -23,6 +24,7 @@ export default async function Home() {
   const gatheringImage = gatheringProperty.gallery.find(({ category }) => category === "gathering") ?? gatheringProperty.heroImage;
   const interiorsProperty = properties.find(({ slug }) => slug === "the-shamrock") ?? properties[2] ?? properties[0];
   const interiorsImage = interiorsProperty.gallery.find(({ category }) => category === "details") ?? interiorsProperty.gallery[1] ?? interiorsProperty.heroImage;
+  const words = wording.home;
   const ownersProperty = properties.find(({ slug }) => slug === "buttercup-beauty") ?? properties[0];
 
   return <>
@@ -30,8 +32,8 @@ export default async function Home() {
 
     <section className="home-featured" id="collection" aria-labelledby="home-collection-title">
       <header className="home-featured-heading">
-        <div><p className="eyebrow">Featured stays · The Wildwoods</p><h2 id="home-collection-title">Three homes.<br /><em>Three personalities.</em></h2></div>
-        <Link className="text-link" href="/stays">See every stay <span aria-hidden="true">→</span></Link>
+        <div><p className="eyebrow">{words.featured.eyebrow}</p><h2 id="home-collection-title">{words.featured.titleLine1}<br /><em>{words.featured.titleLine2}</em></h2></div>
+        <Link className="text-link" href="/stays">{words.featured.allStays} <span aria-hidden="true">→</span></Link>
       </header>
       <div className="home-featured-grid">
         {properties.map((property, index) => <article className="home-featured-card" key={property.id}>
@@ -43,7 +45,7 @@ export default async function Home() {
             <p>{property.city}, {property.state} · Up to {property.maxGuests ?? "—"} guests</p>
             <h3>{property.name}</h3>
             <p>{property.shortDescription}</p>
-            <Link className="text-link" href={`/stays/${property.slug}`}>View home <span aria-hidden="true">→</span></Link>
+            <Link className="text-link" href={`/stays/${property.slug}`}>{words.featured.viewHome} <span aria-hidden="true">→</span></Link>
           </div>
         </article>)}
       </div>
@@ -52,16 +54,16 @@ export default async function Home() {
     <section className="home-gathering" aria-labelledby="home-gathering-title">
       <Image src={gatheringImage.src} alt={gatheringImage.alt} fill sizes="100vw" />
       <div className="home-gathering-wash" />
-      <div><p className="eyebrow eyebrow-light">The house is part of the trip</p><h2 id="home-gathering-title">Built for getting<br /><em>people together.</em></h2></div>
+      <div><p className="eyebrow eyebrow-light">{words.gathering.eyebrow}</p><h2 id="home-gathering-title">{words.gathering.titleLine1}<br /><em>{words.gathering.titleLine2}</em></h2></div>
     </section>
 
     <section className="home-pathways" aria-label="Work with Utopia">
       <article>
         <div className="home-pathway-image"><Image src={ownersProperty.heroImage.src} alt={ownersProperty.heroImage.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
-        <div className="home-pathway-copy"><p className="eyebrow">For owners</p><h2>Own a vacation home?</h2><p>We can make it work harder without making it another job.</p><Link className="text-link" href="/list-your-home">Learn about Utopia management <span aria-hidden="true">→</span></Link></div>
+        <div className="home-pathway-copy"><p className="eyebrow">{words.owners.eyebrow}</p><h2>{words.owners.title}</h2><p>{words.owners.text}</p><Link className="text-link" href="/list-your-home">{words.owners.link} <span aria-hidden="true">→</span></Link></div>
       </article>
       <article>
-        <div className="home-pathway-copy"><p className="eyebrow">Utopia Design</p><h2>Homes with character perform differently.</h2><Link className="text-link" href="/design">Explore Utopia Design <span aria-hidden="true">→</span></Link></div>
+        <div className="home-pathway-copy"><p className="eyebrow">{words.design.eyebrow}</p><h2>{words.design.title}</h2><Link className="text-link" href="/design">{words.design.link} <span aria-hidden="true">→</span></Link></div>
         <div className="home-pathway-image"><Image src={interiorsImage.src} alt={interiorsImage.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
       </article>
     </section>

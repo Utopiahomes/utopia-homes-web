@@ -1,4 +1,5 @@
 import type { Property } from "@/types/content";
+import { wording } from "@/lib/edit/wording";
 import { propertySchema, validateCollection } from "./schemas";
 
 const buttercupGallery = ([
@@ -149,8 +150,6 @@ const records = [
   {
     id: "airbnb-639163446287777223", name: "Buttercup Beauty", slug: "buttercup-beauty", status: "active", featured: true,
     destinationId: "destination-wildwood", city: "Wildwood Crest", state: "New Jersey", propertyType: "Entire home",
-    shortDescription: "A spacious Wildwood Crest gathering place with a heated pool, hot tub, and room for the whole family.",
-    fullDescription: "Buttercup Beauty is a generous shore home designed around time together. Its open living spaces, game room, and fenced backyard make it especially well suited to multigenerational groups and friends traveling with dogs.",
     heroImage: buttercupGallery[0],
     gallery: buttercupGallery,
     maxGuests: 22, bedrooms: 7, beds: 12, bathrooms: 3.5,
@@ -158,8 +157,7 @@ const records = [
       { name: "Outside", amenities: ["Shared beach access", "Heated private pool", "Private hot tub", "Large fenced backyard"] },
       { name: "At home", amenities: ["Kitchen", "Wi-Fi", "In-unit washer and dryer", "Smart TVs", "Foosball table"] },
     ],
-    uniqueFeatures: ["Approximately 3,200 square feet of interior space", "Heated private pool and eight-person hot tub", "Game room, covered dining area, and bakery directly across the street"],
-    designerNote: { designer: "Meghan", role: "Interior design", headline: "Three generations. One Wildwood experience.", paragraphs: ["Buttercup Beauty was designed around multigenerational hosting—a place where grandparents, parents, and children can come together in Wildwood and share one experience without giving up the comfort each generation needs.", "Livability guided the redesign. A large central living area gives the whole family room to gather, while multiple seating moments and thoughtful design elements create places to connect throughout the home. Every decision was made to help a large family settle in naturally, spend meaningful time together, and leave with a shared collection of Wildwood memories."], status: "approved" },
+    designerNote: { designer: "Meghan", role: "Interior design", status: "approved" },
     reviewSummary: {
       rating: 4.95,
       count: 81,
@@ -177,7 +175,6 @@ const records = [
     },
     petPolicy: "Dogs of any size are welcome, up to 4 dogs, with no pet fee. No cats.",
     parking: "Parking for 4 cars across two driveways, plus street parking.",
-    accessibility: "Guests climb a few stairs at the entrance. Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/639163446287777223", lodgify: { rentalId: "863595", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/639163446287777223"],
     sourceSnapshot: { listingTitle: "7 Bedroom Pet Friendly Gorgeous Home Pool+Hot Tub", locationLabel: "Entire home in Wildwood Crest, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 60, factualSummary: "Seven-bedroom, 3.5-bath entire home on Buttercup Road with a fenced backyard, seasonal heated in-ground pool, private hot tub, and shared beach access." },
     sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 22-guest capacity, four-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Airbnb shows 13 beds; Ray confirmed 12 beds on 2026-09-26 (counting the trundle, not the futon).", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
@@ -186,8 +183,6 @@ const records = [
   {
     id: "airbnb-1137760792304016998", name: "Central Ave Socialization", slug: "central-ave-socialization", status: "active", featured: true,
     destinationId: "destination-wildwood", city: "North Wildwood", state: "New Jersey", propertyType: "Entire home",
-    shortDescription: "A relaxed North Wildwood shore house with a heated private pool, hot tub, and easy beach access.",
-    fullDescription: "Central Ave Socialization is a recently renovated group retreat built around easy time together. An open living area and fully fenced backyard create a welcoming home base for beach days, pool time, and evenings with the whole crew—including dogs.",
     heroImage: centralAveGallery[0],
     gallery: centralAveGallery,
     maxGuests: 22, bedrooms: 7, beds: 18, bathrooms: 3.5,
@@ -195,8 +190,7 @@ const records = [
       { name: "Outside", amenities: ["Beach access", "Heated private pool", "Hot tub", "Fully fenced backyard", "Patio seating and fire pit"] },
       { name: "At home", amenities: ["Kitchen", "Wi-Fi", "TV", "Washer", "In-unit dryer"] },
     ],
-    uniqueFeatures: ["Approximately a five-minute walk to Albert I. Allen Memorial Park", "Heated private pool and hot tub in a fully fenced backyard", "Seven bedrooms and eighteen listed beds for large-group stays"],
-    designerNote: { designer: "Meghan", role: "Interior design", headline: "Made for gathering. Designed to feel lived in.", paragraphs: ["Central Ave Socialization was designed around hosting events and giving large groups multiple living areas where they can come together. The goal was a home that felt genuinely lived in—not another sterile vacation rental.", "That meant choosing extremely comfortable oversized couches, adding blackout shades in every bedroom, and selecting artwork that entertains as much as it decorates. Every space is intended to help a full house settle in, connect, and feel at home together."], status: "approved" },
+    designerNote: { designer: "Meghan", role: "Interior design", status: "approved" },
     reviewSummary: {
       rating: 5,
       count: 12,
@@ -214,7 +208,6 @@ const records = [
     },
     petPolicy: "Dogs of all sizes are welcome, up to 4 dogs, with no pet fee. No cats.",
     parking: "Parking for 3 cars.",
-    accessibility: "Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/1137760792304016998", lodgify: { rentalId: "863596", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/1137760792304016998"],
     sourceSnapshot: { listingTitle: "Private Pool & Hot Tub- sleeps 22 & pups welcome!", locationLabel: "Entire home in North Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 22, disclosedAmenityCount: 63, factualSummary: "Recently renovated seven-bedroom entire home with a large open living area, private pool, hot tub, fenced backyard, beach access, and private access to the property." },
     sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 22-guest capacity, three-car parking, and heated-private-pool facts approved by Ray on 2026-08-23.", "Airbnb's summary lists 3.5 baths while the description says four bathrooms; Utopia displays the approved current value of 3.5.", "The description calls the pool in-ground while a listing highlight calls it above-ground.", "Airbnb's summary shows 16+ guests while the approved Utopia capacity is 22.", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
@@ -223,8 +216,6 @@ const records = [
   {
     id: "airbnb-1629070581710289311", name: "The Shamrock", slug: "the-shamrock", status: "active", featured: true,
     destinationId: "destination-wildwood", city: "Wildwood", state: "New Jersey", propertyType: "Entire home",
-    shortDescription: "A colorful Wildwood original, made for milestone weekends and the whole crew.",
-    fullDescription: "Big groups deserve a home with just as much personality. The Shamrock brings everyone together in a restored piece of Wildwood history, with generous shared spaces and a location close to the beach, boardwalk, and downtown.",
     heroImage: shamrockGallery[0],
     gallery: shamrockGallery,
     maxGuests: 32, bedrooms: 10, beds: 19, bathrooms: 5,
@@ -232,8 +223,7 @@ const records = [
       { name: "Location", amenities: ["Shared beach access", "About two blocks from the boardwalk", "Walkable to downtown Wildwood"] },
       { name: "At home", amenities: ["Kitchen", "Wi-Fi", "Dedicated workspace", "HDTV", "Washer and in-unit dryer", "Central air conditioning"] },
     ],
-    uniqueFeatures: ["A restored piece of the historic Shamrock property", "Ten bedrooms, four living rooms, and two decks", "Garage and driveway parking for eight cars"],
-    designerNote: { designer: "Meghan", role: "Interior design", headline: "A Wildwood original, carried forward.", paragraphs: ["The Shamrock is part of Wildwood history. The Shamrock Bar & Grill is the oldest bar and grill in Wildwood, and the house itself was moved from a block away rather than torn down—preserving a piece of that history for what came next.", "We wanted the home to retain as much of its historic charm as possible while still introducing a point of view of our own. The result is an intentional mix of old and new. Rooms such as Marilyn Monroe and Motorcycle preserve much of the historic house’s look and spirit, while Puppy Love and Mermaid were transformed more dramatically.", "Across every room, the goal remained the same: create a distinct experience with a personality guests would remember, just like The Shamrock itself."], status: "approved" },
+    designerNote: { designer: "Meghan", role: "Interior design", status: "approved" },
     reviewSummary: {
       rating: 5,
       count: 12,
@@ -251,7 +241,6 @@ const records = [
     },
     petPolicy: "Dogs of all shapes and sizes are welcome, up to 4 dogs, with no pet fee. No cats.",
     parking: "Parking for 8 cars: 3 in the garage and 5 in the driveway, plus street parking.",
-    accessibility: "Please contact us before booking to discuss specific accessibility needs.",
     bookingUrl: "https://www.airbnb.com/rooms/1629070581710289311", lodgify: { rentalId: "863593", websiteId: "675624", accountSlug: "raymond-p-deluca" }, sourceUrls: ["https://www.airbnb.com/rooms/1629070581710289311"],
     sourceSnapshot: { listingTitle: "Shamrock Shindigs for 30+ people!", locationLabel: "Entire home in Wildwood, New Jersey", displayedCapacity: "16+ guests", statedSleeps: 30, disclosedAmenityCount: 64, factualSummary: "Restored ten-bedroom Wildwood home with four living rooms, five baths, two decks, a large garage, shared beach access, and a location close to the beach and boardwalk." },
     sourceAudit: { lastCheckedAt: "2026-08-23", factStatus: "partial", photographyRights: "approved", reviewRights: "approved", notes: ["Official Utopia name, 32-guest capacity, six-car parking, and no-pool facts approved by Ray on 2026-08-23.", "Airbnb displays 16+ guests; the source title says 30+ while Utopia's approved advertised capacity is 32.", "The summary states ten bedrooms and nineteen beds, but the visible sleeping-area list shows only nine named bedrooms plus a living room.", "Source parking counts vary; Ray confirmed eight spots (3 garage, 5 driveway) plus street parking on 2026-09-26.", "Ray owns the photography and approves its use on Utopia Homes; Ray confirmed on 2026-11-18 that Utopia Homes has the right to publish its Airbnb reviews. Public review highlights are anonymous editorial paraphrases."] },
@@ -259,4 +248,12 @@ const records = [
   },
 ];
 
-export const properties: Property[] = validateCollection(propertySchema, records, "properties");
+// The owner-editable wording of each house (content/site-content/stays.json) joins its facts here.
+const withWording = records.map((record) => {
+  const words = wording.stays[record.slug];
+  if (!words) throw new Error(`content/site-content/stays.json has no wording for ${record.slug}.`);
+  const { designerNote, ...rest } = words;
+  return { ...record, ...rest, designerNote: { ...record.designerNote, ...designerNote } };
+});
+
+export const properties: Property[] = validateCollection(propertySchema, withWording, "properties");

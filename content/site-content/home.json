@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "kicker": "Utopia Homes",
+    "titleLine1": "Big homes.",
+    "titleLine2": "Better weekends."
+  },
+  "belief": {
+    "kicker": "We own vacation homes.",
+    "title": "We design them, operate them, and know what makes them work."
+  },
+  "featured": {
+    "eyebrow": "Featured stays · The Wildwoods",
+    "titleLine1": "Three homes.",
+    "titleLine2": "Three personalities.",
+    "allStays": "See every stay",
+    "viewHome": "View home"
+  },
+  "gathering": {
+    "eyebrow": "The house is part of the trip",
+    "titleLine1": "Built for getting",
+    "titleLine2": "people together."
+  },
+  "owners": {
+    "eyebrow": "For owners",
+    "title": "Own a vacation home?",
+    "text": "We can make it work harder without making it another job.",
+    "link": "Learn about Utopia management"
+  },
+  "design": {
+    "eyebrow": "Utopia Design",
+    "title": "Homes with character perform differently.",
+    "link": "Explore Utopia Design"
+  }
+}

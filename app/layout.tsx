@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { LucyWidgetMount } from "@/components/lucy/LucyWidgetMount";
+import Script from "next/script";
+import { EditBridge } from "@/components/edit/EditBridge";
+import { editMode } from "@/lib/edit/wording";
 import "./globals.css";
 import "./v1.css";
 import "./collection.css";
@@ -33,10 +35,24 @@ export const metadata: Metadata = {
   description: siteContent.description,
   openGraph: { type: "website", siteName: siteContent.name, images: [{ url: businessProfile.shareImage.src, alt: businessProfile.shareImage.alt }] },
   twitter: { card: "summary_large_image", images: [businessProfile.shareImage.src] },
-  robots: process.env.VERCEL_ENV === "production" ? { index: true, follow: true } : { index: false, follow: false, noarchive: true, nocache: true },
+  robots: process.env.VERCEL_ENV === "production" && !editMode ? { index: true, follow: true } : { index: false, follow: false, noarchive: true, nocache: true },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
-  return <html lang="en" data-scroll-behavior="smooth"><body className={`${display.variable} ${sans.variable}`}><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdText(organizationStructuredData(profile, properties, getSiteUrl().origin)) }} /><SiteHeader /><main>{children}</main><SiteFooter /><LucyWidgetMount /></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth"><body className={`${display.variable} ${sans.variable}`}><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdText(organizationStructuredData(profile, properties, getSiteUrl().origin)) }} /><SiteHeader /><main>{children}</main><SiteFooter />{editMode ? <EditBridge parent={process.env.SITE_EDIT_PARENT} /> : <TalkWithLyra />}</body></html>;
+}
+
+// Ray, 2026-11-23: "build Lyra into the website ... the beach Lyra ... in the top right of the
+// screen and can answer questions". Stoin's talk-to-lucy block (utopia-workspaces site_blocks)
+// opens a live room with Utopia's Lyra, in her beach look, for one visitor; her rules and what
+// she knows are set in Stoin (website_sites "utopiahomes.com"). It replaces the text chat box
+// (LucyWidget), as on stoin.ai, where Ray called a chat box "sort of useless". The edit copy has
+// no Talk button.
+function TalkWithLyra() {
+  const faces = "https://app.stoin.ai/synths/lyra-beach";
+  return <>
+    <div data-stoin-block="talk-to-lucy" data-site="utopiahomes.com" data-position="top-right" data-below=".site-header" data-label="Talk with Lyra" data-status="Online now" data-face={`${faces}/idle-01.mp4`} data-still={`${faces}/still.jpg`} />
+    <Script src="/blocks/talk-to-lucy.js" strategy="afterInteractive" />
+  </>;
 }
