@@ -1,5 +1,9 @@
-// Plays each section's motion (lib/motion.ts) once, as its pieces scroll into view. Runs only when
-// the start script in BaseLayout turned motion on (not in the edit copy, not with reduced motion).
+// Plays entrances (lib/motion.ts, styles/animations.css) once, as elements scroll into view, the way
+// Elementor did on the WordPress sites we rebuild: an element waits hidden, and when its top reaches
+// the screen it gets "animated <name>" after its delay. Runs only when BaseLayout's start script
+// turned motion on (not in the edit copy, not with reduced motion). Also starts carousels
+// (lib/carousel.ts).
+import { startCarousels } from "./carousel";
 
 // Never moved on their own: hidden or behind-the-scenes things.
 const SKIP = "script, template, dialog, style, [aria-hidden='true'], .sr-only";
@@ -8,7 +12,8 @@ const MEDIA = "img, picture, video, iframe";
 // Rows of cards, steps, people or columns: each one comes in on its own, a beat after the last.
 const GROUPS = "ul, ol, dl, .cards, .team, .steps, .two-col, .split, [class*='grid'], [class*='-row']";
 const STAGGER_MS = 140;
-const DURATION_MS = 900;
+// The owner's choice for a whole section, as the Elementor entrance it plays.
+const SECTION_EFFECT: Record<string, string> = { rise: "fadeInUp", fade: "fadeIn", left: "fadeInLeft", right: "fadeInRight", zoom: "zoomIn" };
 
 function piecesOf(box: Element): Element[] {
   const found: Element[] = [];
@@ -31,37 +36,71 @@ function piecesOf(box: Element): Element[] {
   return found;
 }
 
+type Entrance = { element: HTMLElement; name: string; delay: number; speed: string; stagger: boolean };
+
 export function startMotion(): void {
   const root = document.documentElement;
-  if (!root.classList.contains("motion")) return;
+  if (!root.classList.contains("motion")) {
+    startCarousels(false);
+    return;
+  }
   (window as unknown as { stoinMotion: boolean }).stoinMotion = true;
 
-  // Checked on every scroll frame rather than with an IntersectionObserver: a fast fling or a menu
-  // jump (/#projects) can carry a piece from below the screen to above it between two observations,
-  // and it would then stay invisible. Anything whose top is above the lower edge of the screen comes in.
-  const waiting = new Set<HTMLElement>();
-  const arrive = (piece: HTMLElement, delay: number) => {
-    waiting.delete(piece);
-    piece.style.setProperty("--m-delay", `${delay}ms`);
-    piece.classList.add("m-in");
-    // Once it has arrived, it goes back to being an ordinary part of the page (hover effects etc.).
-    window.setTimeout(() => {
-      piece.classList.remove("m-piece", "m-in", "m-rise", "m-fade", "m-left", "m-right");
-      piece.style.removeProperty("--m-delay");
-    }, delay + DURATION_MS + 100);
+  let waiting: Entrance[] = [];
+  const add = (element: HTMLElement, name: string, delay = 0, speed = "", stagger = false) => {
+    element.classList.add("m-wait");
+    waiting.push({ element, name, delay, speed, stagger });
   };
+
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("main [data-motion]"));
+  for (const section of sections) {
+    const effect = section.dataset.motion ?? "none";
+    const designed = Array.from(section.querySelectorAll<HTMLElement>("[data-anim]"));
+    if (section.matches("[data-anim]")) designed.unshift(section);
+    if (effect === "designed" && designed.length) {
+      for (const element of designed) add(element, element.dataset.anim!, Number(element.dataset.animDelay) || 0, element.dataset.animSpeed ?? "");
+    } else if (effect !== "none" && !(effect === "designed" && section.hasAttribute("data-still"))) {
+      // The owner's one effect for the section (or "As designed" with nothing designed: it rises).
+      const name = SECTION_EFFECT[effect] ?? "fadeInUp";
+      const pieces = name === "fadeIn" ? [section] : piecesOf(section);
+      for (const piece of pieces) add(piece as HTMLElement, name, 0, "", true);
+    }
+  }
+  // Designed entrances outside the page's sections (the footer, as on the WordPress site).
+  for (const element of document.querySelectorAll<HTMLElement>("[data-anim]")) {
+    if (sections.some((section) => section.contains(element))) continue;
+    add(element, element.dataset.anim!, Number(element.dataset.animDelay) || 0, element.dataset.animSpeed ?? "");
+  }
+
+  const play = (entrance: Entrance, extra: number) => {
+    const start = () => {
+      entrance.element.classList.remove("m-wait");
+      entrance.element.classList.add("animated", entrance.name, ...(entrance.speed ? [`animated-${entrance.speed}`] : []));
+    };
+    const delay = entrance.delay + extra;
+    if (delay > 0) window.setTimeout(start, delay);
+    else start();
+  };
+
+  // Checked on every scroll frame: a fast fling or a menu jump (/#projects) can carry an element from
+  // below the screen to above it between two checks; anything already above comes in at once.
   let queued = false;
   const check = () => {
     queued = false;
-    const line = window.innerHeight * 0.88;
     let count = 0;
-    for (const piece of [...waiting]) {
-      const box = piece.getBoundingClientRect();
-      if (box.top >= line) continue;
-      // Pieces already scrolled past arrive at once; those coming into view arrive a beat apart.
-      arrive(piece, box.bottom < 0 ? 0 : Math.min(count++, 4) * STAGGER_MS);
+    const still: Entrance[] = [];
+    for (const entrance of waiting) {
+      const box = entrance.element.getBoundingClientRect();
+      if (box.top >= window.innerHeight) {
+        still.push(entrance);
+      } else if (box.bottom < 0) {
+        entrance.element.classList.remove("m-wait");
+      } else {
+        play(entrance, entrance.stagger ? Math.min(count++, 4) * STAGGER_MS : 0);
+      }
     }
-    if (!waiting.size) {
+    waiting = still;
+    if (!waiting.length) {
       window.removeEventListener("scroll", queue);
       window.removeEventListener("resize", queue);
     }
@@ -72,20 +111,10 @@ export function startMotion(): void {
     window.requestAnimationFrame(check);
   };
 
-  document.querySelectorAll<HTMLElement>("main [data-motion]").forEach((section) => {
-    const effect = section.dataset.motion ?? "none";
-    if (effect !== "none") {
-      // A fade brings in the whole section, photo and all; the others move its words and cards.
-      const pieces = effect === "fade" ? [section] : piecesOf(section);
-      for (const piece of pieces) {
-        piece.classList.add("m-piece", `m-${effect}`);
-        waiting.add(piece as HTMLElement);
-      }
-    }
-    section.dataset.armed = "";
-  });
+  root.classList.add("m-armed");
+  for (const section of sections) section.dataset.armed = "";
   window.addEventListener("scroll", queue, { passive: true });
   window.addEventListener("resize", queue, { passive: true });
-  // A frame later, so the starting positions are drawn and the first pieces visibly rise.
   window.requestAnimationFrame(queue);
+  startCarousels(true);
 }

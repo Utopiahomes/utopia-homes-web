@@ -3,29 +3,3 @@
 /* next/image "fill" (src/next-shims/image.tsx): the photo covers its positioned parent. */
 .next-fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .skip-link { position: absolute; left: -9999px; } .skip-link:focus { left: 1rem; top: 1rem; z-index: 100; padding: .75rem 1rem; background: var(--white); }
-/* Motion: sections come into view as the visitor scrolls (lib/motion.ts, lib/motion-play.ts).
-   Only with html.motion, which the start script sets unless reduced motion is asked for. */
-html.motion main [data-motion]:not([data-motion="none"]):not([data-armed]) {
-  visibility: hidden;
-}
-main > [data-motion] {
-  overflow-x: clip;
-}
-.m-piece {
-  transition:
-    opacity 0.9s ease,
-    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: var(--m-delay, 0ms);
-}
-.m-piece:not(.m-in) {
-  opacity: 0;
-}
-.m-rise:not(.m-in) {
-  transform: translateY(36px);
-}
-.m-left:not(.m-in) {
-  transform: translateX(-56px);
-}
-.m-right:not(.m-in) {
-  transform: translateX(56px);
-}
