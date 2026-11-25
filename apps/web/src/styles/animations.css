@@ -197,6 +197,24 @@ main > [data-motion], .site-footer { overflow-x: clip; }
 dialog[open] { animation: fadeIn 0.7s both; }
 dialog[open]::backdrop { animation: fadeIn 0.7s both; }
 
+/* Ken Burns: a photo slowly zooms (lib/scroll-effects.ts). On a lone photo it goes back and forth;
+   in a slideshow each photo zooms while it shows. Uses scale, so a scroll effect's drift still plays. */
+@keyframes kenburnsIn { from { scale: 1; } to { scale: 1.3; } }
+@keyframes kenburnsOut { from { scale: 1.3; } to { scale: 1; } }
+html.motion [data-kenburns="in"]:not([data-slideshow]) { animation: kenburnsIn var(--kenburns-time, 20s) linear infinite alternate; }
+html.motion [data-kenburns="out"]:not([data-slideshow]) { animation: kenburnsOut var(--kenburns-time, 20s) linear infinite alternate; }
+/* A slideshow's photos lie on top of each other and cross-fade; without motion only the first shows. */
+[data-slideshow] { position: relative; overflow: hidden; }
+[data-slideshow]:not(.slideshow-on) > :not(:first-child) { display: none; }
+.slideshow-on > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+.slideshow-on > .is-current { opacity: 1; }
+.slideshow-on[data-kenburns="in"] > .is-current { animation: kenburnsIn var(--slide-time, 5.5s) linear both; }
+.slideshow-on[data-kenburns="out"] > .is-current { animation: kenburnsOut var(--slide-time, 5.5s) linear both; }
+/* A photo behind a section that drifts as you scroll (data-scroll="y -3"): taller than its box so
+   no edge shows. Put motion-bg-box on the section and motion-bg on the photo. */
+.motion-bg-box { position: relative; overflow: hidden; isolation: isolate; }
+.motion-bg { position: absolute; left: 0; top: -15%; width: 100%; height: 130%; object-fit: cover; z-index: -1; }
+
 @media (prefers-reduced-motion: reduce) {
-  .animated, dialog[open], dialog[open]::backdrop { animation: none !important; }
+  .animated, dialog[open], dialog[open]::backdrop, [data-kenburns], [data-kenburns] > * { animation: none !important; }
 }

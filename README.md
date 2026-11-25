@@ -32,3 +32,24 @@ Database structure is version-controlled in `supabase/migrations`. Apply migrati
 Airbnb/Vrbo are source material only and are never scraped at runtime. Ray has approved the current property names, advertised facts, and photography usage. Review publication rights remain pending, and Airbnb URLs remain temporary until final external booking URLs are supplied.
 
 Wix is not an application dependency. Wix or GoDaddy may remain registrar/DNS providers only. See `docs/architecture.md`, `docs/content-workflow.md`, `docs/email-and-dns.md`, and `docs/deployment.md`.
+
+## Motion
+
+The site moves the way Elementor sites do, set by attributes in the markup; no new scripts needed.
+The full reference is at the top of `apps/web/src/lib/motion.ts` and `apps/web/src/lib/scroll-effects.ts`.
+
+- Entrances as an element scrolls into view: `data-anim="fadeInUp"` (any name in
+  `styles/animations.css`), `data-anim-delay="316"`, `data-anim-speed="slow|fast"`. The owner can
+  override a whole section in the editor's Sections tab or by asking Lucy.
+- Sliding row: `data-carousel data-per-view="5" data-per-view-tablet="3" data-per-view-mobile="1"`.
+- Scroll effects: `data-scroll="y 4; x -2; fade in-out; blur out; rotate 1; scale in 4"`, with
+  `data-scroll-range="20 80"`. Parallax photo: `motion-bg-box` on the section, `<img class="motion-bg"
+  data-scroll="y -3">` inside.
+- Mouse effects: `data-mouse="track 1; tilt 4"`.
+- Sticky: `data-sticky="top"`, `data-sticky-offset`, `data-sticky-effects` (adds class
+  `sticky-effects`), `data-sticky-in` to stay inside its box.
+- Slideshow and Ken Burns: `data-slideshow="5000" data-kenburns="in"` on a box of photos, or
+  `data-kenburns="out"` on one photo.
+- `data-on="desktop tablet"` limits scroll, mouse and sticky effects to those devices.
+
+Nothing moves for visitors who ask for reduced motion, and the edit copy shows everything still.

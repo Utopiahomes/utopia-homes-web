@@ -4,6 +4,7 @@
 // turned motion on (not in the edit copy, not with reduced motion). Also starts carousels
 // (lib/carousel.ts).
 import { startCarousels } from "./carousel";
+import { startEffects, startStickies } from "./scroll-effects";
 
 // Never moved on their own: hidden or behind-the-scenes things.
 const SKIP = "script, template, dialog, style, [aria-hidden='true'], .sr-only";
@@ -40,6 +41,7 @@ type Entrance = { element: HTMLElement; name: string; delay: number; speed: stri
 
 export function startMotion(): void {
   const root = document.documentElement;
+  startStickies();
   if (!root.classList.contains("motion")) {
     startCarousels(false);
     return;
@@ -75,7 +77,16 @@ export function startMotion(): void {
   const play = (entrance: Entrance, extra: number) => {
     const start = () => {
       entrance.element.classList.remove("m-wait");
-      entrance.element.classList.add("animated", entrance.name, ...(entrance.speed ? [`animated-${entrance.speed}`] : []));
+      const classes = ["animated", entrance.name, ...(entrance.speed ? [`animated-${entrance.speed}`] : [])];
+      entrance.element.classList.add(...classes);
+      // Done: its end is its normal look, so the classes go and a scroll effect on the same element
+      // (lib/scroll-effects.ts) can change its opacity.
+      const done = (event: AnimationEvent) => {
+        if (event.target !== entrance.element) return;
+        entrance.element.removeEventListener("animationend", done);
+        entrance.element.classList.remove(...classes);
+      };
+      entrance.element.addEventListener("animationend", done);
     };
     const delay = entrance.delay + extra;
     if (delay > 0) window.setTimeout(start, delay);
@@ -117,4 +128,5 @@ export function startMotion(): void {
   window.addEventListener("resize", queue, { passive: true });
   window.requestAnimationFrame(queue);
   startCarousels(true);
+  startEffects();
 }
