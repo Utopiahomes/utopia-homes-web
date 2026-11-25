@@ -1,6 +1,0 @@
-import type { Metadata } from "next";
-import { LeadForm } from "@/components/forms/LeadForm";
-import { PageHero } from "@/components/PageHero";
-import { pageMetadata } from "@/lib/page-metadata";
-export const metadata: Metadata = pageMetadata({ title: "Membership", description: "Join the launch list for Utopia Homes membership.", path: "/membership" });
-export default function MembershipPage() { return <><PageHero eyebrow="Coming together soon" title={<>More reasons<br /><em>to return.</em></>} intro="Utopia membership is taking shape around memorable stays, thoughtful perks, and a closer connection to the homes and people in our collection." tone="dark" /><section className="membership-manifesto"><div className="membership-orbit" aria-hidden="true">U</div><div><p className="eyebrow">The idea</p><h2>Hospitality should remember you.</h2><p>We are creating new reasons to return—from special stay opportunities and useful recommendations to recognition for the guests and owners who help Utopia grow.</p><p className="content-note">Membership is coming soon. Join the launch list and we’ll let you know when it opens.</p></div></section><section className="form-section"><LeadForm kind="membership" title="Stay close to what’s next." submitLabel="Join the launch list" /></section></>; }

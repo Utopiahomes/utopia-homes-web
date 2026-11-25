@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, test } from "node:test";
@@ -126,7 +126,9 @@ describe("publishing adapter", () => {
     mkdirSync(join(sandbox, "scripts"));
     cpSync(join(root, "scripts", "apply-site-edits.mjs"), join(sandbox, "scripts", "apply-site-edits.mjs"));
     cpSync(join(root, contentFolder), join(sandbox, contentFolder), { recursive: true });
-    cpSync(join(root, articleFolder), join(sandbox, articleFolder), { recursive: true });
+    // utopiahomes.com has no articles (2026-11-25): an empty folder stands in for them.
+    if (existsSync(join(root, articleFolder))) cpSync(join(root, articleFolder), join(sandbox, articleFolder), { recursive: true });
+    else mkdirSync(join(sandbox, articleFolder), { recursive: true });
   });
   afterEach(() => rmSync(sandbox, { recursive: true, force: true }));
 
@@ -238,13 +240,14 @@ describe("publishing adapter", () => {
 
   test("any failed check changes nothing and names every failed item", () => {
     const before = read("site.json");
-    const name = JSON.parse(before).name;
+    // utopiahomes.com's site.json (2026-11-25): skipLink, talkLabel, talkStatus.
+    const name = JSON.parse(before).talkLabel;
     const { status, output } = run({
       edits: [
-        { source: source("site.json", "name"), previous: name, value: "A good edit" },
+        { source: source("site.json", "talkLabel"), previous: name, value: "A good edit" },
         { source: source("site.json", "skipLink"), previous: "Not what is published", value: "Stale" },
-        { source: source("site.json", "description"), previous: JSON.parse(before).description, value: "<b>bold</b>" },
-        { source: source("site.json", "rss", "title"), previous: JSON.parse(before).rss.title, value: "" },
+        { source: source("site.json", "talkStatus"), previous: JSON.parse(before).talkStatus, value: "<b>bold</b>" },
+        { source: source("home.json", "hero", "kicker"), previous: JSON.parse(read("home.json")).hero.kicker, value: "" },
         { source: source("site.json", "missing"), previous: "x", value: "y" },
         { source: { file: "package.json", pointer: ["name"] }, previous: "x", value: "y" },
         { source: { file: `${contentFolder}/../../package.json`, pointer: ["name"] }, previous: "x", value: "y" },
@@ -283,8 +286,8 @@ describe("publishing adapter", () => {
   });
 
   test("editing the same wording twice is refused", () => {
-    const previous = JSON.parse(read("site.json")).name;
-    const edit = { source: source("site.json", "name"), previous, value: "Twice" };
+    const previous = JSON.parse(read("site.json")).talkLabel;
+    const edit = { source: source("site.json", "talkLabel"), previous, value: "Twice" };
     const { status, output } = run({ edits: [edit, edit] });
     assert.equal(status, 1);
     assert.deepEqual(output.failed.map((item) => item.index), [1]);
@@ -355,10 +358,11 @@ describe("publishing adapter", () => {
   test("a page layout is replaced only when the published layout is unchanged", () => {
     const layout = JSON.parse(read("layout.json"));
     const where = { file: `${contentFolder}/layout.json`, kind: "layout", page: "home" };
-    const next = { ...layout.home, order: ["hero", "cta", "connection", "workspaces", "founder", "new1"], added: { new1: { type: "text", title: "Hi", body: "There" } } };
+    // utopiahomes.com's home page sections (2026-11-25); nothing is saved for it yet.
+    const next = { order: ["opening", "featured", "new1", "gathering", "pathways"], hidden: [], added: { new1: { type: "text", title: "Hi", body: "There" } }, motion: { featured: "left" } };
     const stale = run({ edits: [{ source: where, previous: JSON.stringify({ order: [] }), value: JSON.stringify(next) }] });
     assert.equal(stale.status, 1);
-    const ok = run({ edits: [{ source: where, previous: JSON.stringify(layout.home), value: JSON.stringify(next) }] });
+    const ok = run({ edits: [{ source: where, previous: JSON.stringify(layout.home ?? null), value: JSON.stringify(next) }] });
     assert.equal(ok.status, 0);
     assert.deepEqual(JSON.parse(read("layout.json")).home, next);
     assert.deepEqual(JSON.parse(read("layout.json")).about, layout.about);
