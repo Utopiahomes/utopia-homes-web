@@ -12,10 +12,20 @@ const environment =
 const editMode = process.env.PUBLIC_EDIT_MODE === "1";
 const editIntegrations = editMode ? [(await import("./editor/integration.mjs")).stoinEditBuild()] : [];
 
+// The site's own address, from the same setting the Next.js site read. A value that isn't a full web
+// address (the Vercel preview setting, 2026-11-25) falls back, as lib/site-url.ts does.
+function siteUrl() {
+  try {
+    return new URL(process.env.PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "").origin;
+  } catch {
+    return "http://localhost:4321";
+  }
+}
+
 export default defineConfig({
   output: "static",
   ...(editMode ? { outDir: "./dist-edit" } : {}),
-  site: process.env.PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:4321",
+  site: siteUrl(),
   trailingSlash: "never",
   // /sitemap.xml comes from src/pages/sitemap.xml.ts (the same URLs the Next.js site listed).
   integrations: [
