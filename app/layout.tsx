@@ -35,6 +35,10 @@ export const metadata: Metadata = {
   description: siteContent.description,
   openGraph: { type: "website", siteName: siteContent.name, images: [{ url: businessProfile.shareImage.src, alt: businessProfile.shareImage.alt }] },
   twitter: { card: "summary_large_image", images: [businessProfile.shareImage.src] },
+  // Ray, 2026-11-25: "We are not showing up in any of the searches." utopiahomes.com had never
+  // been added to Google Search Console, so Google never got our sitemap. This tag proves
+  // ownership of https://www.utopiahomes.com/ in Ray's Search Console; removing it unverifies.
+  verification: { google: "chZDFD1cQLt45qW-96XPfAnm_A1qLgPu52pDez4TUZA" },
   robots: process.env.VERCEL_ENV === "production" && !editMode ? { index: true, follow: true } : { index: false, follow: false, noarchive: true, nocache: true },
 };
 
