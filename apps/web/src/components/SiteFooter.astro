@@ -1,0 +1,16 @@
+---
+// The footer from the Next.js site (components/SiteFooter.tsx), as an Astro component.
+import { Wordmark } from "@/components/Wordmark";
+import { cms } from "@/lib/cms";
+const guides = (await cms.getStayGuides()).filter((guide) => guide.inFooter);
+---
+
+<footer class="site-footer">
+  <div class="footer-lead"><p class="eyebrow eyebrow-light">Your next story starts here</p><p class="footer-display">Go somewhere.<br /><em>Feel at home.</em></p></div>
+  <div class="footer-brand"><Wordmark className="wordmark-footer" /><p>Distinctive stays.<br />Thoughtfully managed.</p></div>
+  <div class="footer-links">
+    <nav aria-label="Footer navigation"><a href="/stays">Stays</a><a href="/destinations/wildwood-new-jersey">WW / Cape May</a><a href="/list-your-home">List Your Home</a><a href="/design">Utopia Design</a><a href="/membership">Membership</a><a href="/contact">Contact</a></nav>
+    <nav aria-label="Trip guides">{guides.map((guide) => <a href={`/stays/${guide.slug}`}>{guide.navLabel}</a>)}<a href="/faq">FAQ</a></nav>
+  </div>
+  <p class="fine-print">© 2026 Utopia Homes · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
+</footer>

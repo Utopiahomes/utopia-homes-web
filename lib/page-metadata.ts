@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { businessProfile, siteContent } from "@/content/site";
-import type { ContentImage } from "@/types/content";
+import { businessProfile, siteContent } from "../content/site";
+import type { ContentImage } from "../types/content";
 
 interface PageMetadataInput {
   title: string;

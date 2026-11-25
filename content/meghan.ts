@@ -1,4 +1,4 @@
-import type { ContentImage } from "@/types/content";
+import type { ContentImage } from "../types/content";
 
 /**
  * Meghan DeLuca's about page. Every fact comes from her own Airbnb host record (export of

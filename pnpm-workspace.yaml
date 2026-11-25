@@ -1,2 +1,9 @@
+packages:
+  - apps/*
+
 allowBuilds:
-  unrs-resolver: true
+  esbuild: true
+
+# Dependencies are installed explicitly in local setup and CI. Disabling pnpm's
+# implicit pre-run install keeps non-interactive checks deterministic.
+verifyDepsBeforeRun: false

@@ -1,0 +1,75 @@
+---
+// A page's sections in the order the owner chose in the editor (site-content/layout.json). Each
+// section stays written in its page; this only decides order, hides some, and adds the owner's own.
+// With no layout saved, a page renders exactly its written order.
+import { stripMarkers } from "../../editor/markers.mjs";
+import { content } from "../lib/content";
+import { blockCatalog, type AddedBlock } from "../lib/content-schema";
+import AddedSection from "./AddedSection.astro";
+import { defaultMotion, type Motion } from "../lib/motion";
+
+interface Props {
+  page: keyof typeof content.layout;
+  sections: string[];
+}
+
+const { page, sections } = Astro.props;
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const saved = content.layout[page];
+const added: Record<string, AddedBlock> = saved?.added ?? {};
+const hidden = new Set(saved?.hidden ?? []);
+
+// Saved order first; a section added to the page's code later lands after the one written before it.
+const order = (saved?.order ?? []).filter((id) => sections.includes(id) || id in added);
+sections.forEach((id, index) => {
+  if (order.includes(id)) return;
+  const before = sections.slice(0, index).reverse().find((earlier) => order.includes(earlier));
+  order.splice(before ? order.indexOf(before) + 1 : 0, 0, id);
+});
+// The first written section opens the page: it can't be moved or hidden.
+const pinned = sections[0];
+if (order[0] !== pinned) order.splice(order.indexOf(pinned), 1), order.unshift(pinned);
+hidden.delete(pinned);
+
+const html: Record<string, string> = {};
+for (const id of sections) if (edit || !hidden.has(id)) html[id] = await Astro.slots.render(id);
+
+// How each section comes into view (lib/motion.ts): the owner's choice, or the section's default.
+const chosenMotion: Record<string, Motion> = saved?.motion ?? {};
+const writtenMotion: Record<string, Motion> = Object.fromEntries(sections.map((id) => [id, defaultMotion(html[id] ?? "")]));
+const motionOf = (id: string): Motion => chosenMotion[id] ?? writtenMotion[id] ?? "rise";
+
+// Edit build only: each section's root says which section it is, and the editor learns its label.
+const tagRoot = (markup: string, attributes: string) => markup.replace(/^(\s*<[a-zA-Z][\w-]*)/, `$1 ${attributes}`);
+const labelOf = (markup: string, id: string) => {
+  const heading = markup.match(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/)?.[1] ?? "";
+  const text = stripMarkers(heading.replace(/<br\s*\/?>/g, " ").replace(/<[^>]+>/g, "")).replace(/&amp;/g, "&").replace(/&#39;|&rsquo;/g, "’").replace(/\s+/g, " ").trim();
+  return text.slice(0, 80) || id;
+};
+const anchorsOf = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+const outline = edit
+  ? JSON.stringify({
+      page,
+      default: { order: sections, hidden: [], added: {} },
+      sections: sections.map((id) => ({ id, label: labelOf(html[id] ?? "", id), pinned: id === pinned, anchors: anchorsOf(html[id] ?? ""), motion: writtenMotion[id] })),
+      blocks: blockCatalog,
+    })
+  : "";
+const samples: Record<string, AddedBlock> = Object.fromEntries(blockCatalog.map((entry) => [entry.type, entry.sample as AddedBlock]));
+---
+
+{order.map((id) => {
+  if (id in html) {
+    if (!edit) return <Fragment set:html={tagRoot(html[id], `data-motion="${motionOf(id)}"`)} />;
+    return <Fragment set:html={tagRoot(html[id], `data-stoin-section="${id}" data-motion="${motionOf(id)}"${hidden.has(id) ? " hidden" : ""}`)} />;
+  }
+  const block = added[id];
+  if (!block || (hidden.has(id) && !edit)) return null;
+  if (!edit) return <AddedSection block={block} root={{ "data-motion": motionOf(id) }} />;
+  return <AddedSection block={block} keyPrefix={`layout.${page}.added.${id}`} root={{ "data-stoin-section": id, "data-stoin-added": "", "data-motion": motionOf(id), hidden: hidden.has(id) }} />;
+})}
+{edit && (
+  <template data-stoin-layout={outline}>
+    {blockCatalog.map((entry) => <AddedSection block={samples[entry.type]} keyPrefix="SAMPLE" root={{ "data-stoin-sample": entry.type }} />)}
+  </template>
+)}

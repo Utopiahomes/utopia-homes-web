@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Submission } from "@/types/content";
+import type { Submission } from "../../types/content";
 import type { ClaimedNotification, NotificationStatus, NotificationStore } from "./types";
 
 type FixtureRecord = {

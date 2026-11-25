@@ -1,4 +1,4 @@
-import type { Submission } from "@/types/content";
+import type { Submission } from "../../types/content";
 import type { SubmissionStore } from "./types";
 const records: Submission[] = [];
 export const fixtureSubmissionStore: SubmissionStore = {

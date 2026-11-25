@@ -3,7 +3,7 @@ import {
   type PublicLucyHistoryTurn,
   type PublicLucyPageContext,
   type PublicLucyReference,
-} from "@/lib/lucy/contracts";
+} from "./contracts";
 
 // The public API may spend up to 15 seconds waiting on the isolated model service.
 // Leave a small handoff margin so this same-origin adapter does not abort first.

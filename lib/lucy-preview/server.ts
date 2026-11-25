@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { previewGuestAnswerResponseSchema } from "@/lib/lucy-preview/contracts";
-import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "@/lib/lucy-preview/jwt";
+import { previewGuestAnswerResponseSchema } from "./contracts";
+import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "./jwt";
 import {
   PreviewResponseHeaderViolation,
   PreviewResponseInvalidEncoding,
@@ -9,7 +9,7 @@ import {
   validatePreBodyHeaders,
   validateRetryableErrorHeaders,
   validateSuccessReleaseHeaders,
-} from "@/lib/lucy-preview/response-validation";
+} from "./response-validation";
 
 const DEFAULT_TIMEOUT_MS = 15_000; // RC2's consumer total-interaction deadline is 22s; leave margin.
 

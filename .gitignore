@@ -17,3 +17,7 @@ Thumbs.db
 *.local
 *.tsbuildinfo
 .private-import/
+apps/web/dist/
+apps/web/dist-*/
+apps/web/dist-edit.report.json
+apps/web/.astro/

@@ -1,5 +1,5 @@
-import type { Property } from "@/types/content";
-import { wording } from "@/lib/edit/wording";
+import type { Property } from "../types/content";
+import { wording } from "../lib/edit/wording";
 import { propertySchema, validateCollection } from "./schemas";
 
 const buttercupGallery = ([

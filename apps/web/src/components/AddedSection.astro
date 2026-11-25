@@ -1,0 +1,80 @@
+---
+// A section the owner added in the editor, from a small catalog that uses the site's own styles.
+// The edit build tags each field so it can be typed on the page; the public build renders plain HTML.
+import type { AddedBlock } from "../lib/content-schema";
+import { videoEmbed } from "../lib/video";
+
+interface Props {
+  block: AddedBlock;
+  keyPrefix?: string;
+  // Attributes on the section's root: its motion (lib/motion.ts), and in the edit build the editor's tags.
+  root?: Record<string, string | boolean>;
+}
+
+const { block, keyPrefix, root = {} } = Astro.props;
+const k = (field: string) => (keyPrefix ? { "data-stoin-key": `${keyPrefix}.${field}` } : {});
+const photo = (field: string) => (keyPrefix ? { "data-stoin-image": `${keyPrefix}.${field}` } : {});
+const embed = block.type === "video" ? videoEmbed(block.video) : "";
+---
+
+{block.type === "text" && (
+  <section class="section" {...root}>
+    <div class="shell">
+      <div class="section-heading">
+        {block.eyebrow && <p class="section-number" {...k("eyebrow")}>{block.eyebrow}</p>}
+        <h2 {...k("title")}>{block.title}</h2>
+        <p {...k("body")}>{block.body}</p>
+      </div>
+    </div>
+  </section>
+)}
+{block.type === "photo" && (
+  <section class="section" {...root}>
+    <div class="shell compact-founder">
+      <img src={block.photo} alt={block.photoAlt} width="240" height="320" loading="lazy" {...photo("photo")} />
+      <div>
+        {block.eyebrow && <p class="section-number" {...k("eyebrow")}>{block.eyebrow}</p>}
+        <h2 {...k("title")}>{block.title}</h2>
+        <p {...k("body")}>{block.body}</p>
+      </div>
+    </div>
+  </section>
+)}
+{block.type === "quote" && (
+  <section class="section" {...root}>
+    <div class="shell-narrow">
+      <blockquote class="article-pull-quote article-pull-quote-black">
+        <p {...k("quote")}>{block.quote}</p>
+        {block.attribution && <cite {...k("attribution")}>{block.attribution}</cite>}
+      </blockquote>
+    </div>
+  </section>
+)}
+{block.type === "video" && (
+  <section class="section" {...root}>
+    <div class="shell-narrow">
+      <div class="section-heading">
+        <h2 {...k("title")}>{block.title}</h2>
+        {block.body && <p {...k("body")}>{block.body}</p>}
+      </div>
+      {(embed || keyPrefix) && (
+        <div class="video-frame" {...(keyPrefix ? { "data-stoin-video": `${keyPrefix}.video` } : {})}>
+          {embed
+            ? <iframe src={embed} title={block.title} loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            : <p class="video-empty">Paste a YouTube, Vimeo or Loom link in the Sections tab, or ask Lucy.</p>}
+        </div>
+      )}
+    </div>
+  </section>
+)}
+{block.type === "cta" && (
+  <section class="cta-band" {...root}>
+    <div class="shell cta-grid">
+      <h2 {...k("title")}>{block.title}</h2>
+      <div>
+        <p {...k("body")}>{block.body}</p>
+        <a class="button" href={block.link}><span {...k("button")}>{block.button}</span></a>
+      </div>
+    </div>
+  </section>
+)}

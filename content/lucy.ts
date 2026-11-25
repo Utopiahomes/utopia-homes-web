@@ -1,4 +1,4 @@
-import type { PublicLucyContent } from "@/types/content";
+import type { PublicLucyContent } from "../types/content";
 import snapshot from "./lucy-public-snapshot.v0.json";
 import { publicLucyContentSchema } from "./schemas";
 

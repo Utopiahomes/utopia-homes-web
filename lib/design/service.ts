@@ -9,7 +9,7 @@ import {
   hashReopenToken,
   type DesignQuoteStore,
 } from "./store";
-import { submitForm } from "@/lib/forms/submit";
+import { submitForm } from "../forms/submit";
 import { sendDesignQuoteEmailBestEffort } from "./email";
 import type { AcknowledgedQuote, PreliminaryQuote } from "./types";
 

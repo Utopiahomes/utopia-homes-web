@@ -1,5 +1,5 @@
-import type { FAQ, Property, StayGuide } from "@/types/content";
-import { listOf, numberWord, stayFacts } from "@/lib/stay-facts";
+import type { FAQ, Property, StayGuide } from "../types/content";
+import { listOf, numberWord, stayFacts } from "../lib/stay-facts";
 import { properties } from "./properties";
 import { stayGuideSchema, validateCollection } from "./schemas";
 

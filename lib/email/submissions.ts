@@ -1,4 +1,4 @@
-import type { Submission } from "@/types/content";
+import type { Submission } from "../../types/content";
 import { createEmailProvider, emailFromAddress } from "./provider";
 
 const labels = { "owner-lead": "New owner lead", membership: "New membership signup", contact: "New contact request", "design-inquiry": "New property enhancement inquiry" } as const;

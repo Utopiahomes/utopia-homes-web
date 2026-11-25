@@ -1,7 +1,7 @@
-import type { Submission } from "@/types/content";
-import { createEmailProvider, emailFromAddress, emailProviderConfigured } from "@/lib/email/provider";
-import { submissionNotificationMessage } from "@/lib/email/submissions";
-import type { EmailProvider } from "@/lib/email/types";
+import type { Submission } from "../../types/content";
+import { createEmailProvider, emailFromAddress, emailProviderConfigured } from "../email/provider";
+import { submissionNotificationMessage } from "../email/submissions";
+import type { EmailProvider } from "../email/types";
 import type { ClaimedNotification, NotificationStatus, NotificationStore } from "./types";
 
 const DEFAULT_LEASE_SECONDS = 300;

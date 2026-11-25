@@ -1,0 +1,114 @@
+---
+// Every page of utopiahomes.com (2026-11-25: moved from Next.js to the Stoin Sites starter, Ray: "so
+// that we have a consistent framework for our sites"). Same head, header, footer and Lyra's button
+// as the Next.js layout; sections can move in as visitors scroll (lib/motion.ts).
+
+import "@fontsource-variable/manrope";
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/500-italic.css";
+import "../styles/globals.css";
+import "../styles/v1.css";
+import "../styles/collection.css";
+import "../styles/wordmark.css";
+import "../styles/owners.css";
+import "../styles/destination-region.css";
+import "../styles/navigation.css";
+import "../styles/photography.css";
+import "../styles/reviews.css";
+import "../styles/home-v2.css";
+import "../styles/scroll-story.css";
+import "../styles/design.css";
+import "../styles/design-adjustments.css";
+import "../styles/lucy.css";
+import "../styles/about.css";
+import "../styles/guides.css";
+import "../styles/site.css";
+import { SiteHeader } from "@/components/SiteHeader";
+import SiteFooter from "../components/SiteFooter.astro";
+import { businessProfile, siteContent } from "@/content";
+import { cms } from "@/lib/cms";
+import { jsonLdText, organizationStructuredData } from "@/lib/structured-data";
+import type { ContentImage } from "@/types/content";
+import { setServerPathname } from "../next-shims/navigation";
+import { canonicalUrl, siteConfig } from "../lib/site";
+import { content } from "../lib/content";
+import { stripMarkers } from "../../editor/markers.mjs";
+
+interface Props {
+  title: string;
+  description: string;
+  /** The page's own path: its canonical URL. */
+  path?: string;
+  image?: ContentImage;
+  /** Use the title as written, without " | Utopia Homes" after it. */
+  absoluteTitle?: boolean;
+  noindex?: boolean;
+}
+
+const { title, description, path = Astro.url.pathname, image, absoluteTitle = false, noindex = false } = Astro.props;
+setServerPathname(path);
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const pageTitle = stripMarkers(absoluteTitle ? title : `${title} | ${siteContent.name}`);
+const plainDescription = stripMarkers(description);
+const canonical = canonicalUrl(path);
+// Link previews can't reliably show AVIF, so those pages use the default photo (lib/page-metadata.ts).
+const preview = image && !image.src.endsWith(".avif") ? image : businessProfile.shareImage;
+const previewUrl = canonicalUrl(preview.src);
+const shouldIndex = siteConfig.environment === "production" && !noindex && !edit;
+const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
+const organizationJson = jsonLdText(organizationStructuredData(profile, properties, siteConfig.origin));
+
+// Sections come into view as the visitor scrolls (lib/motion.ts). This runs before the page shows so
+// sections waiting to move don't flash first. With reduced motion asked for, it does nothing. If the
+// motion script below hasn't started within 3 seconds, everything shows still.
+const motionStart =
+  'if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver"in window){var r=document.documentElement;r.classList.add("motion");setTimeout(function(){if(!window.stoinMotion)r.classList.remove("motion")},3000)}';
+const faces = "https://app.stoin.ai/synths/lyra-beach";
+---
+
+<!doctype html>
+<html lang="en" data-scroll-behavior="smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={plainDescription} />
+    <meta name="robots" content={shouldIndex ? "index,follow" : "noindex,nofollow,noarchive,nocache"} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteContent.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={plainDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={previewUrl} />
+    <meta property="og:image:alt" content={preview.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={plainDescription} />
+    <meta name="twitter:image" content={previewUrl} />
+    {/* Ray, 2026-11-25: utopiahomes.com was never in Google Search Console or Bing; these prove
+        ownership there. Removing them unverifies the site. */}
+    <meta name="google-site-verification" content="chZDFD1cQLt45qW-96XPfAnm_A1qLgPu52pDez4TUZA" />
+    <meta name="msvalidate.01" content="CC80251863EF99064ADEB890FFB82CE5" />
+    {!edit && <script is:inline set:html={motionStart} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{content.site.skipLink}</a>
+    <script type="application/ld+json" is:inline set:html={organizationJson} />
+    {edit ? <SiteHeader /> : <SiteHeader client:load />}
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+    {/* Ray, 2026-11-23: the beach Lyra at the top right answers visitors in a live room (Stoin's
+        talk-to-lucy block; her rules live in Stoin's website_sites "utopiahomes.com"). */}
+    <div data-stoin-block="talk-to-lucy" data-site="utopiahomes.com" data-position="top-right" data-below=".site-header" data-label={stripMarkers(content.site.talkLabel)} data-status={stripMarkers(content.site.talkStatus)} data-face={`${faces}/idle-01.mp4`} data-still={`${faces}/still.jpg`}></div>
+    <script is:inline src="/blocks/talk-to-lucy.js" defer></script>
+    <script>
+      import { startMotion } from "../lib/motion-play";
+      startMotion();
+    </script>
+  </body>
+</html>

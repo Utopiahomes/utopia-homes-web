@@ -1,4 +1,4 @@
-import { businessProfile, campaigns, designPageContent, destinations, faqs, properties, publicLucyContent, reviews, stayGuides } from "@/content";
+import { businessProfile, campaigns, designPageContent, destinations, faqs, properties, publicLucyContent, reviews, stayGuides } from "../../content";
 import type { CmsAdapter } from "./types";
 export const repositoryCms: CmsAdapter = {
   async getProperties() { return properties.filter((property) => property.status === "active"); },

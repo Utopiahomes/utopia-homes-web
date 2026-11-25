@@ -1,0 +1,73 @@
+---
+// The home page, from the Next.js app/page.tsx (2026-11-25). Same sections and wording; each section
+// can be moved, hidden or given motion in the owner's editor (layout.json).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import { HomeBeachOpening } from "@/components/HomeBeachOpening";
+import { cms } from "@/lib/cms";
+import { listOf, stayFacts } from "@/lib/stay-facts";
+import { content } from "../lib/content";
+
+const properties = await cms.getProperties();
+const homes = properties.map(stayFacts);
+const guests = homes.map((home) => home.guests);
+const description = `Book direct at large vacation homes for ${Math.min(...guests)} to ${Math.max(...guests)} guests in ${listOf(homes.map((home) => home.city))}, NJ. Dogs welcome. We also manage and design vacation rentals.`;
+const gatheringProperty = properties.find(({ slug }) => slug === "central-ave-socialization") ?? properties[0];
+const gatheringImage = gatheringProperty.gallery.find(({ category }) => category === "gathering") ?? gatheringProperty.heroImage;
+const interiorsProperty = properties.find(({ slug }) => slug === "the-shamrock") ?? properties[2] ?? properties[0];
+const interiorsImage = interiorsProperty.gallery.find(({ category }) => category === "details") ?? interiorsProperty.gallery[1] ?? interiorsProperty.heroImage;
+const ownersProperty = properties.find(({ slug }) => slug === "buttercup-beauty") ?? properties[0];
+const words = content.home;
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout title="Large-Group Vacation Rentals in the Wildwoods, NJ | Utopia Homes" absoluteTitle description={description} path="/">
+<Sections page="home" sections={["opening", "featured", "gathering", "pathways"]}>
+<Fragment slot="opening">
+  {edit ? <HomeBeachOpening /> : <HomeBeachOpening client:load />}
+</Fragment>
+<Fragment slot="featured">
+  <section class="home-featured" id="collection" aria-labelledby="home-collection-title">
+    <header class="home-featured-heading">
+      <div><p class="eyebrow">{words.featured.eyebrow}</p><h2 id="home-collection-title">{words.featured.titleLine1}<br /><em>{words.featured.titleLine2}</em></h2></div>
+      <a class="text-link" href="/stays">{words.featured.allStays} <span aria-hidden="true">→</span></a>
+    </header>
+    <div class="home-featured-grid">
+      {properties.map((property, index) => (
+        <article class="home-featured-card">
+          <a class="home-featured-image" href={`/stays/${property.slug}`} aria-label={`View ${property.name}`}>
+            <img class="next-fill" src={property.heroImage.src} alt={property.heroImage.alt} loading="lazy" decoding="async" />
+            <span aria-hidden="true">0{index + 1}</span>
+          </a>
+          <div class="home-featured-copy">
+            <p>{property.city}, {property.state} · Up to {property.maxGuests ?? "—"} guests</p>
+            <h3>{property.name}</h3>
+            <p>{property.shortDescription}</p>
+            <a class="text-link" href={`/stays/${property.slug}`}>{words.featured.viewHome} <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="gathering">
+  <section class="home-gathering" aria-labelledby="home-gathering-title">
+    <img class="next-fill" src={gatheringImage.src} alt={gatheringImage.alt} loading="lazy" decoding="async" />
+    <div class="home-gathering-wash"></div>
+    <div><p class="eyebrow eyebrow-light">{words.gathering.eyebrow}</p><h2 id="home-gathering-title">{words.gathering.titleLine1}<br /><em>{words.gathering.titleLine2}</em></h2></div>
+  </section>
+</Fragment>
+<Fragment slot="pathways">
+  <section class="home-pathways" aria-label="Work with Utopia">
+    <article>
+      <div class="home-pathway-image"><img class="next-fill" src={ownersProperty.heroImage.src} alt={ownersProperty.heroImage.alt} loading="lazy" decoding="async" /></div>
+      <div class="home-pathway-copy"><p class="eyebrow">{words.owners.eyebrow}</p><h2>{words.owners.title}</h2><p>{words.owners.text}</p><a class="text-link" href="/list-your-home">{words.owners.link} <span aria-hidden="true">→</span></a></div>
+    </article>
+    <article>
+      <div class="home-pathway-copy"><p class="eyebrow">{words.design.eyebrow}</p><h2>{words.design.title}</h2><a class="text-link" href="/design">{words.design.link} <span aria-hidden="true">→</span></a></div>
+      <div class="home-pathway-image"><img class="next-fill" src={interiorsImage.src} alt={interiorsImage.alt} loading="lazy" decoding="async" /></div>
+    </article>
+  </section>
+</Fragment>
+</Sections>
+</BaseLayout>

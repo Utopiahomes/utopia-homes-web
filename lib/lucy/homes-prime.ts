@@ -3,15 +3,15 @@ import type {
   PublicLucyHistoryTurn,
   PublicLucyPageContext,
   PublicLucyReference,
-} from "@/lib/lucy/contracts";
-import { previewGuestAnswerResponseSchema } from "@/lib/lucy-preview/contracts";
-import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "@/lib/lucy-preview/jwt";
+} from "./contracts";
+import { previewGuestAnswerResponseSchema } from "../lucy-preview/contracts";
+import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "../lucy-preview/jwt";
 import {
   readBoundedResponseBody,
   validatePreBodyHeaders,
   validateRetryableErrorHeaders,
   validateSuccessReleaseHeaders,
-} from "@/lib/lucy-preview/response-validation";
+} from "../lucy-preview/response-validation";
 
 /**
  * The /api/lucy backend for Utopia Homes Prime: Business Contract guest.answer@1.0 (RC2).

@@ -1,6 +1,6 @@
-import home from "@/content/site-content/home.json";
-import housePage from "@/content/site-content/house-page.json";
-import stays from "@/content/site-content/stays.json";
+import home from "../../apps/web/src/site-content/home.json";
+import housePage from "../../apps/web/src/site-content/house-page.json";
+import stays from "../../apps/web/src/site-content/stays.json";
 import { markContent } from "./markers";
 
 // Ray, 2026-11-23: "Upgrade the site to be editable". Page wording the owner can change lives in
@@ -9,7 +9,7 @@ import { markContent } from "./markers";
 // stay in content/*.ts. The edit copy (utopia-homes-edit, SITE_EDIT_MODE=1) marks every string so
 // the owner can click it; the public site never does.
 
-export const editMode = process.env.SITE_EDIT_MODE === "1";
+export const editMode = process.env.SITE_EDIT_MODE === "1" || process.env.PUBLIC_EDIT_MODE === "1";
 
 /** Every wording file, by the name its keys start with, and the pages that show it. */
 export const wordingFiles = {
