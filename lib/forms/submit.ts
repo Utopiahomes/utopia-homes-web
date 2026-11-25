@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
-import type { Submission } from "../../types/content";
-import { submissionStore } from "../submissions";
-import type { SubmissionStore } from "../submissions/types";
-import { schemas, type FormKind } from "./schemas";
-import { notificationService } from "../notifications";
+import type { Submission } from "../../types/content.js";
+import { submissionStore } from "../submissions/index.js";
+import type { SubmissionStore } from "../submissions/types.js";
+import { schemas, type FormKind } from "./schemas.js";
+import { notificationService } from "../notifications/index.js";
 type SubmissionNotifications = Pick<typeof notificationService, "enqueueAndAttempt">;
 export async function submitForm(kind: FormKind, body: unknown, store: SubmissionStore = submissionStore, notifications: SubmissionNotifications = notificationService, internal: { sourceQuoteId?: string } = {}) {
   const result = schemas[kind].safeParse(body);

@@ -1,4 +1,4 @@
-import type { Property } from "../types/content";
+import type { Property } from "../types/content.js";
 
 /**
  * One reading of a home's approved record, shared by the guide pages, the FAQ, and llms.txt.

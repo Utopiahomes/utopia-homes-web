@@ -1,6 +1,6 @@
-import type { PublicLucyContent } from "../types/content";
-import snapshot from "./lucy-public-snapshot.v0.json";
-import { publicLucyContentSchema } from "./schemas";
+import type { PublicLucyContent } from "../types/content.js";
+import snapshot from "./lucy-public-snapshot.v0.json" with { type: "json" };
+import { publicLucyContentSchema } from "./schemas.js";
 
 const result = publicLucyContentSchema.safeParse(snapshot);
 

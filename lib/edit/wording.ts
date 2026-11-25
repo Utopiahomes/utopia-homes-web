@@ -1,7 +1,7 @@
-import home from "../../apps/web/src/site-content/home.json";
-import housePage from "../../apps/web/src/site-content/house-page.json";
-import stays from "../../apps/web/src/site-content/stays.json";
-import { markContent } from "./markers";
+import home from "../../apps/web/src/site-content/home.json" with { type: "json" };
+import housePage from "../../apps/web/src/site-content/house-page.json" with { type: "json" };
+import stays from "../../apps/web/src/site-content/stays.json" with { type: "json" };
+import { markContent } from "./markers.js";
 
 // Ray, 2026-11-23: "Upgrade the site to be editable". Page wording the owner can change lives in
 // content/site-content/*.json, the files the Stoin owner editor (app.stoin.ai/owner) publishes to

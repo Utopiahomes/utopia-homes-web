@@ -1,5 +1,5 @@
-import type { BusinessProfile, Property, StayGuide } from "../types/content";
-import { dogsLabel, parkingLabel, stayFacts } from "./stay-facts";
+import type { BusinessProfile, Property, StayGuide } from "../types/content.js";
+import { dogsLabel, parkingLabel, stayFacts } from "./stay-facts.js";
 
 interface LlmsTxtInput {
   profile: BusinessProfile;

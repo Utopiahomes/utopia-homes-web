@@ -1,6 +1,6 @@
-import { fixtureSubmissionStore } from "./fixture";
-import { createSupabaseSubmissionStore } from "./supabase";
-import type { SubmissionStore } from "./types";
+import { fixtureSubmissionStore } from "./fixture.js";
+import { createSupabaseSubmissionStore } from "./supabase.js";
+import type { SubmissionStore } from "./types.js";
 
 let resolvedStore: SubmissionStore | undefined;
 

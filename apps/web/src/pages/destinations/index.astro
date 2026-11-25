@@ -1,0 +1,20 @@
+---
+// The Destinations page, from the Next.js app/destinations/page.tsx (2026-11-25).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import PageHero from "../../components/stays/PageHero.astro";
+import { cms } from "@/lib/cms";
+
+const destinations = await cms.getDestinations();
+---
+
+<BaseLayout title="Destinations" description="Find the places that give every Utopia stay its character." path="/destinations" image={{ src: "/images/shamrock/gallery/02.webp", alt: "The restored green facade of The Shamrock in Wildwood" }}>
+<Sections page="destinations" sections={["hero", "places"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow="Go somewhere worth knowing" intro="Destination guides built around the homes, neighborhoods, and local details that make a trip memorable." tone="dark">Places with<br /><em>their own rhythm.</em></PageHero>
+</Fragment>
+<Fragment slot="places">
+  <section class="listing-section">{destinations.map((destination, index) => <a class="destination-row" href={`/destinations/${destination.slug}`}><span>{String(index + 1).padStart(2, "0")}</span><div><p class="eyebrow">{destination.city}, {destination.state}</p><h2>{destination.name}</h2><p>{destination.shortDescription}</p></div><div class="destination-image"><img class="next-fill" src={destination.heroImage.src} alt={destination.heroImage.alt} sizes="40vw" loading="lazy" decoding="async" /></div><b aria-hidden="true">↗</b></a>)}</section>
+</Fragment>
+</Sections>
+</BaseLayout>

@@ -1,6 +1,6 @@
-import type { DesignPageContent } from "../types/content";
-import { listOf } from "../lib/stay-facts";
-import { properties } from "./properties";
+import type { DesignPageContent } from "../types/content.js";
+import { listOf } from "../lib/stay-facts.js";
+import { properties } from "./properties.js";
 
 const designedByMeghan = properties.filter((property) => property.status === "active" && property.designerNote.designer === "Meghan" && property.designerNote.status === "approved");
 

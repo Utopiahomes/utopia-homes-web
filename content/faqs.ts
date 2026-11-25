@@ -1,7 +1,7 @@
-import type { FAQ, Property } from "../types/content";
-import { listOf, numberWord, parkingLabel, stayFacts } from "../lib/stay-facts";
-import { properties } from "./properties";
-import { faqSchema, validateCollection } from "./schemas";
+import type { FAQ, Property } from "../types/content.js";
+import { listOf, numberWord, parkingLabel, stayFacts } from "../lib/stay-facts.js";
+import { properties } from "./properties.js";
+import { faqSchema, validateCollection } from "./schemas.js";
 
 const active = properties.filter((property) => property.status === "active");
 const homes = active.map((property) => stayFacts(property));

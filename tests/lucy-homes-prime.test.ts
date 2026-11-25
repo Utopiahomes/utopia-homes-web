@@ -1,7 +1,6 @@
 import { generateKeyPairSync, randomUUID } from "node:crypto";
-import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { POST } from "@/app/api/lucy/route";
+import { POST } from "@/api/lucy";
 import { clearRateLimits } from "@/lib/forms/rate-limit";
 import {
   HomesPrimeUnavailable,
@@ -176,7 +175,7 @@ describe("askHomesPrime", () => {
 
 describe("POST /api/lucy with the operator switch", () => {
   function request(body: unknown) {
-    return new NextRequest("https://www.utopiahomes.com/api/lucy", {
+    return new Request("https://www.utopiahomes.com/api/lucy", {
       method: "POST",
       headers: { "content-type": "application/json", origin: "https://www.utopiahomes.com" },
       body: JSON.stringify(body),

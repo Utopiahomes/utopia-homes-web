@@ -1,0 +1,18 @@
+---
+// The Quote Studio, from the Next.js app/design/quote/page.tsx (2026-11-25). It starts for a vacation
+// rental and takes ?audience= and ?goal= in the browser (DesignAudience.tsx). Quotes still post to /api/design/...
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { QuoteStudio } from "@/components/design/QuoteStudio";
+import { QuoteStudioFromAddress } from "../../components/pages/DesignAudience";
+
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout
+  title="Quote Studio | Utopia Design"
+  description="Build a Utopia Design project profile and receive a preliminary, nonbinding estimate."
+  path="/design/quote"
+  image={{ src: "/images/shamrock/gallery/20.webp", alt: "Finished open-plan living and dining room at The Shamrock" }}
+>
+  {edit ? <QuoteStudio initialAudience="rental" initialService={null} /> : <QuoteStudioFromAddress client:load />}
+</BaseLayout>

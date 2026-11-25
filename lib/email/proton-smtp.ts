@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import type SMTPTransport from "nodemailer/lib/smtp-transport";
-import type { EmailProvider } from "./types";
+import type SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
+import type { EmailProvider } from "./types.js";
 
 const SMTP_HOST = "smtp.protonmail.ch";
 const SMTP_PORT = 587;

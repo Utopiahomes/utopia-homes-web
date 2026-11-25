@@ -1,0 +1,42 @@
+---
+// The Stays page, from the Next.js app/stays/page.tsx (2026-11-25). A search link
+// (/stays?arrival=&departure=&guests=) is read in the browser by StaySearchArea, which shows the
+// same form, error and prices the Next page showed from the server.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import { StaySearchArea } from "../../components/stays/StaySearchArea";
+import { PropertyCard } from "@/components/PropertyCard";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
+import type { StayResultHouse } from "@/components/StayResults";
+import { cms } from "@/lib/cms";
+
+const [properties, guides] = await Promise.all([cms.getProperties(), cms.getStayGuides()]);
+const houses: StayResultHouse[] = properties.map((property) => ({
+  slug: property.slug,
+  name: property.name,
+  city: property.city,
+  bookingUrl: property.bookingUrl,
+  image: { src: property.heroImage.src, alt: property.heroImage.alt },
+  lodgify: property.lodgify ? { rentalId: property.lodgify.rentalId, accountSlug: property.lodgify.accountSlug } : undefined,
+}));
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout title="Vacation Homes in the Wildwoods, NJ" description="See three large-group vacation homes in Wildwood, North Wildwood, and Wildwood Crest, NJ. Search your dates and book direct with Utopia Homes." path="/stays">
+<div class="page-shell">
+<Sections page="stays" sections={["heading", "search", "homes", "guides"]}>
+<Fragment slot="heading">
+  <header class="page-heading"><p class="eyebrow">Three homes · one shore</p><h1>Stay somewhere unforgettable.</h1><p>Distinctive Wildwood homes for the trips that bring everyone together.</p></header>
+</Fragment>
+<Fragment slot="search">
+  {edit ? <StaySearchArea houses={houses} /> : <StaySearchArea houses={houses} client:load />}
+</Fragment>
+<Fragment slot="homes">
+  <div class="property-grid">{properties.map((property, index) => <PropertyCard property={property} index={index + 1} />)}</div>
+</Fragment>
+<Fragment slot="guides">
+  <StayGuideLinks guides={guides} />
+</Fragment>
+</Sections>
+</div>
+</BaseLayout>

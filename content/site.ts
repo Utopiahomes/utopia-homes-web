@@ -1,4 +1,4 @@
-import type { BusinessProfile } from "../types/content";
+import type { BusinessProfile } from "../types/content.js";
 
 export const siteContent = { name: "Utopia Homes", defaultTitle: "Utopia Homes", description: "Distinctive destination homes, thoughtfully managed.", contactEmail: "ray@utopiahomes.com", ownerEmail: "ray@utopiahomes.com" } as const;
 

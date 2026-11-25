@@ -1,4 +1,4 @@
-import type { PurgeAdapter, RetentionCandidate, RetentionStore } from "./types";
+import type { PurgeAdapter, RetentionCandidate, RetentionStore } from "./types.js";
 
 export function createRetentionService(options: {
   store: RetentionStore;

@@ -1,8 +1,8 @@
-import type { Submission } from "../../types/content";
-import { createEmailProvider, emailFromAddress, emailProviderConfigured } from "../email/provider";
-import { submissionNotificationMessage } from "../email/submissions";
-import type { EmailProvider } from "../email/types";
-import type { ClaimedNotification, NotificationStatus, NotificationStore } from "./types";
+import type { Submission } from "../../types/content.js";
+import { createEmailProvider, emailFromAddress, emailProviderConfigured } from "../email/provider.js";
+import { submissionNotificationMessage } from "../email/submissions.js";
+import type { EmailProvider } from "../email/types.js";
+import type { ClaimedNotification, NotificationStatus, NotificationStore } from "./types.js";
 
 const DEFAULT_LEASE_SECONDS = 300;
 const DEFAULT_MAX_ATTEMPTS = 6;

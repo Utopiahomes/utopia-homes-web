@@ -1,8 +1,8 @@
-import { createRetentionService } from "./service";
+import { createRetentionService } from "./service.js";
 import {
   createSupabaseRetentionStore,
   inactivePurgeAdapters,
-} from "./supabase";
+} from "./supabase.js";
 
 let resolved: ReturnType<typeof createRetentionService> | undefined;
 

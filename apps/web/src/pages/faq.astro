@@ -1,0 +1,51 @@
+---
+// The FAQ page, from the Next.js app/faq/page.tsx (2026-11-25). Same questions, groups and FAQPage data.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import PageHero from "../components/pages/PageHero.astro";
+import { FAQList } from "@/components/FAQList";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
+import { cms } from "@/lib/cms";
+import { faqPageStructuredData, jsonLdText } from "@/lib/structured-data";
+import type { FAQ } from "@/types/content";
+
+const sections: Array<{ id: string; heading: string; categories: FAQ["category"][]; link: { href: string; label: string } }> = [
+  { id: "stays", heading: "Staying with us", categories: ["stays"], link: { href: "/stays", label: "See the homes" } },
+  { id: "owners", heading: "Owners and property management", categories: ["owners"], link: { href: "/list-your-home", label: "Talk to us about your home" } },
+  { id: "design", heading: "Design and furnishing", categories: ["design"], link: { href: "/design", label: "Explore Utopia Design" } },
+  { id: "more", heading: "Membership and contact", categories: ["membership", "general"], link: { href: "/contact", label: "Contact us" } },
+];
+
+const [faqs, guides] = await Promise.all([cms.getFAQs(), cms.getStayGuides()]);
+const groups = sections.map((section) => ({ ...section, items: faqs.filter((faq) => section.categories.includes(faq.category)) }));
+const faqJson = jsonLdText(faqPageStructuredData(groups.flatMap((group) => group.items)));
+---
+
+<BaseLayout
+  title="Frequently Asked Questions"
+  description="Answers about Utopia Homes in the Wildwoods, NJ: guest capacity, pools, dogs, parking, booking direct, vacation rental management, and design."
+  path="/faq"
+>
+<div class="guide-page">
+  <script type="application/ld+json" is:inline set:html={faqJson} />
+  <Sections page="faq" sections={["hero", ...groups.map((group) => group.id), "guides"]}>
+  <Fragment slot="hero">
+    <PageHero eyebrow="Utopia Homes · The Wildwoods, NJ" intro="Straight answers about our homes in the Wildwoods, booking direct, and working with Utopia Homes as an owner or design client.">
+      <Fragment slot="title">Frequently asked<br /><em>questions.</em></Fragment>
+    </PageHero>
+  </Fragment>
+  {groups.map((group) => (
+    <Fragment slot={group.id}>
+      <section class="faq-section" id={group.id} aria-labelledby={`faq-${group.id}-title`}>
+        <h2 id={`faq-${group.id}-title`}>{group.heading}</h2>
+        <FAQList items={group.items} open />
+        <a class="text-link" href={group.link.href}>{group.link.label} <span aria-hidden="true">→</span></a>
+      </section>
+    </Fragment>
+  ))}
+  <Fragment slot="guides">
+    <StayGuideLinks guides={guides} />
+  </Fragment>
+  </Sections>
+</div>
+</BaseLayout>

@@ -99,6 +99,8 @@ const stayWording = group({
 
 export const contentSchemas = {
   "layout": z.record(z.string().regex(/^[\w-]+$/), pageLayout),
+  // Ordered lists the owner or Lucy can reorder (none on this site yet; the editor reads the file).
+  "lists": z.record(z.string().regex(/^[\w-]+$/), z.array(z.string().regex(/^[\w-]+$/))),
   "site": group({
     skipLink: text,
     talkLabel: text,

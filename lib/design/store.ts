@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { AcknowledgedQuote, PreliminaryQuote } from "./types";
-import { calendarEligibility } from "./qualification";
+import type { AcknowledgedQuote, PreliminaryQuote } from "./types.js";
+import { calendarEligibility } from "./qualification.js";
 
 export interface DesignQuoteStore {
   create(quote: PreliminaryQuote, reopenTokenHash: string): Promise<void>;

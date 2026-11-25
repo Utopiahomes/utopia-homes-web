@@ -1,7 +1,7 @@
-import type { FAQ, Property, StayGuide } from "../types/content";
-import { listOf, numberWord, stayFacts } from "../lib/stay-facts";
-import { properties } from "./properties";
-import { stayGuideSchema, validateCollection } from "./schemas";
+import type { FAQ, Property, StayGuide } from "../types/content.js";
+import { listOf, numberWord, stayFacts } from "../lib/stay-facts.js";
+import { properties } from "./properties.js";
+import { stayGuideSchema, validateCollection } from "./schemas.js";
 
 function home(slug: string) {
   const property = properties.find((record) => record.slug === slug);

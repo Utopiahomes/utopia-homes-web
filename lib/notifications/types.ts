@@ -1,4 +1,4 @@
-import type { Submission } from "../../types/content";
+import type { Submission } from "../../types/content.js";
 
 export type NotificationStatus = "pending" | "failed" | "sent" | "dead";
 

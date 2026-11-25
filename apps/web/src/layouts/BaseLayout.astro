@@ -76,7 +76,7 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     <title>{pageTitle}</title>
     <meta name="description" content={plainDescription} />
     <meta name="robots" content={shouldIndex ? "index,follow" : "noindex,nofollow,noarchive,nocache"} />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteContent.name} />
     <meta property="og:title" content={pageTitle} />

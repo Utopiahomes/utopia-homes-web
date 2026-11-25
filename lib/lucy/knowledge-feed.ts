@@ -1,4 +1,4 @@
-import type { Property } from "../../types/content";
+import type { Property } from "../../types/content.js";
 
 /**
  * The public property facts Lucy's knowledge is built from. Homes Prime reads this feed and turns it

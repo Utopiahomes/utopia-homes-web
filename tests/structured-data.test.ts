@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import robots from "@/app/robots";
+import { robotsTxt } from "@/lib/robots-txt";
 import { properties } from "@/content/properties";
 import { jsonLdText, stayStructuredData } from "@/lib/structured-data";
 
@@ -48,12 +48,11 @@ describe("robots", () => {
 
   it("lists the sitemap in production", () => {
     vi.stubEnv("VERCEL_ENV", "production");
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", origin);
-    expect(robots()).toMatchObject({ rules: { allow: "/" }, sitemap: `${origin}/sitemap.xml` });
+    expect(robotsTxt(origin)).toBe(`User-Agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
   });
 
   it("keeps previews out of search", () => {
     vi.stubEnv("VERCEL_ENV", "preview");
-    expect(robots()).toEqual({ rules: { userAgent: "*", disallow: "/" } });
+    expect(robotsTxt(origin)).toBe("User-Agent: *\nDisallow: /\n");
   });
 });

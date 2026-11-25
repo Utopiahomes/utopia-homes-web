@@ -1,7 +1,7 @@
-import { fixtureNotificationStore } from "./fixture";
-import { createNotificationService } from "./service";
-import { createSupabaseNotificationStore } from "./supabase";
-import type { NotificationStore } from "./types";
+import { fixtureNotificationStore } from "./fixture.js";
+import { createNotificationService } from "./service.js";
+import { createSupabaseNotificationStore } from "./supabase.js";
+import type { NotificationStore } from "./types.js";
 
 let resolvedStore: NotificationStore | undefined;
 

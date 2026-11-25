@@ -1,5 +1,5 @@
-import { businessProfile, campaigns, designPageContent, destinations, faqs, properties, publicLucyContent, reviews, stayGuides } from "../../content";
-import type { CmsAdapter } from "./types";
+import { businessProfile, campaigns, designPageContent, destinations, faqs, properties, publicLucyContent, reviews, stayGuides } from "../../content/index.js";
+import type { CmsAdapter } from "./types.js";
 export const repositoryCms: CmsAdapter = {
   async getProperties() { return properties.filter((property) => property.status === "active"); },
   async getPropertyBySlug(slug) { return properties.find((property) => property.slug === slug && property.status === "active") ?? null; },

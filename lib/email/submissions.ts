@@ -1,5 +1,5 @@
-import type { Submission } from "../../types/content";
-import { createEmailProvider, emailFromAddress } from "./provider";
+import type { Submission } from "../../types/content.js";
+import { createEmailProvider, emailFromAddress } from "./provider.js";
 
 const labels = { "owner-lead": "New owner lead", membership: "New membership signup", contact: "New contact request", "design-inquiry": "New property enhancement inquiry" } as const;
 export function notificationRecipient(env: NodeJS.ProcessEnv = process.env) { return env.LEAD_NOTIFICATION_EMAIL; }

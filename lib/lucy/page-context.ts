@@ -1,4 +1,4 @@
-import type { PublicLucyPageContext } from "./contracts";
+import type { PublicLucyPageContext } from "./contracts.js";
 
 const PROPERTY_SLUGS: ReadonlySet<string> = new Set([
   "buttercup-beauty",

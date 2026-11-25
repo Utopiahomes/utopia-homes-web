@@ -1,12 +1,11 @@
-import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { POST } from "@/app/api/lucy/route";
+import { POST } from "@/api/lucy";
 import { clearRateLimits } from "@/lib/forms/rate-limit";
 
 const endpoint = "https://public-lucy.example/v1/public/answer";
 
 function request(body: unknown, headers: Record<string, string> = {}) {
-  return new NextRequest("https://www.utopiahomes.com/api/lucy", {
+  return new Request("https://www.utopiahomes.com/api/lucy", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -47,7 +46,7 @@ describe("POST /api/lucy", () => {
   it("rejects a deployment hostname outside the configured Utopia binding", async () => {
     const fetcher = vi.fn();
     vi.stubGlobal("fetch", fetcher);
-    const previewRequest = new NextRequest("https://preview.example/api/lucy", {
+    const previewRequest = new Request("https://preview.example/api/lucy", {
       method: "POST",
       headers: { "content-type": "application/json", origin: "https://preview.example" },
       body: JSON.stringify({ question: "Where are you located?" }),

@@ -1,0 +1,89 @@
+---
+// A trip guide page (large groups, family reunions, dogs, private pools), from the Next.js
+// components/StayGuidePage.tsx (2026-11-25). Each guide page passes its slug; all four share one
+// section layout ("guide" in layout.json).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "./Sections.astro";
+import PageHero from "./stays/PageHero.astro";
+import { BookingLink } from "@/components/BookingLink";
+import { FAQList } from "@/components/FAQList";
+import { StayComparisonTable } from "@/components/StayComparisonTable";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
+import { StaySearchForm } from "@/components/StaySearchForm";
+import { cms } from "@/lib/cms";
+import { faqPageStructuredData, jsonLdText } from "@/lib/structured-data";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const [guide, guides, properties] = await Promise.all([cms.getStayGuideBySlug(slug), cms.getStayGuides(), cms.getProperties()]);
+if (!guide) throw new Error(`No stay guide with the slug "${slug}" in content/stay-guides.ts.`);
+const homes = guide.propertySlugs.flatMap((propertySlug) => properties.filter((property) => property.slug === propertySlug));
+const fits = guide.fits.flatMap((fit) => homes.filter((home) => home.slug === fit.propertySlug).map((home) => ({ fit, home })));
+const searchDefaults = guide.defaultGuests ? { guests: guide.defaultGuests } : undefined;
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout title={guide.seoTitle} description={guide.seoDescription} path={`/stays/${guide.slug}`} image={guide.heroImage}>
+<div class="guide-page">
+<script type="application/ld+json" is:inline set:html={jsonLdText(faqPageStructuredData(guide.faqs))} />
+<Sections page="guide" sections={["hero", "compare", "fit", "notes", "book", "faq", "guides"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow={guide.eyebrow} intro={guide.answer} image={guide.heroImage}>{guide.title}<br /><em>{guide.titleEmphasis}</em></PageHero>
+</Fragment>
+<Fragment slot="compare">
+  <section class="guide-section" aria-labelledby="guide-compare-title">
+    <p class="eyebrow">Side by side</p>
+    <h2 id="guide-compare-title">Compare the homes.</h2>
+    <StayComparisonTable caption={guide.tableCaption} homes={homes} extraRows={guide.extraRows} />
+  </section>
+</Fragment>
+<Fragment slot="fit">
+  <section class="guide-section guide-section-cream" aria-labelledby="guide-fit-title">
+    <p class="eyebrow">Find your fit</p>
+    <h2 id="guide-fit-title">{guide.fitHeading}</h2>
+    <div class="guide-fit-grid">
+      {fits.map(({ fit, home }) => <article class="guide-fit">
+        <div class="guide-fit-image"><img class="next-fill" src={home.heroImage.src} alt={home.heroImage.alt} sizes="(max-width: 800px) 100vw, 33vw" loading="lazy" decoding="async" /></div>
+        <p class="eyebrow">{home.name} · {home.city}</p>
+        <h3>{fit.heading}</h3>
+        <p>{fit.body}</p>
+        <div class="guide-fit-actions">{home.lodgify
+          ? <a class="button button-primary" href={`/stays/${home.slug}#book`} aria-label={`Book ${home.name} direct`}>Book direct</a>
+          : edit
+            ? <BookingLink propertyId={home.id} slug={home.slug} bookingUrl={home.bookingUrl} location={`guide_${guide.slug}`}>Check availability</BookingLink>
+            : <BookingLink propertyId={home.id} slug={home.slug} bookingUrl={home.bookingUrl} location={`guide_${guide.slug}`} client:load>Check availability</BookingLink>}<a class="text-link" href={`/stays/${home.slug}`}>View {home.name} <span aria-hidden="true">→</span></a></div>
+      </article>)}
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="notes">
+  <section class="guide-section" aria-labelledby="guide-notes-title">
+    <p class="eyebrow">Good to know</p>
+    <h2 id="guide-notes-title">{guide.notesHeading}</h2>
+    <div class="guide-notes">{guide.notes.map((note) => <div><h3>{note.title}</h3><p>{note.body}</p></div>)}</div>
+  </section>
+</Fragment>
+<Fragment slot="book">
+  <section class="guide-book" aria-labelledby="guide-book-title">
+    <p class="eyebrow eyebrow-light">Book direct · save 10%</p>
+    <h2 id="guide-book-title">Check your dates.</h2>
+    <p>Booking direct with Utopia Homes is 10% cheaper than Airbnb. Search your dates to see the price at each home.</p>
+    {edit ? <StaySearchForm variant="page" defaults={searchDefaults} /> : <StaySearchForm variant="page" defaults={searchDefaults} client:load />}
+  </section>
+</Fragment>
+<Fragment slot="faq">
+  <section class="faq-section" aria-labelledby="guide-faq-title">
+    <p class="eyebrow">Questions</p>
+    <h2 id="guide-faq-title">Good questions, answered.</h2>
+    <FAQList items={guide.faqs} open />
+  </section>
+</Fragment>
+<Fragment slot="guides">
+  <StayGuideLinks guides={guides.filter((item) => item.slug !== guide.slug)} heading="Planning a different kind of trip?" />
+</Fragment>
+</Sections>
+</div>
+</BaseLayout>

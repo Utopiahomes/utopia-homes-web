@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { GET } from "@/app/lucy-knowledge/properties.json/route";
+import { GET } from "@/apps/web/src/pages/lucy-knowledge/properties.json";
 import { properties } from "@/content/properties";
 import { buildLucyKnowledgeFeed } from "@/lib/lucy/knowledge-feed";
 
 describe("Lucy knowledge feed", () => {
   it("publishes every active property's page facts", async () => {
-    const feed = await (await GET()).json();
+    const feed = await (await GET({} as Parameters<typeof GET>[0])).json();
     expect(feed.schema).toBe("utopia-homes-public-properties-v1");
     expect(feed.properties.map((p: { slug: string }) => p.slug)).toEqual(
       properties.filter((p) => p.status === "active").map((p) => p.slug),

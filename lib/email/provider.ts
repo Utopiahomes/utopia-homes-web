@@ -1,6 +1,6 @@
-import { createProtonSmtpProvider } from "./proton-smtp";
-import { createResendProvider } from "./resend";
-import type { EmailProvider } from "./types";
+import { createProtonSmtpProvider } from "./proton-smtp.js";
+import { createResendProvider } from "./resend.js";
+import type { EmailProvider } from "./types.js";
 
 export type EmailProviderName = "proton" | "resend" | "disabled";
 

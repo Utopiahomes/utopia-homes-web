@@ -1,17 +1,17 @@
 import { randomBytes } from "node:crypto";
-import { acknowledgeQuoteSchema, quoteInputSchema } from "./schemas";
+import { acknowledgeQuoteSchema, quoteInputSchema } from "./schemas.js";
 import {
   DESIGN_ESTIMATE_DISCLAIMER_VERSION,
   priceDesignProject,
-} from "./pricing";
+} from "./pricing.js";
 import {
   designQuoteStore,
   hashReopenToken,
   type DesignQuoteStore,
-} from "./store";
-import { submitForm } from "../forms/submit";
-import { sendDesignQuoteEmailBestEffort } from "./email";
-import type { AcknowledgedQuote, PreliminaryQuote } from "./types";
+} from "./store.js";
+import { submitForm } from "../forms/submit.js";
+import { sendDesignQuoteEmailBestEffort } from "./email.js";
+import type { AcknowledgedQuote, PreliminaryQuote } from "./types.js";
 
 export async function generateDesignQuote(
   body: unknown,

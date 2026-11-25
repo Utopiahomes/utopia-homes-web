@@ -1,0 +1,59 @@
+---
+// The About page, from the Next.js app/about/page.tsx (2026-11-25). Same sections and wording.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import PageHero from "../components/pages/PageHero.astro";
+import { leadershipProfiles } from "@/content";
+
+const people = [
+  {
+    id: "leadership-ray",
+    href: "/about/ray",
+    image: { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of the former Shamrock Hotel in Wildwood" },
+    businesses: ["Utopia Homes", "Utopia Workspaces", "Stoin (AI consulting)"],
+  },
+  {
+    id: "leadership-meghan",
+    href: "/about/meghan",
+    image: { src: "/images/about/meghan/crest-luxury-loft.webp", alt: "A living room Meghan styled, with a tufted navy sofa and a gallery wall" },
+    businesses: ["Utopia Homes", "Utopia Design"],
+  },
+].map((person) => ({ ...person, profile: leadershipProfiles.find((p) => p.id === person.id)! }));
+---
+
+<BaseLayout title="About Utopia" description="Meet Ray and Meghan DeLuca, the owners behind Utopia Homes." path="/about">
+<Sections page="about" sections={["hero", "owners", "statement"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow="About Utopia" intro="Utopia Homes is Ray and Meghan DeLuca: owners who host, design, and care for every home themselves." tone="light">
+    <Fragment slot="title">Two owners.<br /><em>One way of hosting.</em></Fragment>
+  </PageHero>
+</Fragment>
+<Fragment slot="owners">
+  <section class="about-people" aria-label="The owners">
+    {people.map(({ href, image, businesses, profile }) => (
+      <a href={href} class="about-person-card">
+        <div class="about-person-image">
+          <img class="next-fill" src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+        </div>
+        <div class="about-person-copy">
+          <p class="eyebrow">Owner</p>
+          <h2>{profile.name}</h2>
+          <ul>{businesses.map((b) => <li>{b}</li>)}</ul>
+          <span class="text-link">Read {profile.name.split(" ")[0]}’s story <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    ))}
+  </section>
+</Fragment>
+<Fragment slot="statement">
+  <section class="about-statement founder-statement">
+    <span>R / M</span>
+    <h2>We do not just operate vacation homes. <em>We own them.</em></h2>
+    <div>
+      <p>That shapes everything: caring for each property, earning each guest’s trust, and making the decisions that turn an ordinary stay into one people remember.</p>
+      <a class="text-link" href="/stays">Meet our homes <span>→</span></a>
+    </div>
+  </section>
+</Fragment>
+</Sections>
+</BaseLayout>

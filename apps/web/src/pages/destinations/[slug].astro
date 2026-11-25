@@ -1,0 +1,54 @@
+---
+// A destination page, from the Next.js app/destinations/[slug]/page.tsx (2026-11-25). One built page
+// per destination; all share one section layout ("destination" in layout.json).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import PageHero from "../../components/stays/PageHero.astro";
+import { ImmersiveScrollStory } from "@/components/ImmersiveScrollStory";
+import { PropertyCard } from "@/components/PropertyCard";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
+import { cms } from "@/lib/cms";
+import type { Destination } from "@/types/content";
+
+export async function getStaticPaths() {
+  return (await cms.getDestinations()).map((destination) => ({ params: { slug: destination.slug }, props: { destination } }));
+}
+
+const { destination } = Astro.props as { destination: Destination };
+const [allProperties, guides] = await Promise.all([cms.getProperties(), cms.getStayGuides()]);
+const properties = allProperties.filter((property) => property.destinationId === destination.id);
+---
+
+<BaseLayout title={destination.seoTitle.replace(" | Utopia Homes", "")} description={destination.seoDescription} path={`/destinations/${destination.slug}`} image={destination.heroImage}>
+<Sections page="destination" sections={["hero", "season", "intro", "highlights", "story", "homes", "guides"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow={`${destination.city}, ${destination.state}`} intro={destination.longDescription} image={destination.heroImage}>Wildwood energy.<br /><em>Cape May rhythm.</em></PageHero>
+</Fragment>
+<Fragment slot="season">
+  <section class="wildwood-season region-season-opening">
+    <p class="eyebrow eyebrow-light">A longer way to see the Shore</p>
+    <div class="season-number" aria-hidden="true">6</div>
+    <div>
+      <h2>Six months at the Shore.<br /><em>Not ten weeks.</em></h2>
+      <p>We love the Wildwoods and Cape May because the season does not end with summer. Festival weekends, fall escapes, spring gatherings, holiday traditions, and the coast’s year-round personality create more reasons to visit—and more opportunities for owners.</p>
+      <p>Utopia specializes in building demand beyond the traditional peak. We see Southern Cape May County as a six-month hospitality season with something worth returning for every weekend.</p>
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="intro">
+  <section class="region-intro"><p class="eyebrow">WW / Cape May</p><h2>Two Shore personalities.<br /><em>One coast we love.</em></h2><p>{destination.shortDescription}</p></section>
+</Fragment>
+<Fragment slot="highlights">
+  <section class="region-highlights" aria-label="What we love about Wildwood and Cape May">{destination.highlights.map((highlight, index) => <article class={`region-highlight region-highlight-${index + 1}`}><div class="region-highlight-image"><img class="next-fill" src={highlight.image.src} alt={highlight.image.alt} sizes="(max-width: 800px) 100vw, 56vw" loading="lazy" decoding="async" /></div><div><p class="eyebrow">{String(index + 1).padStart(2, "0")} · {highlight.eyebrow}</p><h2>{highlight.title}</h2><p>{highlight.description}</p></div></article>)}</section>
+</Fragment>
+<Fragment slot="story">
+  <ImmersiveScrollStory className="region-season-story" image={{ src: "/images/central-ave/01.webp", alt: "Poolside gathering space at Central Ave Socialization" }} secondaryImage={{ src: "/images/buttercup/29.webp", alt: "Large living room at Buttercup Beauty" }} label="The longer season in Southern Cape May County" beats={[{ eyebrow: "Wildwood beyond summer", heading: "The calendar keeps moving.", body: "Spring gatherings, event weekends, fall escapes, and holiday traditions keep giving groups reasons to come back to the Wildwoods." }, { eyebrow: "Cape May around the calendar", heading: "The coast changes pace.", body: "Cape May brings another rhythm to the same region—historic character, quieter wandering, and experiences that belong to more than one season." }]} />
+</Fragment>
+<Fragment slot="homes">
+  <section class="section featured"><p class="eyebrow">Stay in the Wildwoods</p><h2>Homes that belong<br />to the place.</h2><div class="property-grid">{properties.map((property, index) => <PropertyCard property={property} index={index + 1} />)}</div></section>
+</Fragment>
+<Fragment slot="guides">
+  <StayGuideLinks guides={guides} />
+</Fragment>
+</Sections>
+</BaseLayout>

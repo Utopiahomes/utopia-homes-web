@@ -1,26 +1,56 @@
-// Stand-in for next/navigation (2026-11-25, Next.js -> Astro). In the browser these read the address
-// bar; while Astro renders a page they give the path set by setServerPathname (BaseLayout), so the
-// first render matches. notFound and the redirects aren't used by the React parts any more: pages
-// that need them are Astro pages, and permanent redirects live in vercel.json.
+// Stand-in for next/navigation (2026-11-25, Next.js -> Astro). While Astro renders a page, these give
+// the path set by setServerPathname (BaseLayout) and no search parameters, so the first browser render
+// matches the HTML; after the page starts, the hooks re-render with the real address bar. The router
+// changes only the query with history.replaceState/pushState (no reload), as Next's did; a new path
+// loads that page. notFound and the redirects aren't used by the React parts: those pages are Astro
+// pages, and permanent redirects live in vercel.json.
+import { useEffect, useState } from "react";
+
 let serverPathname = "/";
 export function setServerPathname(pathname: string): void {
   serverPathname = pathname;
 }
 
 const inBrowser = typeof window !== "undefined";
+const listeners = new Set<() => void>();
+const announce = () => listeners.forEach((listener) => listener());
+if (inBrowser) window.addEventListener("popstate", announce);
+
+function useAddress<T>(read: () => T, initial: T): T {
+  const [value, setValue] = useState<T>(initial);
+  useEffect(() => {
+    const update = () => setValue(read());
+    update();
+    listeners.add(update);
+    return () => void listeners.delete(update);
+  }, []);
+  return value;
+}
 
 export function usePathname(): string {
-  return inBrowser ? window.location.pathname : serverPathname;
+  return useAddress(() => window.location.pathname, inBrowser ? window.location.pathname : serverPathname);
 }
 
 export function useSearchParams(): URLSearchParams {
-  return new URLSearchParams(inBrowser ? window.location.search : "");
+  return useAddress(() => new URLSearchParams(window.location.search), new URLSearchParams());
+}
+
+function go(url: string, replace: boolean): void {
+  const next = new URL(url, window.location.href);
+  if (next.pathname !== window.location.pathname || next.origin !== window.location.origin) {
+    if (replace) window.location.replace(next.href);
+    else window.location.assign(next.href);
+    return;
+  }
+  if (replace) window.history.replaceState(window.history.state, "", next.href);
+  else window.history.pushState(window.history.state, "", next.href);
+  announce();
 }
 
 export function useRouter() {
   return {
-    push: (url: string) => window.location.assign(url),
-    replace: (url: string) => window.location.replace(url),
+    push: (url: string) => go(url, false),
+    replace: (url: string) => go(url, true),
     refresh: () => window.location.reload(),
     back: () => window.history.back(),
     prefetch: () => undefined,

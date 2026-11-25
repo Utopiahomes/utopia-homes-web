@@ -1,5 +1,5 @@
-import type { Submission } from "../../types/content";
-import type { SubmissionStore } from "./types";
+import type { Submission } from "../../types/content.js";
+import type { SubmissionStore } from "./types.js";
 const records: Submission[] = [];
 export const fixtureSubmissionStore: SubmissionStore = {
   async create(submission) {

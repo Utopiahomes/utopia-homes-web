@@ -1,0 +1,9 @@
+---
+// The not-found page, from the Next.js app/not-found.tsx (2026-11-25). Never indexed.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteContent } from "@/content";
+---
+
+<BaseLayout title={siteContent.defaultTitle} absoluteTitle description={siteContent.description} path="/404" noindex>
+  <div class="not-found"><p class="eyebrow">404</p><h1>This stay is off the map.</h1><p>The page may have moved, or this home is not currently part of the collection.</p><a class="button button-primary" href="/stays">Explore stays</a></div>
+</BaseLayout>

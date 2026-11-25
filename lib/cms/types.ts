@@ -1,4 +1,4 @@
-import type { BusinessProfile, Campaign, DesignPageContent, Destination, FAQ, Property, PublicLucyContent, Review, StayGuide } from "../../types/content";
+import type { BusinessProfile, Campaign, DesignPageContent, Destination, FAQ, Property, PublicLucyContent, Review, StayGuide } from "../../types/content.js";
 
 export interface CmsAdapter {
   getProperties(): Promise<Property[]>;

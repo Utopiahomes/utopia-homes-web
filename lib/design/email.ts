@@ -2,8 +2,8 @@ import {
   createEmailProvider,
   emailFromAddress,
   emailProviderConfigured,
-} from "../email/provider";
-import type { AcknowledgedQuote } from "./types";
+} from "../email/provider.js";
+import type { AcknowledgedQuote } from "./types.js";
 
 export async function sendDesignQuoteEmailBestEffort(
   quote: AcknowledgedQuote,

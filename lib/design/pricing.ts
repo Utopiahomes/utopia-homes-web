@@ -6,8 +6,8 @@ import type {
   QuoteInput,
   QuoteLineItem,
   RoomType,
-} from "./types";
-import { calendarEligibility, qualifyDesignQuote } from "./qualification";
+} from "./types.js";
+import { calendarEligibility, qualifyDesignQuote } from "./qualification.js";
 
 export const DESIGN_PRICING_RULE_VERSION = "UD-2026.2";
 export const DESIGN_ESTIMATE_DISCLAIMER_VERSION = "2026-08-27.v2";

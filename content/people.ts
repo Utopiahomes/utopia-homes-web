@@ -1,4 +1,4 @@
-import type { LeadershipProfile } from "../types/content";
+import type { LeadershipProfile } from "../types/content.js";
 
 export const leadershipProfiles: LeadershipProfile[] = [
   {

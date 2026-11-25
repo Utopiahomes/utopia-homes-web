@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { PublicLucyFaqEntry } from "../../types/content";
+import type { PublicLucyFaqEntry } from "../../types/content.js";
 
 export const PUBLIC_LUCY_SNAPSHOT_SCHEMA = "lucy-public-faq-v1" as const;
 

@@ -1,0 +1,20 @@
+---
+// Utopia Design, from the Next.js app/design/page.tsx (2026-11-25). The page is one React part; it is
+// built for vacation rentals and switches to ?audience=personal in the browser (DesignAudience.tsx).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { UtopiaDesignPage } from "@/components/design/UtopiaDesignPage";
+import { DesignPageFromAddress } from "../components/pages/DesignAudience";
+import { cms } from "@/lib/cms";
+
+const content = await cms.getDesignPage();
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout
+  title="Vacation Rental Design and Furnishing"
+  description="Utopia Design, a Utopia Homes company, designs and furnishes vacation rentals and designs personal homes, with a clear path to a preliminary estimate."
+  path="/design"
+  image={{ src: "/images/shamrock/gallery/20.webp", alt: "Finished open-plan living and dining room at The Shamrock" }}
+>
+  {edit ? <UtopiaDesignPage content={content} initialAudience="rental" explicitAudience={false} /> : <DesignPageFromAddress content={content} client:load />}
+</BaseLayout>

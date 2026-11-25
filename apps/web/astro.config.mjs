@@ -2,7 +2,6 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import { fileURLToPath } from "node:url";
-import sitemap from "@astrojs/sitemap";
 
 const environment =
   process.env.IS_PULL_REQUEST === "true"
@@ -18,14 +17,10 @@ export default defineConfig({
   ...(editMode ? { outDir: "./dist-edit" } : {}),
   site: process.env.PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:4321",
   trailingSlash: "never",
+  // /sitemap.xml comes from src/pages/sitemap.xml.ts (the same URLs the Next.js site listed).
   integrations: [
     mdx(),
     react(),
-    sitemap({
-      filter: (page) =>
-        !page.endsWith("/404") &&
-        !page.includes("/campaigns/"),
-    }),
     ...editIntegrations,
   ],
   markdown: {

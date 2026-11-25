@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { GET } from "@/app/api/cron/notifications/route";
+import { GET } from "@/api/cron/notifications";
 
 describe("notification retry cron", () => {
   afterEach(() => vi.unstubAllEnvs());

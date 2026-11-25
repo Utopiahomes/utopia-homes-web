@@ -1,6 +1,6 @@
-import type { Property } from "../types/content";
-import { wording } from "../lib/edit/wording";
-import { propertySchema, validateCollection } from "./schemas";
+import type { Property } from "../types/content.js";
+import { wording } from "../lib/edit/wording.js";
+import { propertySchema, validateCollection } from "./schemas.js";
 
 const buttercupGallery = ([
   ["arrival", "Front exterior and welcoming entrance of Buttercup Beauty"],

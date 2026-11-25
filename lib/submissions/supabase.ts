@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Submission } from "../../types/content";
-import type { SubmissionStore } from "./types";
+import type { Submission } from "../../types/content.js";
+import type { SubmissionStore } from "./types.js";
 
 type SupabaseStoreOptions = {
   url?: string;

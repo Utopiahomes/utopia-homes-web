@@ -1,0 +1,20 @@
+{
+  // Type check for the Vercel functions: npx tsc --noEmit -p api/tsconfig.json
+  // Vercel compiles each .ts file on its own and Node runs the result as ES modules (the root
+  // package.json says "type": "module"), so relative imports need their .js extension and JSON
+  // imports need `with { type: "json" }`. NodeNext makes TypeScript enforce both here.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": ["node"]
+  },
+  "include": ["./**/*.ts"]
+}

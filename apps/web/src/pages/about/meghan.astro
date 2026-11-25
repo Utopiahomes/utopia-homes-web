@@ -1,0 +1,111 @@
+---
+// Meghan's page, from the Next.js app/about/meghan/page.tsx (2026-11-25). Same sections and wording.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import PageHero from "../../components/pages/PageHero.astro";
+import { properties } from "@/content";
+import { hostingChapters, meghanBeyondRentals, meghanIntro, meghanStats, meghanTodayIntro } from "@/content/meghan";
+
+const today = properties.filter((p) => p.status === "active" && p.designerNote);
+const heroImage = { src: "/images/about/meghan/crest-oasis.webp", alt: "Our Oasis by the Sea, one of the Wildwood Crest condos Meghan styled and hosted" };
+---
+
+<BaseLayout
+  title="About Meghan DeLuca"
+  description="Meghan DeLuca, owner of Utopia Homes and Utopia Design, has hosted guests at the Jersey Shore and in the Poconos since 2014."
+  path="/about/meghan"
+  image={heroImage}
+>
+<Sections page="about-meghan" sections={["hero", "stats", "callout", "chapters", "today", "beyond", "statement"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow={meghanIntro.eyebrow} intro={meghanIntro.lead} image={heroImage} tone="light">
+    <Fragment slot="title">Meghan<br /><em>DeLuca</em></Fragment>
+  </PageHero>
+</Fragment>
+<Fragment slot="stats">
+  <section class="meghan-stats" aria-label="Meghan’s hosting in numbers">
+    {meghanStats.map((s) => (
+      <div><strong>{s.value}</strong><span>{s.label}</span></div>
+    ))}
+    <p class="meghan-stats-source">From Meghan’s Airbnb host record, September 2026.</p>
+  </section>
+</Fragment>
+<Fragment slot="callout">
+  <section class="editorial-callout meghan-callout">
+    <p>{meghanIntro.statement}</p>
+  </section>
+</Fragment>
+<Fragment slot="chapters">
+  <section class="meghan-chapters" aria-label="The homes Meghan has hosted">
+    {hostingChapters.map((c, i) => (
+      <article class={`meghan-chapter meghan-chapter-${c.images.length > 2 ? "gallery" : "pair"}`}>
+        <header>
+          <span class="meghan-chapter-index">{String(i + 1).padStart(2, "0")}</span>
+          <p class="eyebrow">{c.years} · {c.place}</p>
+          <h2>{c.title}</h2>
+          {c.paragraphs.map((p) => <p>{p}</p>)}
+          <blockquote>
+            <p>{c.guestsSaid}</p>
+            <cite>{c.reviews} guest reviews</cite>
+          </blockquote>
+        </header>
+        <div class="meghan-chapter-images">
+          {c.images.map((image) => (
+            <figure>
+              <img class="next-fill" src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+            </figure>
+          ))}
+        </div>
+      </article>
+    ))}
+  </section>
+</Fragment>
+<Fragment slot="today">
+  <section class="meghan-today">
+    <div class="meghan-today-heading">
+      <span class="meghan-chapter-index">{String(hostingChapters.length + 1).padStart(2, "0")}</span>
+      <p class="eyebrow">Today · The Utopia Homes collection</p>
+      <h2>In her words.</h2>
+      <p>{meghanTodayIntro}</p>
+    </div>
+    <div class="meghan-today-grid">
+      {today.map((p) => (
+        <a href={`/stays/${p.slug}`} class="meghan-today-card">
+          <div class="meghan-today-image">
+            <img class="next-fill" src={p.heroImage.src} alt={p.heroImage.alt} loading="lazy" decoding="async" />
+          </div>
+          <p class="eyebrow">{p.name} · {p.city}</p>
+          <h3>{p.designerNote!.headline}</h3>
+          <p>{p.designerNote!.paragraphs[0]}</p>
+          <span class="text-link">See the home <span aria-hidden="true">→</span></span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="beyond">
+  <section class="meghan-beyond">
+    <div>
+      <p class="eyebrow">Beyond rentals</p>
+      <h2>{meghanBeyondRentals.title}</h2>
+      <p>{meghanBeyondRentals.text}</p>
+    </div>
+    <div class="meghan-beyond-stats">
+      {meghanBeyondRentals.stats.map((s) => (
+        <div><strong>{s.value}</strong><span>{s.label}</span></div>
+      ))}
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="statement">
+  <section class="about-statement founder-statement">
+    <span>M / D</span>
+    <h2>Designing a home of your own? <em>Work with Meghan.</em></h2>
+    <div>
+      <p>Utopia Design brings the same approach to vacation rentals and personal homes: spaces that photograph beautifully, work for real guests, and feel like home.</p>
+      <a class="text-link" href="/design">Explore Utopia Design <span>→</span></a>
+    </div>
+  </section>
+</Fragment>
+</Sections>
+</BaseLayout>

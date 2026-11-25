@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { extname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,7 +10,7 @@ import { decodeEntities, sha256, transformHtml } from "./transform-html.mjs";
 // Finishes the edit build after Astro writes its pages: makes wording clickable, removes every marker,
 // takes out what a private editing copy must not have, and writes the manifest and the bridge.
 
-const site = "srp-site.vercel.app";
+const site = "utopiahomes.com";
 const contentFolder = "apps/web/src/site-content";
 const contentDirectory = fileURLToPath(new URL("../src/site-content/", import.meta.url));
 const bridgeSource = fileURLToPath(new URL("./bridge.js", import.meta.url));
@@ -25,8 +26,9 @@ const reportFile = fileURLToPath(new URL("../dist-edit.report.json", import.meta
 
 // Private-area wording never enters the manifest, and these pages never enter the edit deployment.
 const excludedContent = new Set(["private", "layout", "lists"]);
-const heldContent = new Set(["bridge-fund-vii"]);
-const removedPaths = ["private", "sign-in", "blocks"];
+// Utopia Homes has no held wording yet (its legal pages aren't editable).
+const heldContent = new Set([]);
+const removedPaths = ["blocks", "llms.txt", "lucy-knowledge"];
 
 const textExtensions = new Set([".css", ".html", ".js", ".json", ".map", ".mjs", ".svg", ".txt", ".webmanifest", ".xml"]);
 // Markers in a URL would be percent-encoded, so the final check looks for that form as well.
@@ -107,6 +109,8 @@ export async function readContentItems(directory = contentDirectory) {
 /** Article front matter values, keyed article.<slug>.<field>. */
 export async function readArticleItems(directory = articleDirectory) {
   const items = [];
+  // Utopia Homes has no articles (2026-11-25): no folder, no article items.
+  if (!(await readdir(directory).catch(() => null))) return items;
   for (const fileName of (await readdir(directory)).filter((name) => /\.mdx?$/.test(name) && !name.startsWith("_")).sort()) {
     const text = (await readFile(join(directory, fileName), "utf8")).replace(/\r\n/g, "\n");
     const front = text.match(/^---\n([\s\S]*?)\n---\n/)?.[1];
@@ -131,6 +135,8 @@ export async function readArticleItems(directory = articleDirectory) {
 /** What the editor needs to write a new article: its kinds, the tags in use, and the addresses taken.
  * The adapter (scripts/apply-site-edits.mjs, kind "new_article") writes the file itself. */
 export async function postSettings(directory = articleDirectory) {
+  // No blog on this site: the editor shows no Posts tab.
+  if (!(await readdir(directory).catch(() => null))) return null;
   const thinking = JSON.parse(await readFile(join(contentDirectory, "thinking.json"), "utf8"));
   const tags = new Map();
   const slugs = [];
@@ -150,7 +156,7 @@ export async function postSettings(directory = articleDirectory) {
     types: Object.entries(thinking.types).map(([value, label]) => ({ value, label })),
     tags: [...tags].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([tag]) => tag),
     slugs: slugs.sort(),
-    byline: "CB Wilkinson",
+    byline: "Utopia Homes",
     timezone: "America/New_York",
   };
 }
@@ -369,7 +375,7 @@ export function stoinEditBuild() {
       // paragraph is written back exactly as typed; the public build still curls them.
       "astro:config:setup": ({ config, injectRoute }) => {
         // The page a new post is written on (2026-11-19). It exists only in the edit copy.
-        injectRoute({ pattern: "/_stoin/post", entrypoint: fileURLToPath(new URL("./PostPreview.astro", import.meta.url)) });
+        if (existsSync(articleDirectory)) injectRoute({ pattern: "/_stoin/post", entrypoint: fileURLToPath(new URL("./PostPreview.astro", import.meta.url)) });
         const options = config.markdown?.processor?.options;
         if (!options?.mdastPlugins || !options.features) throw new Error("The edit build needs Astro's Sätteri Markdown processor.");
         options.mdastPlugins.push(stoinBlocks);

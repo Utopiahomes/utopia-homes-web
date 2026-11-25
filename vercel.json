@@ -1,8 +1,69 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npx --yes pnpm@11.19.0 install --frozen-lockfile",
+  "buildCommand": "npx --yes pnpm@11.19.0 --dir apps/web build",
+  "outputDirectory": "apps/web/dist",
+  "trailingSlash": false,
+  "functions": {
+    "api/cron/*.ts": {
+      "maxDuration": 60
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/maintenance",
       "schedule": "0 12 * * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "microphone=(self \"https://app.stoin.ai\"), camera=(self \"https://app.stoin.ai\"), display-capture=(self \"https://app.stoin.ai\"), autoplay=(self \"https://app.stoin.ai\"), fullscreen=(self \"https://app.stoin.ai\"), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/utopia-interiors",
+      "destination": "/design",
+      "permanent": true
+    },
+    {
+      "source": "/property-enhancement",
+      "destination": "/design",
+      "permanent": true
+    },
+    {
+      "source": "/stays/buttercup-house",
+      "destination": "/stays/buttercup-beauty",
+      "permanent": true
+    },
+    {
+      "source": "/stays/north-wildwood-house",
+      "destination": "/stays/central-ave-socialization",
+      "permanent": true
+    },
+    {
+      "source": "/stays/shamrock-house",
+      "destination": "/stays/the-shamrock",
+      "permanent": true
     }
   ]
 }

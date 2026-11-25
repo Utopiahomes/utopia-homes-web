@@ -34,13 +34,14 @@ function load<Name extends ContentFile>(name: Name): z.infer<(typeof contentSche
     fail(file, `Keep every key and change only the wording:\n${problems.join("\n")}`);
   }
   // The edit build tags wording so the owner can click it.
-  const editable = import.meta.env.PUBLIC_EDIT_MODE === "1" && name !== "layout";
+  const editable = import.meta.env.PUBLIC_EDIT_MODE === "1" && name !== "layout" && name !== "lists";
   return (editable ? markContent(name, result.data) : result.data) as z.infer<(typeof contentSchemas)[Name]>;
 }
 
 export const content = {
   site: load("site"),
   layout: load("layout"),
+  lists: load("lists"),
   home: load("home"),
   housePage: load("house-page"),
   stays: load("stays"),

@@ -1,4 +1,4 @@
-import type { DesignAudience, DesignServiceId } from "../../types/content";
+import type { DesignAudience, DesignServiceId } from "../../types/content.js";
 
 export type DesignGrade = "rental" | "elegant" | "utopian";
 export type DesignComplexity = "standard" | "elevated" | "custom";

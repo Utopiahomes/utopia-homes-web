@@ -1,16 +1,62 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
+  "framework": null,
+  "installCommand": "npx --yes pnpm@11.19.0 install --frozen-lockfile",
+  "buildCommand": "PUBLIC_EDIT_MODE=1 sh -c \"rm -rf apps/web/node_modules/.astro apps/web/.astro && npx --yes pnpm@11.19.0 --dir apps/web build\"",
+  "outputDirectory": "apps/web/dist-edit",
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "frame-ancestors https://app.stoin.ai" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "microphone=(), camera=(), display-capture=(), geolocation=()" }
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors https://app.stoin.ai"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "microphone=(), camera=(), display-capture=(), geolocation=()"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/utopia-interiors",
+      "destination": "/design",
+      "permanent": true
+    },
+    {
+      "source": "/property-enhancement",
+      "destination": "/design",
+      "permanent": true
+    },
+    {
+      "source": "/stays/buttercup-house",
+      "destination": "/stays/buttercup-beauty",
+      "permanent": true
+    },
+    {
+      "source": "/stays/north-wildwood-house",
+      "destination": "/stays/central-ave-socialization",
+      "permanent": true
+    },
+    {
+      "source": "/stays/shamrock-house",
+      "destination": "/stays/the-shamrock",
+      "permanent": true
     }
   ]
 }

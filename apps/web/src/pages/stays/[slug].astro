@@ -1,0 +1,90 @@
+---
+// A house page, from the Next.js app/stays/[slug]/page.tsx (2026-11-25). One built page per active
+// house. The old slugs (buttercup-house, north-wildwood-house, shamrock-house) are permanent
+// redirects in vercel.json. All house pages share one section layout ("house" in layout.json).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import { AmenityGroups } from "@/components/AmenityGroups";
+import { AnalyticsView } from "@/components/AnalyticsView";
+import { BookingLink } from "@/components/BookingLink";
+import { DesignerNote } from "@/components/DesignerNote";
+import { DirectBookingCard } from "@/components/DirectBookingCard";
+import { PropertyFacts } from "@/components/PropertyFacts";
+import { PropertyGallery } from "@/components/PropertyGallery";
+import { PropertyPhotoStory } from "@/components/PropertyPhotoStory";
+import { PropertyReviews } from "@/components/PropertyReviews";
+import { StayGuideLinks } from "@/components/StayGuideLinks";
+import { cms } from "@/lib/cms";
+import { jsonLdText, stayStructuredData } from "@/lib/structured-data";
+import type { Property } from "@/types/content";
+import { siteConfig } from "../../lib/site";
+import { content } from "../../lib/content";
+
+export async function getStaticPaths() {
+  return (await cms.getProperties()).map((property) => ({ params: { slug: property.slug }, props: { property } }));
+}
+
+const { property } = Astro.props as { property: Property };
+// Only the guides this home belongs to, so The Shamrock is never linked as a pool home.
+const guides = (await cms.getStayGuides()).filter((guide) => guide.propertySlugs.includes(property.slug));
+const words = content.housePage;
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const structuredData = jsonLdText(stayStructuredData(property, siteConfig.origin));
+const viewEvent = { name: "property_view", properties: { propertyId: property.id, slug: property.slug, destination: property.destinationId } } as const;
+---
+
+<BaseLayout title={property.seoTitle.replace(" | Utopia Homes", "")} description={property.seoDescription} path={`/stays/${property.slug}`} image={property.heroImage}>
+<article class="property-page">
+<script type="application/ld+json" is:inline set:html={structuredData} />
+{!edit && <AnalyticsView event={viewEvent} client:load />}
+<Sections page="house" sections={["hero", "gallery", "details", "reviews", "photos", "guides"]}>
+<Fragment slot="hero">
+  <header class="property-hero">
+    <div class="property-kicker"><p class="eyebrow">Utopia stay · {property.city}, {property.state}</p><span>{property.propertyType}</span></div>
+    <div class="property-title-row"><div><h1>{property.name}</h1><p>{property.shortDescription}</p></div>{property.lodgify
+      // Ray, 2026-11-11: with a direct-booking box, the top button goes to it, not to Airbnb.
+      ? <a href="#book" class="round-booking-link">Check<br />availability <span aria-hidden="true">↓</span></a>
+      : edit
+        ? <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_hero" className="round-booking-link">Check<br />availability <span aria-hidden="true">↗</span></BookingLink>
+        : <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_hero" className="round-booking-link" client:load>Check<br />availability <span aria-hidden="true">↗</span></BookingLink>}</div>
+  </header>
+</Fragment>
+<Fragment slot="gallery">
+  <PropertyGallery images={property.gallery} />
+</Fragment>
+<Fragment slot="details">
+  <section class="property-content">
+    <div class="property-main">
+      <p class="eyebrow">{words.story.eyebrow}</p><h2>{words.story.titleLine1}<br /><em>{words.story.titleLine2}</em></h2><p class="property-lede">{property.fullDescription}</p>
+      <div class="special-section"><p class="eyebrow">{words.features.eyebrow}</p><ul class="feature-list">{property.uniqueFeatures.map((feature, index) => <li><span>{String(index + 1).padStart(2, "0")}</span>{feature}</li>)}</ul></div>
+      <DesignerNote note={property.designerNote} />
+      <div class="amenities-section"><p class="eyebrow">{words.amenities.eyebrow}</p><h2>{words.amenities.titleLine1}<br />{words.amenities.titleLine2}</h2><AmenityGroups groups={property.amenities} /></div>
+      <div class="stay-notes"><p class="eyebrow">{words.notes.eyebrow}</p><dl><div><dt>Pets</dt><dd>{property.petPolicy}</dd></div><div><dt>Parking</dt><dd>{property.parking}</dd></div><div><dt>Accessibility</dt><dd>{property.accessibility}</dd></div></dl></div>
+    </div>
+    <aside><div class="facts-label">The essentials</div><PropertyFacts property={property} />{property.lodgify
+      ? <><span id="book" class="book-anchor" aria-hidden="true"></span><div class="aside-cta book-direct"><p class="eyebrow">{words.book.eyebrow}</p><h3>{property.city} is calling.</h3><p>{words.book.text}</p>
+          {edit
+            ? <DirectBookingCard slug={property.slug} rentalId={property.lodgify.rentalId} accountSlug={property.lodgify.accountSlug} />
+            : <DirectBookingCard slug={property.slug} rentalId={property.lodgify.rentalId} accountSlug={property.lodgify.accountSlug} client:load />}
+          <p class="book-direct-or">Prefer Airbnb?</p>
+          {edit
+            ? <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button booking-wide">Book on Airbnb <span aria-hidden="true">↗</span></BookingLink>
+            : <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button booking-wide" client:load>Book on Airbnb <span aria-hidden="true">↗</span></BookingLink>}</div></>
+      : <div class="aside-cta"><p class="eyebrow">Plan your stay</p><h3>{property.city} is calling.</h3><p>Continue to check current availability and review complete booking details.</p>
+          {edit
+            ? <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide">Check availability <span aria-hidden="true">↗</span></BookingLink>
+            : <BookingLink propertyId={property.id} slug={property.slug} bookingUrl={property.bookingUrl} location="property_sidebar" className="button button-primary booking-wide" client:load>Check availability <span aria-hidden="true">↗</span></BookingLink>}</div>}</aside>
+  </section>
+</Fragment>
+<Fragment slot="reviews">
+  <PropertyReviews summary={property.reviewSummary} />
+</Fragment>
+<Fragment slot="photos">
+  <PropertyPhotoStory property={property} />
+</Fragment>
+<Fragment slot="guides">
+  <StayGuideLinks guides={guides} heading="Compare this home for your trip." />
+</Fragment>
+</Sections>
+</article>
+</BaseLayout>

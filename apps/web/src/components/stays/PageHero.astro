@@ -1,0 +1,17 @@
+---
+// The page hero from components/PageHero.tsx (2026-11-25, Next.js -> Astro). The title is a slot
+// here, since an Astro page can't hand React a title with <br /> and <em> inside it.
+import type { ContentImage } from "@/types/content";
+
+interface Props {
+  eyebrow: string;
+  intro: string;
+  image?: ContentImage;
+  tone?: "light" | "dark" | "clay";
+  action?: { href: string; label: string };
+}
+
+const { eyebrow, intro, image, tone = "light", action } = Astro.props;
+---
+
+<header class={`page-hero page-hero-${tone}`}><div class="page-hero-copy"><p class={tone === "light" ? "eyebrow" : "eyebrow eyebrow-light"}>{eyebrow}</p><h1><slot /></h1><p>{intro}</p>{action && <a class="button button-primary page-hero-action" href={action.href}>{action.label} <span aria-hidden="true">→</span></a>}</div>{image && <div class="page-hero-image"><img class="next-fill" src={image.src} alt={image.alt} sizes="(max-width: 800px) 100vw, 45vw" loading="eager" decoding="async" /></div>}<span class="page-hero-mark" aria-hidden="true">U</span></header>

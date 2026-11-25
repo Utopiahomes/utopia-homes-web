@@ -1,0 +1,26 @@
+---
+// The membership page, from the Next.js app/membership/page.tsx (2026-11-25). The form still posts to /api/forms/membership.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import PageHero from "../components/pages/PageHero.astro";
+import { LeadForm } from "@/components/forms/LeadForm";
+
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const form = { kind: "membership", title: "Stay close to what’s next.", submitLabel: "Join the launch list" } as const;
+---
+
+<BaseLayout title="Membership" description="Join the launch list for Utopia Homes membership." path="/membership">
+<Sections page="membership" sections={["hero", "idea", "form"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow="Coming together soon" intro="Utopia membership is taking shape around memorable stays, thoughtful perks, and a closer connection to the homes and people in our collection." tone="dark">
+    <Fragment slot="title">More reasons<br /><em>to return.</em></Fragment>
+  </PageHero>
+</Fragment>
+<Fragment slot="idea">
+  <section class="membership-manifesto"><div class="membership-orbit" aria-hidden="true">U</div><div><p class="eyebrow">The idea</p><h2>Hospitality should remember you.</h2><p>We are creating new reasons to return—from special stay opportunities and useful recommendations to recognition for the guests and owners who help Utopia grow.</p><p class="content-note">Membership is coming soon. Join the launch list and we’ll let you know when it opens.</p></div></section>
+</Fragment>
+<Fragment slot="form">
+  <section class="form-section">{edit ? <LeadForm {...form} /> : <LeadForm {...form} client:load />}</section>
+</Fragment>
+</Sections>
+</BaseLayout>

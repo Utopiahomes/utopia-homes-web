@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { previewGuestAnswerResponseSchema } from "./contracts";
-import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "./jwt";
+import { previewGuestAnswerResponseSchema } from "./contracts.js";
+import { PreviewGuestAnswerJwtUnavailable, signPreviewGuestAnswerJwt } from "./jwt.js";
 import {
   PreviewResponseHeaderViolation,
   PreviewResponseInvalidEncoding,
@@ -9,7 +9,7 @@ import {
   validatePreBodyHeaders,
   validateRetryableErrorHeaders,
   validateSuccessReleaseHeaders,
-} from "./response-validation";
+} from "./response-validation.js";
 
 const DEFAULT_TIMEOUT_MS = 15_000; // RC2's consumer total-interaction deadline is 22s; leave margin.
 

@@ -1,0 +1,31 @@
+---
+// Campaign pages, from the Next.js app/campaigns/[slug]/page.tsx (2026-11-25). One page per active
+// campaign; an unknown slug gets the 404 page. They stay out of the sitemap (astro.config.mjs).
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { AnalyticsView } from "@/components/AnalyticsView";
+import { campaigns } from "@/content";
+import type { Campaign } from "@/types/content";
+
+export const getStaticPaths = (() =>
+  campaigns.filter((campaign) => campaign.active).map((campaign) => ({ params: { slug: campaign.slug }, props: { campaign } }))) satisfies GetStaticPaths;
+
+const { campaign } = Astro.props as { campaign: Campaign };
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const view = { name: "campaign_view", properties: { campaignId: campaign.id, slug: campaign.slug, partner: campaign.partner } } as const;
+---
+
+<BaseLayout title={campaign.seoTitle.replace(" | Utopia Homes", "")} description={campaign.seoDescription} path={`/campaigns/${campaign.slug}`} image={campaign.heroImage}>
+  <article class="campaign-page">
+    {!edit && <AnalyticsView event={view} client:load />}
+    <img class="next-fill" src={campaign.heroImage.src} alt={campaign.heroImage.alt} loading="eager" decoding="async" />
+    <div class="campaign-overlay"></div>
+    <div class="campaign-copy">
+      <p class="eyebrow eyebrow-light">{campaign.eyebrow} · {campaign.partner}</p>
+      <h1>{campaign.headline}</h1>
+      <p>{campaign.description}</p>
+      <a class="button-light-solid" href={campaign.ctaUrl}>{campaign.ctaLabel} <span>↗</span></a>
+      {campaign.rulesUrl && <a class="campaign-rules" href={campaign.rulesUrl}>Official rules</a>}
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,48 @@
+---
+// Ray's page, from the Next.js app/about/ray/page.tsx (2026-11-25). Same sections and wording.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Sections from "../../components/Sections.astro";
+import PageHero from "../../components/pages/PageHero.astro";
+import { ParallaxMedia } from "@/components/ParallaxMedia";
+import { LeadershipProfile } from "@/components/LeadershipProfile";
+import { leadershipProfiles } from "@/content";
+
+const image = { src: "/images/shamrock/exterior-main.avif", alt: "The colorful exterior of the former Shamrock Hotel in Wildwood" };
+const ray = leadershipProfiles.find(({ id }) => id === "leadership-ray")!;
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+---
+
+<BaseLayout
+  title="About Ray DeLuca"
+  description="Meet Utopia Homes founder Ray DeLuca, a longtime Wildwood host, vacation-property owner, and steward of the former Shamrock Hotel."
+  path="/about/ray"
+  image={{ src: "/images/shamrock/gallery/02.webp", alt: "The restored green facade of The Shamrock" }}
+>
+<Sections page="about-ray" sections={["hero", "photo", "statement", "profile"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow="Owner · Utopia Homes · Utopia Workspaces · Stoin (AI consulting)" intro="Utopia Homes grew from nearly 15 years of hosting, thousands of guest stays, and a lifelong affection for the Wildwoods." tone="light">
+    <Fragment slot="title">Hospitality,<br /><em>from the owner’s side.</em></Fragment>
+  </PageHero>
+</Fragment>
+<Fragment slot="photo">
+  {edit ? <ParallaxMedia image={image} /> : <ParallaxMedia image={image} client:load />}
+</Fragment>
+<Fragment slot="statement">
+  <section class="about-statement founder-statement">
+    <span>R / D</span>
+    <h2>We do not just operate vacation homes. <em>We own them.</em></h2>
+    <div>
+      <p>That distinction shapes everything. We know what it means to care for a property, earn a guest’s trust, protect an owner’s investment, and make the decisions that turn an ordinary stay into one people remember.</p>
+      <p>Utopia is built around the guest experience because great hospitality is not a layer added at the end. It begins with the home, carries through every interaction, and continues long after checkout.</p>
+      <a class="text-link" href="/stays">Meet our homes <span>→</span></a>
+    </div>
+  </section>
+</Fragment>
+<Fragment slot="profile">
+  <section class="profile-section founder-profile">
+    <LeadershipProfile profile={ray} context="The story behind Utopia" />
+    <p class="founder-aside">Ray’s Wildwood story began on the beach as a lifeguard—back when, as he puts it, he was skinny. Years later, it continues as the owner of the former Shamrock Hotel and a host who still believes the smallest details can define an entire trip.</p>
+  </section>
+</Fragment>
+</Sections>
+</BaseLayout>

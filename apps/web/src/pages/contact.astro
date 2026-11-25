@@ -1,0 +1,23 @@
+---
+// The contact page, from the Next.js app/contact/page.tsx (2026-11-25). The form still posts to /api/forms/contact.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import PageHero from "../components/pages/PageHero.astro";
+import { LeadForm } from "@/components/forms/LeadForm";
+
+const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const form = { kind: "contact", title: "How can we help?", submitLabel: "Send your message" } as const;
+---
+
+<BaseLayout title="Contact" description="Contact Utopia Homes about stays, property management, design, or general questions." path="/contact">
+<Sections page="contact" sections={["hero", "form"]}>
+<Fragment slot="hero">
+  <PageHero eyebrow="Say hello" intro="Guest question, standout home, design opportunity, or simply a good idea—we’d like to hear it." tone="dark">
+    <Fragment slot="title">Let’s make something<br /><em>memorable.</em></Fragment>
+  </PageHero>
+</Fragment>
+<Fragment slot="form">
+  <section class="form-section">{edit ? <LeadForm {...form} /> : <LeadForm {...form} client:load />}</section>
+</Fragment>
+</Sections>
+</BaseLayout>

@@ -1,5 +1,5 @@
-import { siteContent } from "../content/site";
-import type { BusinessProfile, FAQ, Property } from "../types/content";
+import { siteContent } from "../content/site.js";
+import type { BusinessProfile, FAQ, Property } from "../types/content.js";
 
 type JsonLd = Record<string, unknown>;
 

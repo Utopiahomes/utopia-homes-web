@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addDays, DEFAULT_NIGHTS, shoreToday } from "@/lib/booking/stay-search";
 
 // Check-in and check-out as two plain, labeled date fields (typeable, and Lyra can fill them), with
@@ -12,7 +12,10 @@ import { addDays, DEFAULT_NIGHTS, shoreToday } from "@/lib/booking/stay-search";
 // pick, jumped to check-out and closed the calendar you were browsing.
 export function DateRangeInputs({ arrival, departure }: { arrival?: string; departure?: string }) {
   const departureRef = useRef<HTMLInputElement>(null);
-  const today = shoreToday();
+  // The page is built ahead of time now (Astro, 2026-11-25), so the built date would go stale: the
+  // browser sets today's date once the page starts (until then there's no earliest date).
+  const [today, setToday] = useState<string | undefined>(undefined);
+  useEffect(() => setToday(shoreToday()), []);
 
   function onArrivalChange(event: React.ChangeEvent<HTMLInputElement>) {
     const out = departureRef.current;

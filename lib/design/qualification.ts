@@ -1,4 +1,4 @@
-import type { QuoteClassification, QuoteInput } from "./types";
+import type { QuoteClassification, QuoteInput } from "./types.js";
 
 export interface QuoteQualification {
   classification: QuoteClassification;

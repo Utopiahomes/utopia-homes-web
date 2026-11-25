@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { PurgeResult, RetentionCandidate, RetentionStore } from "./types";
+import type { PurgeResult, RetentionCandidate, RetentionStore } from "./types.js";
 
 export function createSupabaseRetentionStore(options: {
   url?: string;
