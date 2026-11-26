@@ -18,7 +18,7 @@ export function PropertyPhotoStory({ property }: { property: Property }) {
   ].map((chapter) => ({ ...chapter, images: chapterImages.filter((image) => chapter.categories.includes(image.category ?? "details")) })).filter((chapter) => chapter.images.length > 0);
 
   return <>
-    <section className="property-photo-story">
+    <section className="property-photo-story" id="photos">
       <div className="photo-story-heading"><p className="eyebrow">{property.name} in detail</p><h2>The spaces<br /><em>make the stay.</em></h2><p>Designed for full houses, shared rituals, and the moments that only happen when everyone is together.</p></div>
       <div className="photo-story-sequence">{leadImages.map((image, index) => <figure className={`photo-story-frame photo-story-frame-${index + 1}`} key={image.src}><Image src={image.src} alt={image.alt} fill sizes={index === 0 ? "(max-width: 800px) 100vw, 72vw" : "(max-width: 800px) 82vw, 44vw"} /><figcaption>{image.alt}</figcaption></figure>)}</div>
       {chapters.map((chapter, chapterIndex) => <section className="photo-chapter" key={chapter.id} aria-labelledby={`${property.slug}-${chapter.id}`}>
