@@ -65,5 +65,15 @@
       "destination": "/stays/the-shamrock",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/v/s.js",
+      "destination": "https://stoin-analytics.onrender.com/script.js"
+    },
+    {
+      "source": "/v/api/send",
+      "destination": "https://stoin-analytics.onrender.com/api/send"
+    }
   ]
 }

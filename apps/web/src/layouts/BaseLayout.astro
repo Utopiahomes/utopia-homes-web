@@ -57,6 +57,12 @@ const canonical = canonicalUrl(path);
 const preview = image && !image.src.endsWith(".avif") ? image : businessProfile.shareImage;
 const previewUrl = canonicalUrl(preview.src);
 const shouldIndex = siteConfig.environment === "production" && !noindex && !edit;
+// Visits are counted on the live site only, never in the owner's editor or a preview. The script and
+// its endpoint come from this site's own address (vercel.json rewrites /v/), so ad-blocker lists
+// that name the analytics host miss it and the page needs no outside connection. It loads deferred:
+// if the analytics server is down, the page doesn't wait.
+const countVisits = siteConfig.environment === "production" && !edit;
+const siteHost = new URL(siteConfig.origin).hostname.replace(/^www\./, "");
 const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
 const organizationJson = jsonLdText(organizationStructuredData(profile, properties, siteConfig.origin));
 
@@ -94,6 +100,15 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     <meta name="google-site-verification" content="chZDFD1cQLt45qW-96XPfAnm_A1qLgPu52pDez4TUZA" />
     <meta name="msvalidate.01" content="CC80251863EF99064ADEB890FFB82CE5" />
     {!edit && <script is:inline set:html={motionStart} />}
+    {countVisits && (
+      <script
+        is:inline
+        defer
+        src="/v/s.js"
+        data-website-id={siteConfig.analyticsSite}
+        data-domains={`${siteHost},www.${siteHost}`}
+      ></script>
+    )}
   </head>
   <body>
     <a class="skip-link" href="#main-content">{content.site.skipLink}</a>
