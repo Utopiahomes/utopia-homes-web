@@ -300,7 +300,7 @@ export async function finishEditBuild(dist) {
     const item = await blockItem(key, src, sources);
     if (item && !items.has(key)) items.set(key, item);
   }
-  const kindOf = ({ kinds }) => (kinds.has("order") ? "order" : kinds.has("layout") ? "layout" : kinds.has("image") ? "image" : kinds.has("text") ? "text" : kinds.has("attribute") ? "attribute" : "meta");
+  const kindOf = ({ kinds }) => (kinds.has("choice") ? "choice" : kinds.has("order") ? "order" : kinds.has("layout") ? "layout" : kinds.has("image") ? "image" : kinds.has("text") ? "text" : kinds.has("attribute") ? "attribute" : "meta");
   const savedLayout = JSON.parse(await readFile(join(contentDirectory, "layout.json"), "utf8"));
   let catalog = [];
   for (const { path, outline } of layouts) {
@@ -331,6 +331,15 @@ export async function finishEditBuild(dist) {
     });
     uses.set(key, { kinds: new Set(["order"]), pages: listPages });
   }
+  // Where the synth's box sits (Ray, 2026-11-26: "make the location of the box editable"): a
+  // setting with fixed options, on every page, in the editor's Page details tab.
+  const position = items.get("site.talkPosition");
+  if (position) {
+    position.format = "choice";
+    position.label = "Where the synth's box sits";
+    position.options = [{ value: "top-right", label: "Top right" }, { value: "bottom-right", label: "Bottom right" }];
+    uses.set("site.talkPosition", { kinds: new Set(["choice"]), pages: new Set(pages.map((page) => page.path)) });
+  }
   const manifestItems = [...items.values()]
     .filter((item) => uses.has(item.key))
     .map((item) => ({
@@ -340,6 +349,7 @@ export async function finishEditBuild(dist) {
       class: item.class,
       ...(item.format === "markdown" ? { format: item.format, marks: item.marks } : {}),
       ...(item.format === "layout" ? { default: item.default, sections: item.sections } : {}),
+      ...(item.format === "choice" ? { label: item.label, options: item.options } : {}),
       ...(item.format === "order" ? item.order : {}),
       ...(photoSpots.has(item.key) && kindOf(uses.get(item.key)) === "image" ? { photo: photoSpots.get(item.key) } : {}),
       pages: [...uses.get(item.key).pages].sort(pageOrder),

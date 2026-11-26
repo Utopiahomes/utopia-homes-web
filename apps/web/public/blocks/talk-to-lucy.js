@@ -13,7 +13,10 @@
    under the element named by data-below (the site's header).
    Ray, 2026-11-18 (later): at the top right her face was far too small (40px), and she is the thing
    Stoin sells: 104px on a wide screen, the 76px bottom size below 1200px so she stays clear of
-   centred headlines, 56px on a phone. */
+   centred headlines, 56px on a phone.
+   Ray, 2026-11-26: top right is the default on every site (more visible, and the synth is what a
+   Stoin Site sells); data-position="bottom-right" keeps the old corner. data-below defaults to
+   the page's header. */
 (function () {
   "use strict";
   var host = document.querySelector('[data-stoin-block="talk-to-lucy"]');
@@ -21,8 +24,8 @@
   window.__stoinTalk = true;
   var app = (host.getAttribute("data-app") || "https://app.stoin.ai").replace(/\/$/, "");
   var site = host.getAttribute("data-site") || "";
-  var topRight = host.getAttribute("data-position") === "top-right";
-  var below = host.getAttribute("data-below") || "";
+  var topRight = host.getAttribute("data-position") !== "bottom-right";
+  var below = host.getAttribute("data-below") || "header";
   var label = host.getAttribute("data-label") || "Talk with Lucy";
   var status = host.getAttribute("data-status") || "Online now";
   var face = host.getAttribute("data-face") || app + "/synths/lucy/idle-01.mp4";
@@ -153,7 +156,7 @@
     signin.href = app + "/studio/organizer";
     signin.target = "_blank";
     signin.rel = "noopener";
-    signin.title = "Have an account? Sign in, then press Talk with Lucy again and she'll know your account";
+    signin.title = "Have an account? Sign in, then press " + label + " again and she'll know your account";
     var wide = el("a", "", "Bigger");
     wide.href = "#";
     wide.addEventListener("click", function (event) {

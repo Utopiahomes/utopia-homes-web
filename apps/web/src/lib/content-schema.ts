@@ -103,6 +103,8 @@ export const contentSchemas = {
   "lists": z.record(z.string().regex(/^[\w-]+$/), z.array(z.string().regex(/^[\w-]+$/))),
   "site": group({
     skipLink: text,
+    // Where the synth's box sits (2026-11-26): editable in the editor's Page details tab.
+    talkPosition: z.enum(["top-right", "bottom-right"]),
     talkLabel: text,
     talkStatus: text,
   }),

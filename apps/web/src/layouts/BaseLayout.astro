@@ -105,7 +105,7 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     <SiteFooter />
     {/* Ray, 2026-11-23: the beach Lyra at the top right answers visitors in a live room (Stoin's
         talk-to-lucy block; her rules live in Stoin's website_sites "utopiahomes.com"). */}
-    <div data-stoin-block="talk-to-lucy" data-site="utopiahomes.com" data-position="top-right" data-below=".site-header" data-label={stripMarkers(content.site.talkLabel)} data-status={stripMarkers(content.site.talkStatus)} data-face={`${faces}/idle-01.mp4`} data-still={`${faces}/still.jpg`}></div>
+    <div data-stoin-block="talk-to-lucy" data-site="utopiahomes.com" data-position={stripMarkers(content.site.talkPosition ?? "top-right")} data-below=".site-header" data-label={stripMarkers(content.site.talkLabel)} data-status={stripMarkers(content.site.talkStatus)} data-face={`${faces}/idle-01.mp4`} data-still={`${faces}/still.jpg`}></div>
     <script is:inline src="/blocks/talk-to-lucy.js" defer></script>
     <script>
       import { startMotion } from "../lib/motion-play";
