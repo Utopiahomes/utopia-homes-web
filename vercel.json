@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npx --yes pnpm@11.19.0 install --frozen-lockfile",
-  "buildCommand": "npx --yes pnpm@11.19.0 --dir apps/web build",
+  "buildCommand": "npx --yes pnpm@11.19.0 --dir apps/web build && node scripts/seo-build.mjs",
   "outputDirectory": "apps/web/dist",
   "trailingSlash": false,
   "functions": {
