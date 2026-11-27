@@ -6,11 +6,13 @@
 //   1. Publish checks. A page without a title or description, with a "Home page" title, with a photo
 //      that has no alt text, with broken JSON-LD, or using an image over 1 MB stops the build, so it
 //      never goes live. Smaller problems are printed as warnings.
-//   2. /llms.txt, written from src/seo/facts.json and the built pages, unless the site has its own.
-//   3. IndexNow. On a production build of a live domain, tells Bing (which feeds ChatGPT search and
+//   2. A Markdown copy of every page for AI readers, and a /site-map page linked in every footer
+//      (2026-11-27). Fonts loaded from Google's servers stop the build (GDPR).
+//   3. /llms.txt, written from src/seo/facts.json and the built pages, unless the site has its own.
+//   4. IndexNow. On a production build of a live domain, tells Bing (which feeds ChatGPT search and
 //      Copilot), Yandex, Seznam and Naver which pages exist, so they recrawl within minutes. It never
 //      fails the build.
-import { access, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { join, relative, resolve } from "node:path";
 
@@ -87,6 +89,9 @@ const references = new Set();
 const sources = [...(await files(dist, (name) => name.endsWith(".html") || name.endsWith(".css")))];
 for (const path of sources) {
   const body = await readFile(path, "utf8");
+  // A Munich court fined a site for loading Google Fonts from Google's servers, which hands each
+  // visitor's address to Google (GDPR). Fonts are served from the site itself (Ray, 2026-11-27).
+  if (/fonts\.(googleapis|gstatic)\.com/.test(body)) failures.push(`${relative(dist, path).replaceAll("\\", "/")}: loads fonts from Google's servers. Serve them from the site instead (for example with @fontsource).`);
   for (const m of body.matchAll(/(?:src|href|content|poster)=["']([^"']+)["']/gi)) references.add(m[1]);
   for (const m of body.matchAll(/srcset=["']([^"']+)["']/gi)) for (const part of m[1].split(",")) references.add(part.trim().split(/\s+/)[0]);
   for (const m of body.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) references.add(m[1]);
@@ -114,7 +119,6 @@ if (failures.length > 0) {
 }
 console.log(`Search check passed: ${pages.size} pages, ${warnings.length} warnings.`);
 
-// ---- 2. /llms.txt ------------------------------------------------------------------------------
 async function sitemapUrls() {
   const urls = [];
   for (const name of ["sitemap-0.xml", "sitemap.xml"]) {
@@ -134,6 +138,181 @@ function pageFor(url) {
   return undefined;
 }
 
+// The facts file counts only when it names this site (a site copied from another kept that
+// company's file); otherwise Stoin's API has facts drafted from this site's own wording.
+// Same rule as lib/seo.ts (Ray, 2026-11-28).
+async function siteName() {
+  try {
+    return JSON.parse(await readFile(join(web, "src", "site-content", "site.json"), "utf8")).name ?? "";
+  } catch {
+    return "";
+  }
+}
+const ownName = await siteName();
+const same = (a, b) => !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+if (ownName && !same(facts.name, ownName)) {
+  facts = {};
+  const host = origin ? new URL(origin).hostname : "";
+  const api = env.PUBLIC_STOIN_API_URL || "https://utopia-studio-api.onrender.com";
+  if (host && !/^(localhost|127\.0\.0\.1)$/.test(host)) {
+    try {
+      const response = await fetch(`${api}/api/studio/site-facts?site=${encodeURIComponent(host)}`, { signal: AbortSignal.timeout(8000) });
+      if (response.ok) facts = await response.json();
+    } catch (error) {
+      warnings.push(`Company facts: Stoin's API didn't answer (${error.message}).`);
+    }
+  }
+  if (!same(facts.name, ownName)) facts = {};
+  console.log(facts.name ? "Company facts: from Stoin, drafted from this site." : "Company facts: none for this site yet.");
+}
+
+// ---- 2. Copies for AI readers and the site map page --------------------------------------------
+// Why (Ray, 2026-11-27, after reading what worked for Ramp and Railway): AI assistants quote plain
+// text far more reliably than pages full of layout code. Ramp tested the same offer as Markdown, as
+// stripped HTML and as schema-heavy pages; only the Markdown showed up in AI answers. So every page
+// of a live site gets a Markdown copy at the same address plus ".md" (/about -> /about.md, the home
+// page -> /index.md), named in the page's <head> and listed in /llms.txt. A preview (noindex) gets
+// none, so search engines never index a copy of an unfinished site.
+// Every site also gets a plain page listing all its pages (/site-map), linked in every footer: a
+// page nothing links to may never be found, and the list is a second way in besides sitemap.xml.
+const decode = (s) => s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&#x27;|&rsquo;|&lsquo;/g, "'").replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&mdash;/g, "—").replace(/&ndash;/g, "–").replace(/&hellip;/g, "…").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
+const inline = (s) => decode(s.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+const urlPathOf = (name) => (name === "index.html" ? "/" : "/" + name.replace(/\/index\.html$/, "").replace(/\.html$/, ""));
+const mdPathOf = (name) => (name === "index.html" ? "index.md" : name.replace(/\/index\.html$/, "").replace(/\.html$/, "") + ".md");
+
+function markdown(html, base) {
+  const absolute = (href) => {
+    try {
+      return new URL(href, base).href;
+    } catch {
+      return href;
+    }
+  };
+  let s = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|style|noscript|svg|template|iframe|button|select|textarea|form)\b[\s\S]*?<\/\1>/gi, "");
+  s = s.replace(/<img\b[^>]*>/gi, (tag) => {
+    const alt = (attr(tag, "alt") ?? "").trim();
+    const src = attr(tag, "src");
+    return alt && src ? ` ![${alt}](${absolute(src)}) ` : "";
+  });
+  s = s.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, (whole, attrs, inner) => {
+    const label = inline(inner);
+    const href = attr(`<a${attrs}>`, "href");
+    if (!label) return "";
+    if (!href || href.startsWith("#") || href.startsWith("javascript:")) return label;
+    return `[${label}](${absolute(href)})`;
+  });
+  s = s.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => (inline(inner) ? `**${inline(inner)}**` : ""));
+  s = s.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => (inline(inner) ? `*${inline(inner)}*` : ""));
+  s = s.replace(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi, (_, level, inner) => `\n\n${"#".repeat(Number(level))} ${inline(inner)}\n\n`);
+  s = s.replace(/<blockquote\b[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, inner) => `\n\n> ${inline(inner)}\n\n`);
+  s = s.replace(/<li\b[^>]*>/gi, "\n- ").replace(/<\/li>/gi, "");
+  s = s.replace(/<br\s*\/?>/gi, "\n").replace(/<hr\b[^>]*>/gi, "\n\n---\n\n");
+  s = s.replace(/<(td|th)\b[^>]*>/gi, " | ");
+  s = s.replace(/<\/(p|div|section|article|header|footer|ul|ol|figure|figcaption|table|tr|dl|dt|dd|aside|details|summary|address)>/gi, "\n\n");
+  s = decode(s.replace(/<[^>]+>/g, " "));
+  return s
+    .split("\n")
+    .map((line) => line.replace(/[ \t]+/g, " ").trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+const mainOf = (html) => html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? "";
+const shortTitle = (title) => title.split(/\s[|–—]\s/)[0].trim() || title;
+const homeIndexable = pages.has("index.html") && !pages.get("index.html").noindex;
+const preview = !homeIndexable;
+// The business's name: from its facts, else the ending most page titles share ("About | Utopia Homes").
+const endings = new Map();
+for (const page of pages.values()) {
+  const ending = page.title.split(/\s[|–—]\s/).slice(1).at(-1)?.trim();
+  if (ending) endings.set(ending, (endings.get(ending) ?? 0) + 1);
+}
+const commonEnding = [...endings.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+const brand = facts.name || commonEnding || ownName || shortTitle(pages.get("index.html")?.title ?? "");
+const listed = [...pages.entries()]
+  .filter(([name, page]) => !/^404(\.html|\/)/.test(name) && name !== "site-map/index.html" && (preview || !page.noindex))
+  .sort(([a], [b]) => (a === "index.html" ? -1 : b === "index.html" ? 1 : a.localeCompare(b)));
+
+let copies = 0;
+if (!preview && origin) {
+  for (const [name, page] of listed) {
+    const file = join(dist, name);
+    const html = await readFile(file, "utf8");
+    const url = origin + (urlPathOf(name) === "/" ? "/" : urlPathOf(name));
+    const body = markdown(mainOf(html), url);
+    const top = /^#\s/m.test(body) ? [] : [`# ${shortTitle(page.title) || brand}`, ""];
+    const lines = [...top, ...(page.description ? [`> ${page.description}`, ""] : []), body, "", "---", "", `Source: ${url}`, ""];
+    await writeFile(join(dist, mdPathOf(name)), lines.join("\n"), "utf8");
+    const link = `<link rel="alternate" type="text/markdown" href="/${mdPathOf(name)}">`;
+    if (!html.includes('type="text/markdown"')) await writeFile(file, html.replace(/<\/head>/i, `${link}</head>`), "utf8");
+    page.markdown = `${origin}/${mdPathOf(name)}`;
+    copies += 1;
+  }
+}
+console.log(preview ? "AI copies: none on a preview." : `AI copies: ${copies} Markdown pages written.`);
+
+// The site map page: the home page's own header, footer and styles, with the list in its <main>.
+const siteMapFile = join(dist, "site-map", "index.html");
+if (!(await exists(siteMapFile)) && pages.has("index.html")) {
+  const home = await readFile(join(dist, "index.html"), "utf8");
+  const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const items = listed.map(([name, page]) => `<li><a href="${urlPathOf(name)}">${escape(shortTitle(page.title) || urlPathOf(name))}</a>${page.description ? `<span>${escape(page.description)}</span>` : ""}</li>`);
+  const list = `<section class="stoin-site-map"><h1>Site map</h1><p>Every page on this website.</p><ul>${items.join("")}</ul></section>`;
+  const title = `Site map | ${brand}`;
+  // Sites forbid inline style attributes (their Content-Security-Policy lists allowed styles by
+  // hash), so the page's few rules go in one <style> whose hash is added to this page's policy.
+  const css = ".stoin-site-map{max-width:760px;margin:0 auto;padding:56px 20px 72px}.stoin-site-map ul{display:grid;gap:16px;padding-left:20px;margin-top:24px}.stoin-site-map li span{display:block;opacity:.75;margin-top:2px}";
+  const cssHash = createHash("sha256").update(css).digest("base64");
+  const page = home
+    .replace(/\saria-current="page"/g, "")
+    .replace(/(content-security-policy"\s+content="[^"]*?style-src\s)/i, `$1'sha256-${cssHash}' `)
+    .replace(/<\/head>/i, `<style>${css}</style></head>`)
+    .replace(/<script[^>]+application\/ld\+json[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<link[^>]+type="text\/markdown"[^>]*>/gi, "")
+    .replace(/<title[^>]*>[\s\S]*?<\/title>/i, `<title>${escape(title)}</title>`)
+    .replace(/(<meta[^>]+(?:name="description"|property="og:description"|name="twitter:description")[^>]+content=")[^"]*"/gi, `$1Every page on ${escape(brand)}'s website."`)
+    .replace(/(<meta[^>]+(?:property="og:title"|name="twitter:title")[^>]+content=")[^"]*"/gi, `$1${escape(title)}"`)
+    .replace(/(<link[^>]+rel="canonical"[^>]+href=")[^"]*"/i, `$1${origin}/site-map"`)
+    .replace(/(<meta[^>]+property="og:url"[^>]+content=")[^"]*"/i, `$1${origin}/site-map"`)
+    .replace(/(<main\b[^>]*>)[\s\S]*?(<\/main>)/i, `$1${list}$2`);
+  await mkdir(join(dist, "site-map"), { recursive: true });
+  await writeFile(siteMapFile, page, "utf8");
+  console.log(`Site map page: ${listed.length} pages listed at /site-map.`);
+}
+// Its link goes in every page's footer, right after the footer's privacy or terms link so it takes
+// that row's look; a footer without one gets it at the end. A footer that links to it already is left.
+let linked = 0;
+for (const path of await files(dist, (name) => name.endsWith(".html"))) {
+  const html = await readFile(path, "utf8");
+  if (html.includes('href="/site-map"')) continue;
+  const at = html.search(/<footer\b[^>]*class="[^"]*site-footer/i);
+  if (at < 0) continue;
+  const close = html.indexOf("</footer>", at);
+  if (close < 0) continue;
+  const footer = html.slice(at, close);
+  const legal = [...footer.matchAll(/<a\b([^>]*)href="\/(privacy|terms)[^"]*"[^>]*>[\s\S]*?<\/a>/gi)].at(-1);
+  let next;
+  if (legal) {
+    const end = at + legal.index + legal[0].length;
+    const cls = legal[0].match(/class="([^"]*)"/)?.[1];
+    // Links written as "Privacy · Terms" get the same separator.
+    const separator = footer.slice(0, legal.index).match(/<\/a>(\s*[·|•]\s*)$/)?.[1] ?? "";
+    next = html.slice(0, end) + `${separator}<a href="/site-map"${cls ? ` class="${cls}"` : ""}>Site map</a>` + html.slice(end);
+  } else {
+    // No legal links: inside the footer's last container, so it keeps the footer's colours and margins.
+    const lastDiv = footer.lastIndexOf("</div>");
+    const where = lastDiv >= 0 ? at + lastDiv : close;
+    next = html.slice(0, where) + '<p class="stoin-site-map-link"><a href="/site-map">Site map</a></p>' + html.slice(where);
+  }
+  await writeFile(path, next, "utf8");
+  linked += 1;
+}
+console.log(`Site map link: added to ${linked} footers.`);
+
+// ---- 3. /llms.txt ------------------------------------------------------------------------------
 if (await exists(join(dist, "llms.txt"))) {
   console.log("llms.txt: the site writes its own.");
 } else if (origin) {
@@ -166,7 +345,7 @@ if (await exists(join(dist, "llms.txt"))) {
     // On a live site, leave out pages that ask not to be indexed. A preview is noindex everywhere.
     if (!page || (page.noindex && !pages.get("index.html")?.noindex)) continue;
     const absolute = origin + new URL(url).pathname;
-    pageLines.push(`- [${page.title || absolute}](${absolute})${page.description ? `: ${page.description}` : ""}`);
+    pageLines.push(`- [${page.title || absolute}](${page.markdown ?? absolute})${page.description ? `: ${page.description}` : ""}`);
   }
   if (pageLines.length) lines.push("## Pages", "", ...pageLines, "");
   if (facts.notice) lines.push("## Note", "", facts.notice, "");
@@ -174,11 +353,10 @@ if (await exists(join(dist, "llms.txt"))) {
   console.log(`llms.txt: written with ${pageLines.length} pages.`);
 }
 
-// ---- 3. IndexNow -------------------------------------------------------------------------------
+// ---- 4. IndexNow -------------------------------------------------------------------------------
 const keyFile = join(dist, "indexnow-key.txt");
 const host = origin ? new URL(origin).host : "";
 // Live means a production deploy whose home page asks to be indexed (previews are noindex).
-const homeIndexable = pages.has("index.html") && !pages.get("index.html").noindex;
 const live =
   env.VERCEL_ENV === "production" &&
   homeIndexable &&
