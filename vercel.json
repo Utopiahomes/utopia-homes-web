@@ -69,11 +69,11 @@
   "rewrites": [
     {
       "source": "/v/s.js",
-      "destination": "https://stoin-analytics.onrender.com/script.js"
+      "destination": "https://analytics.stoin.ai/script.js"
     },
     {
       "source": "/v/api/send",
-      "destination": "https://stoin-analytics.onrender.com/api/send"
+      "destination": "https://analytics.stoin.ai/api/send"
     }
   ]
 }
