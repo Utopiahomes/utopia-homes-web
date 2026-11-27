@@ -34,6 +34,7 @@ import type { ContentImage } from "@/types/content";
 import { setServerPathname } from "../next-shims/navigation";
 import { canonicalUrl, siteConfig } from "../lib/site";
 import { analyticsFor } from "../lib/analytics";
+import { verificationFor } from "../lib/search-verification";
 import { content } from "../lib/content";
 import { stripMarkers } from "../../editor/markers.mjs";
 
@@ -63,6 +64,7 @@ const shouldIndex = siteConfig.environment === "production" && !noindex && !edit
 // that name the analytics host miss it and the page needs no outside connection. It loads deferred:
 // if the analytics server is down, the page doesn't wait.
 const analytics = siteConfig.environment === "production" && !edit ? await analyticsFor(siteConfig.origin) : null;
+const verification = edit ? null : await verificationFor(siteConfig.origin);
 const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
 const organizationJson = jsonLdText(organizationStructuredData(profile, properties, siteConfig.origin));
 
@@ -84,6 +86,8 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     <meta name="description" content={plainDescription} />
     <meta name="robots" content={shouldIndex ? "index,follow" : "noindex,nofollow,noarchive,nocache"} />
     {!noindex && <link rel="canonical" href={canonical} />}
+    {verification?.google && <meta name="google-site-verification" content={verification.google} />}
+    {verification?.bing && <meta name="msvalidate.01" content={verification.bing} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteContent.name} />
     <meta property="og:title" content={pageTitle} />
