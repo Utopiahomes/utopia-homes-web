@@ -162,7 +162,8 @@ if (await exists(join(dist, "llms.txt"))) {
   const pageLines = [];
   for (const url of urls) {
     const page = pageFor(url);
-    if (!page || page.noindex && env.PUBLIC_ENVIRONMENT === "production") continue;
+    // On a live site, leave out pages that ask not to be indexed. A preview is noindex everywhere.
+    if (!page || (page.noindex && !pages.get("index.html")?.noindex)) continue;
     const absolute = origin + new URL(url).pathname;
     pageLines.push(`- [${page.title || absolute}](${absolute})${page.description ? `: ${page.description}` : ""}`);
   }
@@ -175,9 +176,11 @@ if (await exists(join(dist, "llms.txt"))) {
 // ---- 3. IndexNow -------------------------------------------------------------------------------
 const keyFile = join(dist, "indexnow-key.txt");
 const host = origin ? new URL(origin).host : "";
+// Live means a production deploy whose home page asks to be indexed (previews are noindex).
+const homeIndexable = pages.has("index.html") && !pages.get("index.html").noindex;
 const live =
   env.VERCEL_ENV === "production" &&
-  env.PUBLIC_ENVIRONMENT === "production" &&
+  homeIndexable &&
   env.PUBLIC_EDIT_MODE !== "1" &&
   host &&
   !/(\.vercel\.app|localhost|127\.0\.0\.1)$/.test(host.split(":")[0]);
