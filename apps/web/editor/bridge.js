@@ -467,9 +467,87 @@
 
   // ---- Sections -------------------------------------------------------------------------------
 
+  // Rows (2026-11-27): a section with rows redraws its whole list from the saved rows, one copy of
+  // the blank row template per row, its keys stamped with the row's id. Top-level fields skip
+  // anything inside the list, so a section "title" and a row "title" never mix.
+  var iconPaths = null;
+  function iconPath(name) {
+    if (!iconPaths) {
+      var holder = document.querySelector("template[data-stoin-icons]");
+      try {
+        iconPaths = holder ? JSON.parse(holder.getAttribute("data-stoin-icons")) : {};
+      } catch (error) {
+        iconPaths = {};
+      }
+    }
+    return iconPaths[name] || iconPaths.star || "";
+  }
+
+  function fillRow(row, rowPrefix, values) {
+    row.querySelectorAll("[data-stoin-key]").forEach(function (element) {
+      var field = element.getAttribute("data-stoin-key").split(".").pop();
+      element.setAttribute("data-stoin-key", rowPrefix + field);
+      var value = typeof values[field] === "string" ? values[field] : "";
+      if (element !== selected && element.textContent !== value) element.textContent = value;
+      element.hidden = value === "";
+    });
+    row.querySelectorAll("img[data-stoin-image]").forEach(function (image) {
+      var field = image.getAttribute("data-stoin-image").split(".").pop();
+      image.setAttribute("data-stoin-image", rowPrefix + field);
+      var value = typeof values[field] === "string" ? values[field] : "";
+      var src = draftImages[rowPrefix + field] || (value.indexOf("/images/") === 0 ? value : "");
+      if (src && image.getAttribute("src") !== src) image.setAttribute("src", src);
+      image.setAttribute("alt", typeof values.photoAlt === "string" ? values.photoAlt : "");
+    });
+    row.querySelectorAll("a[data-stoin-link]").forEach(function (link) {
+      var value = values[link.getAttribute("data-stoin-link")];
+      var ok = typeof value === "string" && md.safeHref(value);
+      if (ok) link.setAttribute("href", value);
+      link.hidden = !ok;
+    });
+    row.querySelectorAll("[data-stoin-icon]").forEach(function (svg) {
+      var field = svg.getAttribute("data-stoin-icon").split(".").pop();
+      svg.setAttribute("data-stoin-icon", rowPrefix + field);
+      var path = svg.querySelector("path");
+      if (path) path.setAttribute("d", iconPath(values[field]));
+    });
+  }
+
+  function fillRows(section, prefix, block) {
+    var list = section.querySelector("[data-stoin-items]");
+    if (!list) return;
+    var blank = list.querySelector("[data-stoin-template]");
+    if (!blank) return;
+    list.setAttribute("data-stoin-items", prefix + "items");
+    var rows = Array.isArray(block.items) ? block.items : [];
+    var keep = new Set();
+    rows.forEach(function (values) {
+      if (!values || typeof values.id !== "string") return;
+      keep.add(values.id);
+      var row = list.querySelector('[data-stoin-item="' + CSS.escape(values.id) + '"]:not([data-stoin-template])');
+      if (!row) {
+        row = blank.cloneNode(true);
+        row.removeAttribute("data-stoin-template");
+        row.hidden = false;
+        row.setAttribute("data-stoin-item", values.id);
+      }
+      list.insertBefore(row, blank);
+      fillRow(row, prefix + "items." + values.id + ".", values);
+    });
+    list.querySelectorAll("[data-stoin-item]:not([data-stoin-template])").forEach(function (row) {
+      if (!keep.has(row.getAttribute("data-stoin-item")) && !row.contains(selected)) row.remove();
+    });
+  }
+
+  function insideRows(element) {
+    return !!element.closest("[data-stoin-items]");
+  }
+
   function fillAdded(section, page, id, block) {
     var prefix = "layout." + page + ".added." + id + ".";
+    fillRows(section, prefix, block);
     section.querySelectorAll("[data-stoin-key]").forEach(function (element) {
+      if (insideRows(element)) return;
       var field = element.getAttribute("data-stoin-key").split(".").pop();
       element.setAttribute("data-stoin-key", prefix + field);
       var value = typeof block[field] === "string" ? block[field] : "";
@@ -477,6 +555,7 @@
       element.hidden = value === "";
     });
     section.querySelectorAll("img[data-stoin-image]").forEach(function (image) {
+      if (insideRows(image)) return;
       var field = image.getAttribute("data-stoin-image").split(".").pop();
       image.setAttribute("data-stoin-image", prefix + field);
       var value = typeof block[field] === "string" ? block[field] : "";

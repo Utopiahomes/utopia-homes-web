@@ -2,6 +2,7 @@
 // A section the owner added in the editor, from a small catalog that uses the site's own styles.
 // The edit build tags each field so it can be typed on the page; the public build renders plain HTML.
 import type { AddedBlock } from "../lib/content-schema";
+import { iconPath } from "../lib/icons";
 import { videoEmbed } from "../lib/video";
 
 interface Props {
@@ -15,6 +16,17 @@ const { block, keyPrefix, root = {} } = Astro.props;
 const k = (field: string) => (keyPrefix ? { "data-stoin-key": `${keyPrefix}.${field}` } : {});
 const photo = (field: string) => (keyPrefix ? { "data-stoin-image": `${keyPrefix}.${field}` } : {});
 const embed = block.type === "video" ? videoEmbed(block.video) : "";
+// Rows (2026-11-27): each row's fields are keyed by its id. In the edit build the list carries
+// data-stoin-items and a blank row template, so editor/bridge.js can redraw any number of rows.
+type Row = { id: string } & Record<string, string | undefined>;
+const rowList: Row[] = "items" in block ? (block.items as Row[]) : [];
+const rk = (row: string, field: string) => (keyPrefix ? { "data-stoin-key": `${keyPrefix}.items.${row}.${field}` } : {});
+const ri = (row: string, field: string) => (keyPrefix ? { "data-stoin-icon": `${keyPrefix}.items.${row}.${field}` } : {});
+const rp = (row: string, field: string) => (keyPrefix ? { "data-stoin-image": `${keyPrefix}.items.${row}.${field}` } : {});
+const rl = (field: string) => (keyPrefix ? { "data-stoin-link": field } : {});
+const listTags = keyPrefix ? { "data-stoin-items": `${keyPrefix}.items` } : {};
+const rowTag = (row: string) => (keyPrefix ? { "data-stoin-item": row } : {});
+const blank: Row = { id: "ROW", icon: "star", title: "", body: "", text: "", question: "", answer: "", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "", name: "", role: "", link: "" };
 ---
 
 {block.type === "text" && (
@@ -75,6 +87,132 @@ const embed = block.type === "video" ? videoEmbed(block.video) : "";
         <p {...k("body")}>{block.body}</p>
         <a class="button" href={block.link}><span {...k("button")}>{block.button}</span></a>
       </div>
+    </div>
+  </section>
+)}
+{block.type === "icons" && (
+  <section class="section" {...root}>
+    <div class="shell">
+      {(block.title || keyPrefix) && (
+        <div class="section-heading center">
+          <h2 {...k("title")} hidden={!block.title}>{block.title}</h2>
+          <p {...k("body")} hidden={!block.body}>{block.body}</p>
+        </div>
+      )}
+      <ul class="row-icons" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <svg class="line-icon" viewBox="0 0 24 24" width="44" height="44" aria-hidden="true" {...ri(row.id, "icon")}><path d={iconPath(row.icon)} /></svg>
+            <h3 {...rk(row.id, "title")}>{row.title}</h3>
+            <p {...rk(row.id, "body")} hidden={!row.body}>{row.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+{block.type === "steps" && (
+  <section class="section" {...root}>
+    <div class="shell-narrow">
+      <div class="section-heading">
+        <h2 {...k("title")}>{block.title}</h2>
+        <p {...k("body")} hidden={!block.body}>{block.body}</p>
+      </div>
+      <ol class="row-steps" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <h3 {...rk(row.id, "title")}>{row.title}</h3>
+            <p {...rk(row.id, "body")} hidden={!row.body}>{row.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}
+{block.type === "checklist" && (
+  <section class="section" {...root}>
+    <div class="shell-narrow">
+      <div class="section-heading">
+        <h2 {...k("title")}>{block.title}</h2>
+        <p {...k("body")} hidden={!block.body}>{block.body}</p>
+      </div>
+      <ul class="row-checks" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <span {...rk(row.id, "text")}>{row.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+{block.type === "faq" && (
+  <section class="section" {...root}>
+    <div class="shell-narrow">
+      <div class="section-heading"><h2 {...k("title")}>{block.title}</h2></div>
+      <div class="row-faq" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <details {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank} open={keyPrefix ? true : undefined}>
+            <summary {...rk(row.id, "question")}>{row.question}</summary>
+            <p {...rk(row.id, "answer")}>{row.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+{block.type === "cards" && (
+  <section class="section" {...root}>
+    <div class="shell">
+      {(block.title || keyPrefix) && (
+        <div class="section-heading center">
+          <h2 {...k("title")} hidden={!block.title}>{block.title}</h2>
+          <p {...k("body")} hidden={!block.body}>{block.body}</p>
+        </div>
+      )}
+      <ul class="row-cards" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <img src={row.photo} alt={row.photoAlt ?? ""} width="900" height="600" loading="lazy" {...rp(row.id, "photo")} />
+            <div class="row-card-words">
+              <h3 {...rk(row.id, "title")}>{row.title}</h3>
+              <p {...rk(row.id, "body")} hidden={!row.body}>{row.body}</p>
+              {(row.link || keyPrefix) && <a class="text-link" href={row.link || "#"} hidden={!row.link} {...rl("link")}>Learn more<span class="sr-only">: {row.title}</span></a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+{block.type === "gallery" && (
+  <section class="section" {...root}>
+    <div class="shell">
+      {(block.title || keyPrefix) && <div class="section-heading center"><h2 {...k("title")} hidden={!block.title}>{block.title}</h2></div>}
+      <ul class="row-gallery" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <img src={row.photo} alt={row.photoAlt ?? ""} width="1200" height="800" loading="lazy" {...rp(row.id, "photo")} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+{block.type === "team" && (
+  <section class="section" {...root}>
+    <div class="shell">
+      <div class="section-heading center"><h2 {...k("title")}>{block.title}</h2></div>
+      <ul class="row-team" {...listTags}>
+        {[...rowList, ...(keyPrefix ? [blank] : [])].map((row) => (
+          <li {...rowTag(row.id)} data-stoin-template={row === blank ? "" : undefined} hidden={row === blank}>
+            <img src={row.photo} alt={row.photoAlt ?? ""} width="400" height="400" loading="lazy" {...rp(row.id, "photo")} />
+            <h3 {...rk(row.id, "name")}>{row.name}</h3>
+            <p class="row-role" {...rk(row.id, "role")} hidden={!row.role}>{row.role}</p>
+            <p {...rk(row.id, "body")} hidden={!row.body}>{row.body}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 )}

@@ -7,6 +7,7 @@ import { content } from "../lib/content";
 import { blockCatalog, type AddedBlock } from "../lib/content-schema";
 import AddedSection from "./AddedSection.astro";
 import { defaultMotion, type Motion } from "../lib/motion";
+import { icons } from "../lib/icons";
 
 interface Props {
   page: keyof typeof content.layout;
@@ -68,6 +69,7 @@ const samples: Record<string, AddedBlock> = Object.fromEntries(blockCatalog.map(
   if (!edit) return <AddedSection block={block} root={{ "data-motion": motionOf(id) }} />;
   return <AddedSection block={block} keyPrefix={`layout.${page}.added.${id}`} root={{ "data-stoin-section": id, "data-stoin-added": "", "data-motion": motionOf(id), hidden: hidden.has(id) }} />;
 })}
+{edit && <template data-stoin-icons={JSON.stringify(icons)}></template>}
 {edit && (
   <template data-stoin-layout={outline}>
     {blockCatalog.map((entry) => <AddedSection block={samples[entry.type]} keyPrefix="SAMPLE" root={{ "data-stoin-sample": entry.type }} />)}

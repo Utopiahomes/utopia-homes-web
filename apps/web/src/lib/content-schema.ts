@@ -1,4 +1,5 @@
 import { z } from "astro/zod";
+import { iconNames } from "./icons";
 import { motionEffects } from "./motion";
 import { videoEmbed } from "./video";
 
@@ -65,7 +66,155 @@ export const blockCatalog = [
     fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text" }, { name: "button", kind: "text" }, { name: "link", kind: "link" }],
     sample: { type: "cta", title: "Ready to talk?", body: "Tell people what happens next.", button: "Get in touch", link: "/#contact-info" },
   },
+  {
+    type: "icons",
+    label: "Icon grid",
+    fields: [{ name: "title", kind: "text", optional: true }, { name: "body", kind: "text", optional: true }],
+    items: {
+      label: "Item",
+      min: 1,
+      max: 12,
+      fields: [{ name: "icon", kind: "icon", choices: iconNames }, { name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }],
+      sample: { icon: "star", title: "A new point", body: "Say what this point means." },
+    },
+    sample: {
+      type: "icons",
+      title: "What we do",
+      items: [
+        { id: "r1001", icon: "home", title: "First point", body: "Say what this point means." },
+        { id: "r1002", icon: "people", title: "Second point", body: "Say what this point means." },
+        { id: "r1003", icon: "growth", title: "Third point", body: "Say what this point means." },
+      ],
+    },
+  },
+  {
+    type: "steps",
+    label: "Numbered steps",
+    fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }],
+    items: {
+      label: "Step",
+      min: 1,
+      max: 12,
+      fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }],
+      sample: { title: "A new step", body: "Say what happens in this step." },
+    },
+    sample: {
+      type: "steps",
+      title: "How it works",
+      items: [
+        { id: "r2001", title: "First step", body: "Say what happens first." },
+        { id: "r2002", title: "Second step", body: "Say what happens next." },
+        { id: "r2003", title: "Third step", body: "Say how it ends." },
+      ],
+    },
+  },
+  {
+    type: "checklist",
+    label: "Checklist",
+    fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }],
+    items: {
+      label: "Point",
+      min: 1,
+      max: 16,
+      fields: [{ name: "text", kind: "text" }],
+      sample: { text: "A new point" },
+    },
+    sample: {
+      type: "checklist",
+      title: "What you get",
+      items: [
+        { id: "r3001", text: "First point" },
+        { id: "r3002", text: "Second point" },
+        { id: "r3003", text: "Third point" },
+      ],
+    },
+  },
+  {
+    type: "faq",
+    label: "Questions and answers",
+    fields: [{ name: "title", kind: "text" }],
+    items: {
+      label: "Question",
+      min: 1,
+      max: 20,
+      fields: [{ name: "question", kind: "text" }, { name: "answer", kind: "text" }],
+      sample: { question: "A new question?", answer: "Its answer." },
+    },
+    sample: {
+      type: "faq",
+      title: "Questions",
+      items: [
+        { id: "r4001", question: "A question people ask?", answer: "Its answer." },
+        { id: "r4002", question: "Another question?", answer: "Its answer." },
+      ],
+    },
+  },
+  {
+    type: "cards",
+    label: "Cards with photos",
+    fields: [{ name: "title", kind: "text", optional: true }, { name: "body", kind: "text", optional: true }],
+    items: {
+      label: "Card",
+      min: 1,
+      max: 9,
+      fields: [{ name: "photo", kind: "photo" }, { name: "photoAlt", kind: "text" }, { name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }, { name: "link", kind: "link", optional: true }],
+      sample: { photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo", title: "A new card", body: "Say what this card is about." },
+    },
+    sample: {
+      type: "cards",
+      title: "Featured",
+      items: [
+        { id: "r5001", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo", title: "First card", body: "Say what this card is about." },
+        { id: "r5002", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo", title: "Second card", body: "Say what this card is about." },
+        { id: "r5003", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo", title: "Third card", body: "Say what this card is about." },
+      ],
+    },
+  },
+  {
+    type: "gallery",
+    label: "Photo gallery",
+    fields: [{ name: "title", kind: "text", optional: true }],
+    items: {
+      label: "Photo",
+      min: 1,
+      max: 16,
+      fields: [{ name: "photo", kind: "photo" }, { name: "photoAlt", kind: "text" }],
+      sample: { photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo" },
+    },
+    sample: {
+      type: "gallery",
+      title: "Gallery",
+      items: [
+        { id: "r6001", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo" },
+        { id: "r6002", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo" },
+        { id: "r6003", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Describe the photo" },
+      ],
+    },
+  },
+  {
+    type: "team",
+    label: "Team",
+    fields: [{ name: "title", kind: "text" }],
+    items: {
+      label: "Person",
+      min: 1,
+      max: 12,
+      fields: [{ name: "photo", kind: "photo" }, { name: "photoAlt", kind: "text" }, { name: "name", kind: "text" }, { name: "role", kind: "text", optional: true }, { name: "body", kind: "text", optional: true }],
+      sample: { photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Portrait", name: "A new person", role: "Their role" },
+    },
+    sample: {
+      type: "team",
+      title: "Our team",
+      items: [{ id: "r7001", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "Portrait", name: "Name", role: "Role", body: "A line about them." }],
+    },
+  },
 ] as const;
+
+// A row's id: made by Stoin's editor when the row is added (site_editor_kinds.new_row_id).
+const rowId = z.string().regex(/^r[0-9a-f]{4,12}$/, "must be a row id like r1a2b3c");
+const icon = z.string().regex(/^[a-z][a-z0-9-]{0,30}$/, "must be an icon name");
+const rows = <Shape extends z.ZodRawShape>(shape: Shape, max: number) =>
+  z.array(group({ id: rowId, ...shape })).min(1, "must keep at least one row").max(max, `must have up to ${max} rows`);
 
 const addedBlock = z.discriminatedUnion("type", [
   group({ type: z.literal("text"), eyebrow: optionalText, title: text, body: text }),
@@ -73,6 +222,13 @@ const addedBlock = z.discriminatedUnion("type", [
   group({ type: z.literal("quote"), quote: text, attribution: optionalText }),
   group({ type: z.literal("cta"), title: text, body: text, button: text, link }),
   group({ type: z.literal("video"), video, title: text, body: optionalText }),
+  group({ type: z.literal("icons"), title: optionalText, body: optionalText, items: rows({ icon, title: text, body: optionalText }, 12) }),
+  group({ type: z.literal("steps"), title: text, body: optionalText, items: rows({ title: text, body: optionalText }, 12) }),
+  group({ type: z.literal("checklist"), title: text, body: optionalText, items: rows({ text }, 16) }),
+  group({ type: z.literal("faq"), title: text, items: rows({ question: text, answer: text }, 20) }),
+  group({ type: z.literal("cards"), title: optionalText, body: optionalText, items: rows({ photo, photoAlt: text, title: text, body: optionalText, link: link.optional() }, 9) }),
+  group({ type: z.literal("gallery"), title: optionalText, items: rows({ photo, photoAlt: text }, 16) }),
+  group({ type: z.literal("team"), title: text, items: rows({ photo, photoAlt: text, name: text, role: optionalText, body: optionalText }, 12) }),
 ]);
 export type AddedBlock = z.infer<typeof addedBlock>;
 
