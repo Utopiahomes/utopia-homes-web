@@ -33,6 +33,7 @@ import { jsonLdText, organizationStructuredData } from "@/lib/structured-data";
 import type { ContentImage } from "@/types/content";
 import { setServerPathname } from "../next-shims/navigation";
 import { canonicalUrl, siteConfig } from "../lib/site";
+import { analyticsFor } from "../lib/analytics";
 import { content } from "../lib/content";
 import { stripMarkers } from "../../editor/markers.mjs";
 
@@ -61,8 +62,7 @@ const shouldIndex = siteConfig.environment === "production" && !noindex && !edit
 // its endpoint come from this site's own address (vercel.json rewrites /v/), so ad-blocker lists
 // that name the analytics host miss it and the page needs no outside connection. It loads deferred:
 // if the analytics server is down, the page doesn't wait.
-const countVisits = siteConfig.environment === "production" && !edit;
-const siteHost = new URL(siteConfig.origin).hostname.replace(/^www\./, "");
+const analytics = siteConfig.environment === "production" && !edit ? await analyticsFor(siteConfig.origin) : null;
 const [profile, properties] = await Promise.all([cms.getBusinessProfile(), cms.getProperties()]);
 const organizationJson = jsonLdText(organizationStructuredData(profile, properties, siteConfig.origin));
 
@@ -100,14 +100,8 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     <meta name="google-site-verification" content="chZDFD1cQLt45qW-96XPfAnm_A1qLgPu52pDez4TUZA" />
     <meta name="msvalidate.01" content="CC80251863EF99064ADEB890FFB82CE5" />
     {!edit && <script is:inline set:html={motionStart} />}
-    {countVisits && (
-      <script
-        is:inline
-        defer
-        src="/v/s.js"
-        data-website-id={siteConfig.analyticsSite}
-        data-domains={`${siteHost},www.${siteHost}`}
-      ></script>
+    {analytics && (
+      <script is:inline defer src="/v/s.js" data-website-id={analytics.id} data-domains={analytics.domains}></script>
     )}
   </head>
   <body>
