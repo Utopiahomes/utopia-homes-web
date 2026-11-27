@@ -11,6 +11,7 @@
 //      Copilot), Yandex, Seznam and Naver which pages exist, so they recrawl within minutes. It never
 //      fails the build.
 import { access, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -186,9 +187,14 @@ const live =
   !/(\.vercel\.app|localhost|127\.0\.0\.1)$/.test(host.split(":")[0]);
 if (!live) {
   console.log("IndexNow: skipped (not a production build of a live domain).");
-} else if (!(await exists(keyFile))) {
-  console.warn("IndexNow: skipped, apps/web/public/indexnow-key.txt is missing.");
 } else {
+  // A site without its own key gets one made from its address (Ray, 2026-11-28: no hand steps for a
+  // new site). The key only has to be on this site at keyLocation; it is public by design.
+  if (!(await exists(keyFile))) {
+    const made = createHash("sha256").update(`stoin-indexnow:${host}`).digest("hex").slice(0, 32);
+    await writeFile(keyFile, made, "utf8");
+    console.log("IndexNow: made this site's key from its address.");
+  }
   const key = (await readFile(keyFile, "utf8")).trim();
   const urlList = [...new Set([...urls.map((u) => origin + new URL(u).pathname), `${origin}/llms.txt`])];
   try {
