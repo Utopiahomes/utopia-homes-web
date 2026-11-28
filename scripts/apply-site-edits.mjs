@@ -115,6 +115,13 @@ function locateString(text, pointer) {
   return found;
 }
 
+// Settings (2026-11-27): a web address (empty hides a social link) and a colour like #1d5bab.
+function checkSetting(kind, value) {
+  if (typeof value !== "string") throw new Error("the setting must be text");
+  if (kind === "color" && !/^#[0-9a-f]{6}$/.test(value)) throw new Error("a colour must look like #1d5bab");
+  if (kind === "link" && value !== "" && !/^(?:https:\/\/[^\s<>"]{3,490}|mailto:[^\s<>"]{3,300})$/.test(value)) throw new Error("a link must start with https://");
+}
+
 function checkWording(value, previous) {
   if (typeof value !== "string" || value.trim() === "") throw new Error("new wording must not be empty");
   if (/[<>]/.test(value)) throw new Error("new wording must not contain < or >");
@@ -135,7 +142,8 @@ function textSpan(edit, file, text) {
     const span = locateString(text, source.pointer);
     if (!span) throw new Error("no wording at this pointer");
     if (JSON.parse(text.slice(span[0], span[1])) !== previous) throw new Error("the published wording has changed");
-    checkWording(value, previous);
+    if (source.kind === "link" || source.kind === "color") checkSetting(source.kind, value);
+    else checkWording(value, previous);
     return { span, replacement: JSON.stringify(value) };
   }
 

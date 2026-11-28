@@ -2,5 +2,9 @@
   "talkPosition": "top-right",
   "skipLink": "Skip to content",
   "talkLabel": "Talk with Lyra",
-  "talkStatus": "Online now"
+  "talkStatus": "Online now",
+  "theme": {
+    "main": "#173c34",
+    "accent": "#b85c42"
+  }
 }

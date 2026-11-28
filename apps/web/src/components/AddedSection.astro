@@ -2,6 +2,7 @@
 // A section the owner added in the editor, from a small catalog that uses the site's own styles.
 // The edit build tags each field so it can be typed on the page; the public build renders plain HTML.
 import type { AddedBlock } from "../lib/content-schema";
+import { stripMarkers } from "../../editor/markers.mjs";
 import { iconPath } from "../lib/icons";
 import { videoEmbed } from "../lib/video";
 
@@ -27,6 +28,11 @@ const rl = (field: string) => (keyPrefix ? { "data-stoin-link": field } : {});
 const listTags = keyPrefix ? { "data-stoin-items": `${keyPrefix}.items` } : {};
 const rowTag = (row: string) => (keyPrefix ? { "data-stoin-item": row } : {});
 const blank: Row = { id: "ROW", icon: "star", title: "", body: "", text: "", question: "", answer: "", photo: "/images/home/wildwoods-beach-summer.jpg", photoAlt: "", name: "", role: "", link: "" };
+// A Cal.com booking page shows inline; any other booking link is a button (2026-11-27).
+const bookingFrame = (link: string) => {
+  const plain = stripMarkers(link);
+  return /^https:\/\/cal\.com\/[\w-]+/.test(plain) ? `${plain}${plain.includes("?") ? "&" : "?"}embed=true` : "";
+};
 ---
 
 {block.type === "text" && (
@@ -87,6 +93,35 @@ const blank: Row = { id: "ROW", icon: "star", title: "", body: "", text: "", que
         <p {...k("body")}>{block.body}</p>
         <a class="button" href={block.link}><span {...k("button")}>{block.button}</span></a>
       </div>
+    </div>
+  </section>
+)}
+{block.type === "contact" && (
+  <section class="stoin-contact" {...root}>
+    <div class="stoin-contact-inner">
+      <h2 {...k("title")}>{block.title}</h2>
+      {block.body && <p {...k("body")}>{block.body}</p>}
+      <form class="stoin-contact-form" data-stoin-contact>
+        <label><span>Name</span><input name="name" autocomplete="name" maxlength="120" /></label>
+        <label><span>Email</span><input name="email" type="email" autocomplete="email" maxlength="320" /></label>
+        <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" maxlength="40" /></label>
+        <label class="stoin-contact-wide"><span>Message</span><textarea name="message" rows="5" maxlength="4000"></textarea></label>
+        <label class="stoin-contact-trap" aria-hidden="true"><span>Website</span><input name="website" tabindex="-1" autocomplete="off" /></label>
+        <p class="stoin-contact-problem" role="alert" hidden>Please write a message and add an email or phone number.</p>
+        {/* In the editing copy the button only holds its wording: nothing is sent while editing. */}
+        <button class="button" type={keyPrefix ? "button" : "submit"}><span {...k("button")}>{block.button}</span></button>
+        <p class="stoin-contact-done" role="status" hidden={!keyPrefix} {...k("success")}>{block.success}</p>
+      </form>
+    </div>
+  </section>
+)}
+{block.type === "booking" && (
+  <section class="stoin-booking" {...root}>
+    <div class="stoin-contact-inner">
+      <h2 {...k("title")}>{block.title}</h2>
+      {block.body && <p {...k("body")}>{block.body}</p>}
+      {bookingFrame(block.link) && <iframe class="stoin-booking-frame" src={bookingFrame(block.link)} title={stripMarkers(block.title)} loading="lazy"></iframe>}
+      <a class="button" href={stripMarkers(block.link)} target="_blank" rel="noopener"><span {...k("button")}>{block.button}</span></a>
     </div>
   </section>
 )}
@@ -216,3 +251,33 @@ const blank: Row = { id: "ROW", icon: "star", title: "", body: "", text: "", que
     </div>
   </section>
 )}
+
+<script>
+  // The contact form (2026-11-27): sent as text to Stoin (app.stoin.ai/api/site/contact, which
+  // saves it to the site's Leads and emails the owner). The page can't read the answer, so it
+  // thanks the visitor once it's sent.
+  document.querySelectorAll<HTMLFormElement>("form[data-stoin-contact]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+      const problem = form.querySelector<HTMLElement>(".stoin-contact-problem");
+      const done = form.querySelector<HTMLElement>(".stoin-contact-done");
+      if (!data.message?.trim() || !(data.email?.trim() || data.phone?.trim())) {
+        if (problem) problem.hidden = false;
+        return;
+      }
+      if (problem) problem.hidden = true;
+      const talk = document.querySelector<HTMLElement>('[data-stoin-block="talk-to-lucy"]');
+      const app = (talk?.dataset.app || "https://app.stoin.ai").replace(/\/$/, "");
+      const body = JSON.stringify({ ...data, site: talk?.dataset.site || location.hostname, page: location.href, title: document.title });
+      form.querySelector("button")?.setAttribute("disabled", "");
+      fetch(`${app}/api/site/contact`, { method: "POST", mode: "no-cors", body, keepalive: true })
+        .catch(() => null)
+        .finally(() => {
+          form.reset();
+          form.querySelector("button")?.removeAttribute("disabled");
+          if (done) done.hidden = false;
+        });
+    });
+  });
+</script>

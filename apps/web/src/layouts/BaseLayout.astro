@@ -78,6 +78,9 @@ const organizationJson = jsonLdText(organizationStructuredData(profile, properti
 const motionStart =
   'if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver"in window){var r=document.documentElement;r.classList.add("motion");setTimeout(function(){if(!window.stoinMotion)r.classList.remove("motion")},3000)}';
 const faces = "https://app.stoin.ai/synths/lyra-beach";
+// The site's colours, which the owner sets in Stoin's editor (site.json "theme", 2026-11-27).
+const theme = content.site.theme;
+const themeCss = theme ? `html:root{--forest:${stripMarkers(theme.main)};--clay:${stripMarkers(theme.accent)}}` : "";
 ---
 
 <!doctype html>
@@ -111,6 +114,7 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
     {analytics && (
       <script is:inline defer src="/v/s.js" data-website-id={analytics.id} data-domains={analytics.domains}></script>
     )}
+    {themeCss && <style is:inline set:html={themeCss} />}
   </head>
   <body>
     <a class="skip-link" href="#main-content">{content.site.skipLink}</a>

@@ -67,6 +67,18 @@ export const blockCatalog = [
     sample: { type: "cta", title: "Ready to talk?", body: "Tell people what happens next.", button: "Get in touch", link: "/#contact-info" },
   },
   {
+    type: "contact",
+    label: "Contact form",
+    fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }, { name: "button", kind: "text" }, { name: "success", kind: "text" }],
+    sample: { type: "contact", title: "Get in touch", body: "Send us a note and we'll get back to you.", button: "Send", success: "Thanks. Your message is on its way, and we'll be in touch soon." },
+  },
+  {
+    type: "booking",
+    label: "Booking",
+    fields: [{ name: "title", kind: "text" }, { name: "body", kind: "text", optional: true }, { name: "button", kind: "text" }, { name: "link", kind: "link" }],
+    sample: { type: "booking", title: "Book a time", body: "Pick a time that works for you.", button: "See open times", link: "https://cal.com/" },
+  },
+  {
     type: "icons",
     label: "Icon grid",
     fields: [{ name: "title", kind: "text", optional: true }, { name: "body", kind: "text", optional: true }],
@@ -221,6 +233,8 @@ const addedBlock = z.discriminatedUnion("type", [
   group({ type: z.literal("photo"), photo, photoAlt: text, eyebrow: optionalText, title: text, body: text }),
   group({ type: z.literal("quote"), quote: text, attribution: optionalText }),
   group({ type: z.literal("cta"), title: text, body: text, button: text, link }),
+  group({ type: z.literal("contact"), title: text, body: optionalText, button: text, success: text }),
+  group({ type: z.literal("booking"), title: text, body: optionalText, button: text, link }),
   group({ type: z.literal("video"), video, title: text, body: optionalText }),
   group({ type: z.literal("icons"), title: optionalText, body: optionalText, items: rows({ icon, title: text, body: optionalText }, 12) }),
   group({ type: z.literal("steps"), title: text, body: optionalText, items: rows({ title: text, body: optionalText }, 12) }),
@@ -266,6 +280,8 @@ export const contentSchemas = {
   // Ordered lists the owner or Lucy can reorder (none on this site yet; the editor reads the file).
   "lists": z.record(z.string().regex(/^[\w-]+$/), z.array(z.string().regex(/^[\w-]+$/))),
   "site": group({
+    // The site's colours, set in Stoin's editor (2026-11-27).
+    theme: group({ main: z.string().regex(/^#[0-9a-f]{6}$/), accent: z.string().regex(/^#[0-9a-f]{6}$/) }).optional(),
     skipLink: text,
     // Where the synth's box sits (2026-11-26): editable in the editor's Page details tab.
     talkPosition: z.enum(["top-right", "bottom-right"]),

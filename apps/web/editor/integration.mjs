@@ -300,7 +300,7 @@ export async function finishEditBuild(dist) {
     const item = await blockItem(key, src, sources);
     if (item && !items.has(key)) items.set(key, item);
   }
-  const kindOf = ({ kinds }) => (kinds.has("choice") ? "choice" : kinds.has("order") ? "order" : kinds.has("layout") ? "layout" : kinds.has("image") ? "image" : kinds.has("text") ? "text" : kinds.has("attribute") ? "attribute" : "meta");
+  const kindOf = ({ kinds }) => (kinds.has("link") ? "link" : kinds.has("color") ? "color" : kinds.has("choice") ? "choice" : kinds.has("order") ? "order" : kinds.has("layout") ? "layout" : kinds.has("image") ? "image" : kinds.has("text") ? "text" : kinds.has("attribute") ? "attribute" : "meta");
   const savedLayout = JSON.parse(await readFile(join(contentDirectory, "layout.json"), "utf8"));
   let catalog = [];
   for (const { path, outline } of layouts) {
@@ -355,6 +355,19 @@ export async function finishEditBuild(dist) {
       : [{ value: "yes", label: "Yes" }, { value: "no", label: "No" }];
     uses.set(item.key, { kinds: new Set(["choice"]), pages: new Set([path]) });
   }
+  // Whole-site settings in Page details (2026-11-27): the site's colours, and its social links (an
+  // empty one is hidden). Stoin's editor checks colours and web addresses; so does the adapter.
+  const everyPage = new Set(pages.map((page) => page.path));
+  const socialNames = { x: "X (Twitter)", twitter: "X (Twitter)", facebook: "Facebook", instagram: "Instagram", linkedin: "LinkedIn", youtube: "YouTube", tiktok: "TikTok" };
+  for (const item of items.values()) {
+    const social = item.key.match(/^navigation\.footer\.social\.(\w+)$/);
+    const color = item.key.match(/^site\.theme\.(main|accent)$/);
+    if (!social && !color) continue;
+    item.format = social ? "link" : "color";
+    item.label = social ? `${socialNames[social[1]] ?? social[1]} link (leave it empty to hide it)` : color[1] === "main" ? "Main colour" : "Accent colour";
+    item.source = { ...item.source, kind: item.format };
+    uses.set(item.key, { kinds: new Set([item.format]), pages: everyPage });
+  }
   const manifestItems = [...items.values()]
     .filter((item) => uses.has(item.key))
     .map((item) => ({
@@ -365,6 +378,7 @@ export async function finishEditBuild(dist) {
       ...(item.format === "markdown" ? { format: item.format, marks: item.marks } : {}),
       ...(item.format === "layout" ? { default: item.default, sections: item.sections } : {}),
       ...(item.format === "choice" ? { label: item.label, options: item.options } : {}),
+      ...(item.format === "link" || item.format === "color" ? { label: item.label } : {}),
       ...(item.format === "order" ? item.order : {}),
       ...(photoSpots.has(item.key) && kindOf(uses.get(item.key)) === "image" ? { photo: photoSpots.get(item.key) } : {}),
       pages: [...uses.get(item.key).pages].sort(pageOrder),

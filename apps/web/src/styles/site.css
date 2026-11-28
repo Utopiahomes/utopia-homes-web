@@ -6,3 +6,18 @@
 /* Menu links are a list the owner edits (lib/menu.ts, 2026-11-27). */
 .menu-links { display: contents; }
 .owner-footer-links:empty { display: none; }
+
+/* Sections the owner adds (2026-11-27): a contact form saved to the site's Leads, and booking. */
+.stoin-contact, .stoin-booking { padding: 64px 20px; }
+.stoin-contact-inner { max-width: 760px; margin: 0 auto; }
+.stoin-contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; margin-top: 20px; }
+.stoin-contact-form label { display: grid; gap: 6px; }
+.stoin-contact-form label span { font-size: 14px; }
+.stoin-contact-form input, .stoin-contact-form textarea { font: inherit; padding: 10px 12px; border: 1px solid rgba(0, 0, 0, 0.25); border-radius: 4px; background: #fff; color: #111; }
+.stoin-contact-wide, .stoin-contact-problem, .stoin-contact-done { grid-column: 1 / -1; }
+.stoin-contact-form button { justify-self: start; }
+.stoin-contact-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.stoin-contact-problem { color: #a40000; margin: 0; }
+.stoin-contact-done { margin: 0; font-weight: 600; }
+.stoin-booking-frame { display: block; width: 100%; height: 680px; border: 0; margin: 18px 0; background: #fff; }
+@media (max-width: 640px) { .stoin-contact-form { grid-template-columns: 1fr; } }
