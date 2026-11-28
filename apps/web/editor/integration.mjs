@@ -343,7 +343,7 @@ export async function finishEditBuild(dist) {
   // A page the owner added (pages.json, 2026-11-27): whether it is live or a draft, and whether it
   // is in the menu, are settings with fixed options in Page details, on that page.
   for (const item of items.values()) {
-    const found = item.key.match(/^pages\.pages\.(\d+)\.(status|menu)$/);
+    const found = item.key.match(/^pages\.pages\.(\d+)\.(status)$/);
     if (!found) continue;
     const slug = items.get(`pages.pages.${found[1]}.slug`)?.value;
     const path = slug ? `/${slug}` : null;
@@ -374,8 +374,10 @@ export async function finishEditBuild(dist) {
   await mkdir(join(dist, "_stoin"), { recursive: true });
   const posts = await postSettings();
   // Pages the owner can add (2026-11-27): where a new page is listed and where its sections go.
-  const addPages = { file: `${contentFolder}/pages.json`, layout: `${contentFolder}/layout.json` };
-  await writeFile(join(dist, "_stoin", "manifest.json"), `${JSON.stringify({ version: 1, site, pages, blocks: catalog, posts, addPages, photos: await photoFiles(dist), items: manifestItems }, null, 2)}\n`);
+  // Pages the owner adds and changes the address of; collections the owner adds to (2026-11-27).
+  const addPages = { file: `${contentFolder}/pages.json`, layout: `${contentFolder}/layout.json`, lists: `${contentFolder}/lists.json`, address: true };
+  const collections = [];
+  await writeFile(join(dist, "_stoin", "manifest.json"), `${JSON.stringify({ version: 1, site, pages, blocks: catalog, posts, addPages, collections, photos: await photoFiles(dist), items: manifestItems }, null, 2)}\n`);
   // The bridge carries the Markdown helper with it, so the page loads one script.
   await writeFile(join(dist, "_stoin", "bridge.js"), `${await readFile(markdownSource, "utf8")}
 ${await readFile(bridgeSource, "utf8")}`);

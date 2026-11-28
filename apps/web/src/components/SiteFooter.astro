@@ -3,6 +3,11 @@
 import { Wordmark } from "@/components/Wordmark";
 import { cms } from "@/lib/cms";
 const guides = (await cms.getStayGuides()).filter((guide) => guide.inFooter);
+import { menuLinks, menuMeta } from "../lib/menu";
+// Links the owner puts in the footer (lists.json "footer", lib/menu.ts, 2026-11-27); none at first.
+const editCopy = import.meta.env.PUBLIC_EDIT_MODE === "1";
+const footerLinks = menuLinks("footer");
+const footerMeta = menuMeta("footer", "Links in the site's footer");
 ---
 
 <footer class="site-footer">
@@ -10,6 +15,8 @@ const guides = (await cms.getStayGuides()).filter((guide) => guide.inFooter);
   <div class="footer-brand"><Wordmark className="wordmark-footer" /><p>Distinctive stays.<br />Thoughtfully managed.</p></div>
   <div class="footer-links">
     <nav aria-label="Footer navigation"><a href="/stays">Stays</a><a href="/destinations/wildwood-new-jersey">WW / Cape May</a><a href="/list-your-home">List Your Home</a><a href="/design">Utopia Design</a><a href="/membership">Membership</a><a href="/contact">Contact</a></nav>
+    {footerMeta && <template data-stoin-list-meta={footerMeta}></template>}
+    <nav aria-label="More pages" class="owner-footer-links" {...(editCopy ? { "data-stoin-list": "footer" } : {})}>{footerLinks.map((link) => <a href={link.href} {...(editCopy ? { "data-stoin-list-item": link.id, ...(link.hidden ? { hidden: true } : {}) } : {})}>{link.label}</a>)}</nav>
     <nav aria-label="Trip guides">{guides.map((guide) => <a href={`/stays/${guide.slug}`}>{guide.navLabel}</a>)}<a href="/faq">FAQ</a></nav>
   </div>
   <p class="fine-print">© 2026 Utopia Homes · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>

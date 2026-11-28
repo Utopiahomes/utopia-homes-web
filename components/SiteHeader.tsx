@@ -5,18 +5,32 @@ import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Wordmark } from "@/components/Wordmark";
 
-export function SiteHeader() {
+// The menu links: the site's own, then pages the owner added in Stoin's editor, in the order the
+// owner set (apps/web/src/lib/menu.ts, 2026-11-27). Without them, the site's own five.
+export type MenuLink = { id: string; href: string; label: string; hidden?: boolean };
+const SITE_LINKS: MenuLink[] = [
+  { id: "stays", href: "/stays", label: "Stays" },
+  { id: "destinations", href: "/destinations/wildwood-new-jersey", label: "WW / Cape May" },
+  { id: "owners", href: "/list-your-home", label: "Owners" },
+  { id: "design", href: "/design", label: "Design" },
+  { id: "about", href: "/about", label: "About" },
+];
+
+export function SiteHeader({ links = SITE_LINKS, edit = false, listMeta = "" }: { links?: MenuLink[]; edit?: boolean; listMeta?: string }) {
+  // The editing copy marks the list for Stoin's editor, which shows a new order straight away.
+  const listAttrs = edit ? { "data-stoin-list": "menu" } : {};
+  const itemAttrs = (link: MenuLink) => (edit ? { "data-stoin-list-item": link.id, hidden: link.hidden || undefined } : {});
+  let number = 0;
   return (
     <header className="site-header">
       <Link href="/" aria-label="Utopia Homes home">
         <Wordmark />
       </Link>
       <nav className="desktop-primary" aria-label="Primary navigation">
-        <Link href="/stays">Stays</Link>
-        <Link href="/destinations/wildwood-new-jersey">WW / Cape May</Link>
-        <Link href="/list-your-home">Owners</Link>
-        <Link href="/design">Design</Link>
-        <Link href="/about">About</Link>
+        {listMeta && <template data-stoin-list-meta={listMeta}></template>}
+        <span className="menu-links" {...listAttrs}>
+          {links.map((link) => <Link key={link.id} href={link.href} {...itemAttrs(link)}>{link.label}</Link>)}
+        </span>
       </nav>
       <Suspense fallback={<HeaderCtaFallback />}>
         <HeaderCta />
@@ -28,21 +42,13 @@ export function SiteHeader() {
         </summary>
         <div className="mobile-menu-panel">
           <nav aria-label="Mobile navigation">
-            <Link href="/stays">
-              <span>01</span>Stays
-            </Link>
-            <Link href="/destinations/wildwood-new-jersey">
-              <span>02</span>WW / Cape May
-            </Link>
-            <Link href="/list-your-home">
-              <span>03</span>Owners
-            </Link>
-            <Link href="/design">
-              <span>04</span>Design
-            </Link>
-            <Link href="/about">
-              <span>05</span>About
-            </Link>
+            <span className="menu-links" {...listAttrs}>
+              {links.map((link) => (
+                <Link key={link.id} href={link.href} {...itemAttrs(link)}>
+                  <span>{String(link.hidden ? 0 : ++number).padStart(2, "0")}</span>{link.label}
+                </Link>
+              ))}
+            </span>
           </nav>
           <div className="mobile-secondary">
             <Link href="/contact">Contact</Link>

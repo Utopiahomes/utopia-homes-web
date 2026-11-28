@@ -36,6 +36,7 @@ import { canonicalUrl, siteConfig } from "../lib/site";
 import { analyticsFor } from "../lib/analytics";
 import { verificationFor } from "../lib/search-verification";
 import { content } from "../lib/content";
+import { menuLinks, menuMeta } from "../lib/menu";
 import { stripMarkers } from "../../editor/markers.mjs";
 
 interface Props {
@@ -52,6 +53,9 @@ interface Props {
 const { title, description, path = Astro.url.pathname, image, absoluteTitle = false, noindex = false } = Astro.props;
 setServerPathname(path);
 const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+// The menu the owner edits (lib/menu.ts, 2026-11-27).
+const menu = menuLinks("menu").map(({ id, href, label, hidden }) => ({ id, href, label, hidden }));
+const menuListMeta = menuMeta("menu", "The site's menu");
 const pageTitle = stripMarkers(absoluteTitle ? title : `${title} | ${siteContent.name}`);
 const plainDescription = stripMarkers(description);
 const canonical = canonicalUrl(path);
@@ -111,7 +115,7 @@ const faces = "https://app.stoin.ai/synths/lyra-beach";
   <body>
     <a class="skip-link" href="#main-content">{content.site.skipLink}</a>
     <script type="application/ld+json" is:inline set:html={organizationJson} />
-    {edit ? <SiteHeader /> : <SiteHeader client:load />}
+    {edit ? <SiteHeader links={menu} edit listMeta={menuListMeta} /> : <SiteHeader links={menu} client:load />}
     <main id="main-content">
       <slot />
     </main>

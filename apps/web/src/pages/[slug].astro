@@ -9,13 +9,18 @@ import { stripMarkers } from "../../editor/markers.mjs";
 
 export function getStaticPaths() {
   const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
-  return content.pages.pages
+  const pages = content.pages.pages
     .map((page, index) => ({ page, index }))
     .filter(({ page }) => {
       const status = stripMarkers(page.status);
       return status === "live" || (edit && status === "draft");
     })
     .map(({ page, index }) => ({ params: { slug: stripMarkers(page.slug) }, props: { kind: "page" as const, index } }));
+  // A page whose address the owner changed keeps its old addresses, each sending visitors on.
+  const moved = pages.flatMap(({ props }) =>
+    (content.pages.pages[props.index].moved ?? []).map((old) => ({ params: { slug: stripMarkers(old) }, props: { kind: "moved" as const, index: props.index } })),
+  );
+  return [...pages, ...moved];
 }
 
 const { kind, index } = Astro.props;
@@ -38,5 +43,20 @@ const slug = Astro.params.slug as string;
         </Fragment>
       </Sections>
     </BaseLayout>
+  );
+})()}
+{kind === "moved" && (() => {
+  const target = `/${stripMarkers(content.pages.pages[index].slug)}`;
+  return (
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>{stripMarkers(content.pages.pages[index].title)}</title>
+        <meta name="robots" content="noindex" />
+        <link rel="canonical" href={target} />
+        <meta http-equiv="refresh" content={`0; url=${target}`} />
+      </head>
+      <body><a href={target}>This page has moved.</a></body>
+    </html>
   );
 })()}

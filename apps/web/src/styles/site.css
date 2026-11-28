@@ -3,3 +3,6 @@
 /* next/image "fill" (src/next-shims/image.tsx): the photo covers its positioned parent. */
 .next-fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .skip-link { position: absolute; left: -9999px; } .skip-link:focus { left: 1rem; top: 1rem; z-index: 100; padding: .75rem 1rem; background: var(--white); }
+/* Menu links are a list the owner edits (lib/menu.ts, 2026-11-27). */
+.menu-links { display: contents; }
+.owner-footer-links:empty { display: none; }

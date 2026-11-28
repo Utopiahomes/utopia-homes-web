@@ -273,38 +273,109 @@ function newArticle(edit, files) {
 // A page the owner added (2026-11-27): one new draft entry in pages.json. Its address must be free:
 // not another added page (even a removed one), a page in src/pages, a project, or a reserved name.
 const reservedPages = new Set(["_stoin", "_astro", "api", "index", "404", "500", "rss", "robots", "favicon", "assets", "images", "blocks", "brand", "fonts", "sitemap", "llms"]);
-function newPage(edit, files) {
-  const { source } = edit;
-  if (source.file !== "apps/web/src/site-content/pages.json") throw new Error("a new page is listed in pages.json");
-  if (edit.previous !== "") throw new Error("a new page replaces nothing");
-  let page;
-  try {
-    page = JSON.parse(edit.value);
-  } catch {
-    throw new Error("the page is not valid JSON");
+// Every address a new page or project can't take: reserved names, src/pages, projects, and every
+// added page's address now and before (a moved page keeps its old ones as redirects).
+function takenAddresses(pagesList) {
+  const taken = new Set(reservedPages);
+  for (const page of pagesList ?? []) {
+    taken.add(page.slug);
+    for (const old of page.moved ?? []) taken.add(old);
   }
-  const { slug, title, description, menu } = page ?? {};
-  if (typeof slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length < 2 || slug.length > 60) throw new Error("the page address must be like our-team");
-  for (const value of [title, description]) {
-    if (typeof value !== "string" || !value.trim() || /[<>]/.test(value)) throw new Error("the page needs a title and description in plain words");
+  for (const name of readdirSync(join(root, "apps/web/src/pages"))) taken.add(name.replace(/\.(astro|ts|js|md|mdx)$/, ""));
+  for (const { file, itemsKey } of Object.values(collections)) {
+    try {
+      for (const id of Object.keys(JSON.parse(readFileSync(join(root, file), "utf8"))[itemsKey ?? "items"] ?? {})) taken.add(id);
+    } catch {
+      // A site without this list.
+    }
   }
-  if (menu !== "yes" && menu !== "no") throw new Error("say whether the page is in the menu");
-  const file = resolveFile(source.file);
+  return taken;
+}
+
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const pagesFile = "apps/web/src/site-content/pages.json";
+const listsFile = "apps/web/src/site-content/lists.json";
+const layoutFile = "apps/web/src/site-content/layout.json";
+
+function jsonEntry(files, path) {
+  const file = resolveFile(path);
   if (!files.has(file.fullPath)) files.set(file.fullPath, { file, text: readFileSync(file.fullPath, "utf8"), changes: [], layout: null });
   const entry = files.get(file.fullPath);
   entry.layout ??= JSON.parse(entry.text);
-  const taken = new Set([...reservedPages, ...(entry.layout.pages ?? []).map((existing) => existing.slug)]);
-  const pagesFolder = join(root, "apps/web/src/pages");
-  for (const name of readdirSync(pagesFolder)) taken.add(name.replace(/\.(astro|ts|js|md|mdx)$/, ""));
-  try {
-    const projects = JSON.parse(readFileSync(join(root, "apps/web/src/site-content/projects.json"), "utf8"));
-    for (const id of Object.keys(projects.items ?? {})) taken.add(id);
-  } catch {
-    // A site without a projects list.
-  }
-  if (taken.has(slug)) throw new Error("a page with this address already exists");
-  entry.layout.pages = [...(entry.layout.pages ?? []), { slug, title: title.trim(), description: description.trim(), status: "draft", menu }];
   entry.changes.push({ layout: true });
+  return entry.layout;
+}
+
+function parsed(edit, what) {
+  try {
+    return JSON.parse(edit.value) ?? {};
+  } catch {
+    throw new Error(`the ${what} is not valid JSON`);
+  }
+}
+
+function plainWords(...values) {
+  for (const value of values) {
+    if (typeof value !== "string" || !value.trim() || /[<>]/.test(value)) throw new Error("use plain words, with no < or >");
+  }
+}
+
+function newPage(edit, files) {
+  const { source } = edit;
+  if (source.file !== pagesFile) throw new Error("a new page is listed in pages.json");
+  if (edit.previous !== "") throw new Error("a new page replaces nothing");
+  const { slug, title, description, menu } = parsed(edit, "page");
+  if (typeof slug !== "string" || !slugPattern.test(slug) || slug.length < 2 || slug.length > 60) throw new Error("the page address must be like our-team");
+  plainWords(title, description);
+  if (menu !== "yes" && menu !== "no") throw new Error("say whether the page is in the menu");
+  const pagesJson = jsonEntry(files, pagesFile);
+  if (takenAddresses(pagesJson.pages).has(slug)) throw new Error("a page with this address already exists");
+  pagesJson.pages = [...(pagesJson.pages ?? []), { slug, title: title.trim(), description: description.trim(), status: "draft", menu }];
+  // In the menu: its id ("p<index>", lib/menu.ts) goes at the end of the menu list.
+  if (menu === "yes") {
+    const lists = jsonEntry(files, listsFile);
+    lists.menu = [...(lists.menu ?? []), `p${pagesJson.pages.length - 1}`];
+  }
+}
+
+// A new address for a page the owner added (2026-11-27). The old one is kept as a redirect, and
+// the page's sections move with it in layout.json.
+function pageAddress(edit, files) {
+  if (edit.source.file !== pagesFile) throw new Error("a page address is changed in pages.json");
+  const { from, to } = parsed(edit, "address change");
+  if (typeof to !== "string" || !slugPattern.test(to) || to.length < 2 || to.length > 60) throw new Error("the page address must be like our-team");
+  const pagesJson = jsonEntry(files, pagesFile);
+  const page = (pagesJson.pages ?? []).find((existing) => existing.slug === from);
+  if (!page) throw new Error("that page isn't in pages.json");
+  const taken = takenAddresses(pagesJson.pages);
+  if (taken.has(to) && !(page.moved ?? []).includes(to)) throw new Error("a page with this address already exists");
+  page.slug = to;
+  page.moved = [...(page.moved ?? []).filter((old) => old !== to), from].slice(-10);
+  const layout = jsonEntry(files, layoutFile);
+  if (layout[`page-${from}`] !== undefined) {
+    layout[`page-${to}`] = layout[`page-${from}`];
+    delete layout[`page-${from}`];
+  }
+}
+
+// The site's collections (2026-11-27, "Add a project"): lists of things that each have their own
+// page. A new one starts with sample wording and is shown last in its list.
+const collections = {};
+
+function newItem(edit, files) {
+  const collection = collections[edit.source.collection];
+  if (!collection || edit.source.file !== collection.file) throw new Error("this site has no such list");
+  if (edit.previous !== "") throw new Error("a new item replaces nothing");
+  const { slug, name } = parsed(edit, "item");
+  if (typeof slug !== "string" || !slugPattern.test(slug) || slug.length < 2 || slug.length > 60) throw new Error("the address must be like our-team");
+  plainWords(name);
+  const pagesJson = JSON.parse(readFileSync(join(root, pagesFile), "utf8"));
+  if (takenAddresses(pagesJson.pages).has(slug)) throw new Error("a page with this address already exists");
+  const data = jsonEntry(files, collection.file);
+  const key = collection.itemsKey ?? "items";
+  data[key] = { ...(data[key] ?? {}), [slug]: collection.sample(name.trim()) };
+  const lists = jsonEntry(files, listsFile);
+  lists[collection.list] = [...(lists[collection.list] ?? []), slug];
 }
 
 function checkEdit(edit, files) {
@@ -313,6 +384,8 @@ function checkEdit(edit, files) {
   if (!source || typeof source !== "object") throw new Error("source is missing");
   if (source.kind === "new_article") return newArticle(edit, files);
   if (source.kind === "new_page") return newPage(edit, files);
+  if (source.kind === "page_address") return pageAddress(edit, files);
+  if (source.kind === "new_item") return newItem(edit, files);
   const file = resolveFile(source.file);
   if (!files.has(file.fullPath)) {
     const text = readFileSync(file.fullPath, "utf8");
@@ -348,7 +421,8 @@ function checkEdit(edit, files) {
     } catch {
       throw new Error("the new order is not valid JSON");
     }
-    if (!Array.isArray(next) || next.length === 0 || next.some((id) => typeof id !== "string" || !/^[\w-]+$/.test(id)) || new Set(next).size !== next.length) {
+    // An empty list is fine (the footer's links start empty); the editor keeps each list's minimum.
+    if (!Array.isArray(next) || next.some((id) => typeof id !== "string" || !/^[\w-]+$/.test(id)) || new Set(next).size !== next.length) {
       throw new Error("the new order must list each item once");
     }
     entry.layout[source.list] = next;

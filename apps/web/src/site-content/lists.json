@@ -1,1 +1,10 @@
-{}
+{
+  "menu": [
+    "stays",
+    "destinations",
+    "owners",
+    "design",
+    "about"
+  ],
+  "footer": []
+}

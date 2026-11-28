@@ -257,7 +257,8 @@ const stayWording = group({
 // draft: built only in the editing copy until its status is "live". "removed" keeps its address
 // taken. Its sections live in layout.json under "page-<slug>".
 export const pageSlug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "must be a page address like our-team").min(2).max(60);
-const ownerPage = group({ slug: pageSlug, title: text, description: text, status: z.enum(["draft", "live", "removed"]), menu: z.enum(["yes", "no"]) });
+// "moved": addresses it had before the owner changed it; each sends visitors on to the new one.
+const ownerPage = group({ slug: pageSlug, title: text, description: text, status: z.enum(["draft", "live", "removed"]), menu: z.enum(["yes", "no"]), moved: z.array(pageSlug).max(10).optional() });
 
 export const contentSchemas = {
   "pages": group({ pages: z.array(ownerPage).max(40) }),
