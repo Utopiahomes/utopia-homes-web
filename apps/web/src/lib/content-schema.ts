@@ -253,7 +253,14 @@ const stayWording = group({
   accessibility: text,
 });
 
+// Pages the owner added in the editor (Ray, 2026-11-27: "Start step 3"). A new page starts as a
+// draft: built only in the editing copy until its status is "live". "removed" keeps its address
+// taken. Its sections live in layout.json under "page-<slug>".
+export const pageSlug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "must be a page address like our-team").min(2).max(60);
+const ownerPage = group({ slug: pageSlug, title: text, description: text, status: z.enum(["draft", "live", "removed"]), menu: z.enum(["yes", "no"]) });
+
 export const contentSchemas = {
+  "pages": group({ pages: z.array(ownerPage).max(40) }),
   "layout": z.record(z.string().regex(/^[\w-]+$/), pageLayout),
   // Ordered lists the owner or Lucy can reorder (none on this site yet; the editor reads the file).
   "lists": z.record(z.string().regex(/^[\w-]+$/), z.array(z.string().regex(/^[\w-]+$/))),

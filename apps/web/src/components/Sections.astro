@@ -29,7 +29,8 @@ sections.forEach((id, index) => {
 });
 // The first written section opens the page: it can't be moved or hidden.
 const pinned = sections[0];
-if (order[0] !== pinned) order.splice(order.indexOf(pinned), 1), order.unshift(pinned);
+// A page with no written sections has nothing pinned (and nothing to move first).
+if (pinned !== undefined && order[0] !== pinned) order.splice(order.indexOf(pinned), 1), order.unshift(pinned);
 hidden.delete(pinned);
 
 const html: Record<string, string> = {};

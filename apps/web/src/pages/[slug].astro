@@ -1,0 +1,42 @@
+---
+// Pages the owner added in Stoin's editor (pages.json; Ray, 2026-11-27: "Start step 3"). A draft
+// page is built only in the editing copy, so the owner sees it before it goes live. Copied from
+// the AK Development site.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sections from "../components/Sections.astro";
+import { content } from "../lib/content";
+import { stripMarkers } from "../../editor/markers.mjs";
+
+export function getStaticPaths() {
+  const edit = import.meta.env.PUBLIC_EDIT_MODE === "1";
+  return content.pages.pages
+    .map((page, index) => ({ page, index }))
+    .filter(({ page }) => {
+      const status = stripMarkers(page.status);
+      return status === "live" || (edit && status === "draft");
+    })
+    .map(({ page, index }) => ({ params: { slug: stripMarkers(page.slug) }, props: { kind: "page" as const, index } }));
+}
+
+const { kind, index } = Astro.props;
+const slug = Astro.params.slug as string;
+---
+{kind === "page" && (() => {
+  const page = content.pages.pages[index];
+  const draft = stripMarkers(page.status) === "draft";
+  return (
+    <BaseLayout title={page.title} description={page.description} noindex={draft}>
+      <Sections page={`page-${slug}`} sections={["hero"]}>
+        <Fragment slot="hero">
+          <section class="owner-page-hero">
+            <div class="owner-page-inner" data-anim="fadeInUp">
+              {draft && <p class="page-draft-note">Draft page: only you can see it. Set it to Live in Page details when it's ready.</p>}
+              <h1 class="owner-page-title">{page.title}</h1>
+              <p class="owner-page-lead">{page.description}</p>
+            </div>
+          </section>
+        </Fragment>
+      </Sections>
+    </BaseLayout>
+  );
+})()}

@@ -34,3 +34,9 @@
 .row-team h3 { font-size: 21px; margin: 0; }
 .row-role { color: var(--row-accent); text-transform: uppercase; letter-spacing: 1px; font-size: 13px; margin: 4px 0 10px; }
 .row-icons [hidden], .row-steps [hidden], .row-checks [hidden], .row-faq [hidden], .row-cards [hidden], .row-gallery [hidden], .row-team [hidden], .section-heading [hidden] { display: none; }
+.page-draft-note { display: inline-block; background: #fff4d6; color: #6b4e00; border-radius: 999px; padding: 6px 14px; font-size: 14px; margin-bottom: 18px; }
+/* A page the owner added (pages/[slug].astro, 2026-11-27): its opening title and description. */
+.owner-page-hero { background: var(--row-soft); padding: 120px 0 64px; }
+.owner-page-inner { width: min(760px, calc(100% - 48px)); margin-inline: auto; text-align: center; }
+.owner-page-title { font-size: clamp(36px, 5vw, 54px); line-height: 1.15; margin: 0 0 18px; }
+.owner-page-lead { font-size: 20px; line-height: 1.6; margin: 0; }

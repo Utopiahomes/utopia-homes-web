@@ -340,6 +340,21 @@ export async function finishEditBuild(dist) {
     position.options = [{ value: "top-right", label: "Top right" }, { value: "bottom-right", label: "Bottom right" }];
     uses.set("site.talkPosition", { kinds: new Set(["choice"]), pages: new Set(pages.map((page) => page.path)) });
   }
+  // A page the owner added (pages.json, 2026-11-27): whether it is live or a draft, and whether it
+  // is in the menu, are settings with fixed options in Page details, on that page.
+  for (const item of items.values()) {
+    const found = item.key.match(/^pages\.pages\.(\d+)\.(status|menu)$/);
+    if (!found) continue;
+    const slug = items.get(`pages.pages.${found[1]}.slug`)?.value;
+    const path = slug ? `/${slug}` : null;
+    if (!path || !pages.some((page) => page.path === path)) continue;
+    item.format = "choice";
+    item.label = found[2] === "status" ? "This page is" : "In the site's menu";
+    item.options = found[2] === "status"
+      ? [{ value: "draft", label: "A draft (only you see it)" }, { value: "live", label: "Live" }, { value: "removed", label: "Removed" }]
+      : [{ value: "yes", label: "Yes" }, { value: "no", label: "No" }];
+    uses.set(item.key, { kinds: new Set(["choice"]), pages: new Set([path]) });
+  }
   const manifestItems = [...items.values()]
     .filter((item) => uses.has(item.key))
     .map((item) => ({
@@ -358,7 +373,9 @@ export async function finishEditBuild(dist) {
 
   await mkdir(join(dist, "_stoin"), { recursive: true });
   const posts = await postSettings();
-  await writeFile(join(dist, "_stoin", "manifest.json"), `${JSON.stringify({ version: 1, site, pages, blocks: catalog, posts, photos: await photoFiles(dist), items: manifestItems }, null, 2)}\n`);
+  // Pages the owner can add (2026-11-27): where a new page is listed and where its sections go.
+  const addPages = { file: `${contentFolder}/pages.json`, layout: `${contentFolder}/layout.json` };
+  await writeFile(join(dist, "_stoin", "manifest.json"), `${JSON.stringify({ version: 1, site, pages, blocks: catalog, posts, addPages, photos: await photoFiles(dist), items: manifestItems }, null, 2)}\n`);
   // The bridge carries the Markdown helper with it, so the page loads one script.
   await writeFile(join(dist, "_stoin", "bridge.js"), `${await readFile(markdownSource, "utf8")}
 ${await readFile(bridgeSource, "utf8")}`);

@@ -270,11 +270,49 @@ function newArticle(edit, files) {
   files.set(fullPath, { file: { fullPath, type: "new" }, text: null, created, changes: [], layout: null });
 }
 
+// A page the owner added (2026-11-27): one new draft entry in pages.json. Its address must be free:
+// not another added page (even a removed one), a page in src/pages, a project, or a reserved name.
+const reservedPages = new Set(["_stoin", "_astro", "api", "index", "404", "500", "rss", "robots", "favicon", "assets", "images", "blocks", "brand", "fonts", "sitemap", "llms"]);
+function newPage(edit, files) {
+  const { source } = edit;
+  if (source.file !== "apps/web/src/site-content/pages.json") throw new Error("a new page is listed in pages.json");
+  if (edit.previous !== "") throw new Error("a new page replaces nothing");
+  let page;
+  try {
+    page = JSON.parse(edit.value);
+  } catch {
+    throw new Error("the page is not valid JSON");
+  }
+  const { slug, title, description, menu } = page ?? {};
+  if (typeof slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length < 2 || slug.length > 60) throw new Error("the page address must be like our-team");
+  for (const value of [title, description]) {
+    if (typeof value !== "string" || !value.trim() || /[<>]/.test(value)) throw new Error("the page needs a title and description in plain words");
+  }
+  if (menu !== "yes" && menu !== "no") throw new Error("say whether the page is in the menu");
+  const file = resolveFile(source.file);
+  if (!files.has(file.fullPath)) files.set(file.fullPath, { file, text: readFileSync(file.fullPath, "utf8"), changes: [], layout: null });
+  const entry = files.get(file.fullPath);
+  entry.layout ??= JSON.parse(entry.text);
+  const taken = new Set([...reservedPages, ...(entry.layout.pages ?? []).map((existing) => existing.slug)]);
+  const pagesFolder = join(root, "apps/web/src/pages");
+  for (const name of readdirSync(pagesFolder)) taken.add(name.replace(/\.(astro|ts|js|md|mdx)$/, ""));
+  try {
+    const projects = JSON.parse(readFileSync(join(root, "apps/web/src/site-content/projects.json"), "utf8"));
+    for (const id of Object.keys(projects.items ?? {})) taken.add(id);
+  } catch {
+    // A site without a projects list.
+  }
+  if (taken.has(slug)) throw new Error("a page with this address already exists");
+  entry.layout.pages = [...(entry.layout.pages ?? []), { slug, title: title.trim(), description: description.trim(), status: "draft", menu }];
+  entry.changes.push({ layout: true });
+}
+
 function checkEdit(edit, files) {
   if (!edit || typeof edit !== "object") throw new Error("edit must be an object");
   const { source } = edit;
   if (!source || typeof source !== "object") throw new Error("source is missing");
   if (source.kind === "new_article") return newArticle(edit, files);
+  if (source.kind === "new_page") return newPage(edit, files);
   const file = resolveFile(source.file);
   if (!files.has(file.fullPath)) {
     const text = readFileSync(file.fullPath, "utf8");

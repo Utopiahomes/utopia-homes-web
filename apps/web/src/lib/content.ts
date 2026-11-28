@@ -41,6 +41,7 @@ function load<Name extends ContentFile>(name: Name): z.infer<(typeof contentSche
 export const content = {
   site: load("site"),
   layout: load("layout"),
+  pages: load("pages"),
   lists: load("lists"),
   home: load("home"),
   housePage: load("house-page"),
